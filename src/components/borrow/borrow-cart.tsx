@@ -18,11 +18,7 @@ export default function BorrowCart() {
       </CardHeader>
       <CardContent className="max-h-72 overflow-y-auto no-scrollbar">
         <h2 className="text-sm my-4 text-center font-bold">
-          <CartItem/>
-          <CartItem/>
-          <CartItem/>
-          <CartItem/>
-          
+
         </h2>
       </CardContent>
       <CardFooter className='flex flex-col xl:flex-row justify-end gap-2'>

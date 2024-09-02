@@ -49,22 +49,21 @@ function getRoleBasedNavItems(role: string): Group[] {
 }
 
 /**
- * Retrieves the navigation items based on the user's role and office.
- * @param office The office key.
+ * Retrieves the navigation items based on the user's role and department.
+ * @param department The department key.
  * @param role The role key.
  * @returns An array of Group objects representing the navigation items.
  */
-function getRoleBasedNavItemsOffice(office: string, role: any): Group[] {
-    const officeNavItems = siteConfig.navItems.find((item) => (item as any)[office]);
+function getRoleBasedNavItemsOffice(department: string, role: any): Group[] {
+    const officeNavItems = siteConfig.navItems.find((item) => (item as any)[department]);
     const navItems = siteConfig.navItems.find((item) => (item as any)[role]);
-
     if (!officeNavItems) {
         const lendingOfficeNavItems = siteConfig.navItems.find((item) => (item as any)["LENDING_OFFICES"]);
         const lendingOfficePositionNavItems = (lendingOfficeNavItems as any)["LENDING_OFFICES"].find((item: any) => item[role]);
         return lendingOfficePositionNavItems ? (lendingOfficePositionNavItems as any)[role] : [];
     }
     if (officeNavItems) {
-        const positionNavItems = (officeNavItems as any)[office].find((item: any) => item[role]);
+        const positionNavItems = (officeNavItems as any)[department].find((item: any) => item[role]);
         return positionNavItems ? (positionNavItems as any)[role] : [];
     }
     return navItems ? (navItems as any)[role] : [];
@@ -130,13 +129,13 @@ export function useFirstMenuItem(): string {
 }
 
 /**
- * Retrieves the href of the first menu item for a given office and role.
+ * Retrieves the href of the first menu item for a given department and role.
  * @param role The user's role.
- * @param office The user's office.
+ * @param department The user's department.
  * @returns The href of the first menu item.
  */
-export function getFirstMenuItemOffice(role: string, office: string): string {
-    const navItems = getRoleBasedNavItemsOffice(office, role);
+export function getFirstMenuItemOffice(role: string, department: string): string {
+    const navItems = getRoleBasedNavItemsOffice(department, role);
     if (navItems.length > 0 && navItems[0].menus.length > 0) {
         return navItems[0].menus[0].href;
     }
