@@ -2,6 +2,7 @@ import {getFirstMenuItemOffice} from "@/lib/menu-list";
 import {cookies} from "next/headers";
 import {ADMIN_MENULIST} from "./CONSTANTS/SIDEBAR_CONSTANTS/ADMIN_MENULIST";
 import {BORROW_MENULIST} from "./CONSTANTS/SIDEBAR_CONSTANTS/BORROW_MENULIST";
+import {getParsedAuthCookie} from "@/core/data-access/cookies";
 
 /**
  * List of public routes
@@ -37,11 +38,10 @@ export const endorserRoutes = ["/manage-endorsements"];
  *
  * @returns {string} The first menu item for the office user.
  */
-export const OFFICE_FIRST_MENU_ITEM = () => {
-    const cookieHeader = cookies().get('auth');
-    const auth = cookieHeader ? JSON.parse(cookieHeader.value) : null;
-    const {role, departmentCode: departmentCode} = auth.user;
-    return getFirstMenuItemOffice(role, departmentCode);
+export const OFFICE_FIRST_MENU_ITEM = async () => {
+    const auth = await getParsedAuthCookie();
+    const {role, department} = auth?.user;
+    return getFirstMenuItemOffice(role, department);
 };
 
 

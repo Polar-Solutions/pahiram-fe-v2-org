@@ -56,7 +56,7 @@ export const useUserStore = create<UserState>()(
       setUserData: (data: any) => {
         set({
           userData: {
-            avatarName: GenerateAvatarName(data?.first_mame, data?.last_name),
+            avatarName: GenerateAvatarName(data?.first_name, data?.last_name),
             apc_id: data?.apc_id,
             first_name: data?.first_name,
             last_name: data?.last_name,
@@ -64,7 +64,7 @@ export const useUserStore = create<UserState>()(
               .filter(Boolean)
               .join(" "),
             email: data?.email,
-            office: data?.department_code as OfficeAcronym,
+            office: data?.department as OfficeAcronym,
             role: data?.role as RoleForOffice<OfficeAcronym>,
             is_admin: data?.is_admin,
           },
