@@ -11,22 +11,28 @@ import {
 interface ItemsPaginationProps {
     currentPage: number;
     totalPages: number;
+    onPageChange: (page: number) => void;
 }
 
-const ItemsPagination: React.FC<ItemsPaginationProps> = ({currentPage, totalPages}) => {
+export const ItemsPagination: React.FC<ItemsPaginationProps> = ({ currentPage, totalPages, onPageChange }) => {
     const pageNumbers = [];
     for (let i = 1; i <= totalPages; i++) {
         pageNumbers.push(i);
     }
+
+    const handlePageClick = (page: number) => (e: React.MouseEvent) => {
+        e.preventDefault();
+        onPageChange(page);
+    };
 
     return (
         <Pagination>
             <PaginationContent>
                 <PaginationItem>
                     {currentPage > 1 ? (
-                        <PaginationPrevious href={`?page=${currentPage - 1}`}/>
+                        <PaginationPrevious onClick={handlePageClick(currentPage - 1)} href={''} />
                     ) : (
-                        <PaginationPrevious className="pointer-events-none opacity-50" href={''}/>
+                        <PaginationPrevious className="pointer-events-none opacity-50" href={''} />
                     )}
                 </PaginationItem>
 
@@ -35,7 +41,7 @@ const ItemsPagination: React.FC<ItemsPaginationProps> = ({currentPage, totalPage
                         <PaginationLink
                             isActive={currentPage === number}
                             className={currentPage === number ? 'pointer-events-none' : ''}
-                            href={`?page=${number}`}>
+                            onClick={handlePageClick(number)} href={''}                        >
                             {number}
                         </PaginationLink>
                     </PaginationItem>
@@ -43,9 +49,9 @@ const ItemsPagination: React.FC<ItemsPaginationProps> = ({currentPage, totalPage
 
                 <PaginationItem>
                     {currentPage < totalPages ? (
-                        <PaginationNext href={`?page=${currentPage + 1}`}/>
+                        <PaginationNext onClick={handlePageClick(currentPage + 1)} href={''} />
                     ) : (
-                        <PaginationNext className="pointer-events-none opacity-50" href={''}/>
+                        <PaginationNext className="pointer-events-none opacity-50" href={''} />
                     )}
                 </PaginationItem>
             </PaginationContent>

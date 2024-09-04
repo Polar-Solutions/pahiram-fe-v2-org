@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
-import GenerateAvatarName from "@/helper/generateAvatarName";
+import GenerateAvatarName from "@/helper/login/generateAvatarName";
 import { OfficeAcronym, RoleForOffice } from "@/CONSTANTS/OFFICES_CONSTANTS";
 
 /**

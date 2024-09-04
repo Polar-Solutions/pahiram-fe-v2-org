@@ -20,9 +20,6 @@ export default function ItemCardSkeleton() {
                         </div>
                         <Skeleton className="h-4 w-20"/> {/* Category */}
                     </CardContent>
-                    <CardFooter className="pt-2 p-4">
-                        <Skeleton className="h-10 w-full"/> {/* Button */}
-                    </CardFooter>
                 </Card>
             ))}
         </>

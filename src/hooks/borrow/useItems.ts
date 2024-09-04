@@ -1,7 +1,7 @@
-import {useEffect, useState, useRef} from "react";
-import {useSearchParams} from "next/navigation";
+import {useEffect, useRef, useState} from "react";
 import {getItemsPaginationUseCase} from "@/core/use-cases/items";
 import {IItem} from "@/lib/interfaces";
+import {getURLParams} from "@/helper/borrow/getURLParams";
 
 export const useItems = () => {
     const [items, setItems] = useState<IItem[]>([]);
@@ -12,8 +12,7 @@ export const useItems = () => {
     const cachedItems = useRef<{ [page: number]: IItem[] }>({});
     const cachedTotalPages = useRef<number>(1);
 
-    const searchParams = useSearchParams();
-    const page = Number(searchParams.get('page')) || 1;
+    const {page} = getURLParams();
 
     useEffect(() => {
         async function loadItems(page: number) {
