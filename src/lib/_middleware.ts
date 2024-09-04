@@ -96,7 +96,7 @@ export const officeViewMiddleware = async ({
                                                request,
                                            }: MiddlewareFunctionProps) => {
     const nextUrl = request.nextUrl || new URL(request.url);
-    return NextResponse.redirect(new URL(OFFICE_FIRST_MENU_ITEM(), nextUrl));
+    return NextResponse.redirect(new URL(await OFFICE_FIRST_MENU_ITEM(), nextUrl));
 };
 
 /**
@@ -135,7 +135,8 @@ export const authMiddleware = async ({request}: MiddlewareFunctionProps) => {
             if (auth && auth?.user) {
                 const nextUrl = request.nextUrl;
                 if (auth.user.department != null) {
-                    return NextResponse.redirect(new URL(OFFICE_FIRST_MENU_ITEM(), nextUrl));
+
+                    return NextResponse.redirect(new URL(await OFFICE_FIRST_MENU_ITEM(), nextUrl));
                 }
                 return NextResponse.redirect(new URL(BORROWER_FIRST_MENU_ITEM, nextUrl))
             }

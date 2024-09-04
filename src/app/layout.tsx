@@ -8,7 +8,7 @@ import {siteConfig} from "@/config/siteConfig"
 import "../styles/globals.css";
 
 import {ThemeProvider} from "@/providers/themeProvider";
-
+import { CartProvider } from "@/providers/CartContext";
 export const metadata: Metadata = {
     metadataBase: new URL(
         process.env.APP_URL
@@ -45,9 +45,11 @@ export default function RootLayout({
     return (
         <html lang="en" suppressHydrationWarning>
         <body className={GeistSans.className}>
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-        </ThemeProvider>
+        <CartProvider>
+            <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+                {children}
+            </ThemeProvider>
+        </CartProvider>
         </body>
         </html>
     );
