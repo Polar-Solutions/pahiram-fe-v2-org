@@ -2,7 +2,6 @@
 const nextConfig = {
     experimental: {
         taint: true,
-        ppr: true,
     },
     logging: {
         fetches: {

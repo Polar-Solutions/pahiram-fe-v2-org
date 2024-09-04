@@ -32,7 +32,6 @@ export default function ItemModal() {
 
     const router = useRouter();
 
-    // const {addItemToCart} = useCart();
 
     const handleCloseModal = () => {
         const newUrl = updateURLParams({item: '', showModalItem: 0});
@@ -60,15 +59,12 @@ export default function ItemModal() {
         return text.slice(0, maxLength) + '...';
     };
 
-    // const handleAddToCart = () => {
-    //     if (item) {
-    //         addItemToCart(item);
-    //         const newUrl = updateURLParams({ showModalItem: 0});
-    //         router.push(newUrl); // Optionally close the modal
-    //     }
-    // };
-
-    console.log("item: ", item)
+    const handleAddToCart = () => {
+        if (item) {
+            // addItemToCart(item);
+            // setShowModal(false); // Optionally close the modal
+        }
+    };
 
     return (
         <Dialog open={showModalItem} onOpenChange={handleOpenChange}>
@@ -213,9 +209,13 @@ export default function ItemModal() {
                         <Button variant="outline" onClick={() => handleCloseModal()}>
                             Cancel
                         </Button>
-                        <Button onClick={() => {
-                            handleCloseModal()
-                        }}>
+                        <Button
+                            className="text-black"
+                            onClick={() => {
+                                handleAddToCart()
+                                handleCloseModal()
+                            }}
+                        >
                             Add to Borrowing Cart
                         </Button>
                     </div>

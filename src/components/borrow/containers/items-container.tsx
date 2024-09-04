@@ -1,7 +1,7 @@
 "use client";
 // TODO: Make the filter, filter all the items and not just whats
 
-import React, {Suspense, useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {motion} from "framer-motion";
 import SpecificItemModal from "@/components/borrow/presentational/item-modal";
 import {useItems} from "@/hooks/borrow/useItems";
@@ -14,8 +14,6 @@ import {getURLParams} from "@/helper/borrow/getURLParams";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {useRouter} from "next/navigation";
 
-
-export const experimental_ppr = true
 
 export default function ItemsContainer() {
     const {items, isFetchingItems, totalPages, page} = useItems();
@@ -43,13 +41,6 @@ export default function ItemsContainer() {
         return () => window.removeEventListener('resize', updateLayout);
     }, [updateLayout]);
 
-    useEffect(() => {
-        const scrollToTop = async () => {
-            await new Promise((resolve) => setTimeout(resolve, 50)); // Ensure the content is loaded before scrolling
-            window.scrollTo({top: 0, behavior: 'smooth'});
-        };
-        scrollToTop();
-    }, [page]);
 
     const router = useRouter();
 
@@ -74,21 +65,15 @@ export default function ItemsContainer() {
                     gridColumns === 2 ? 'grid-cols-2' :
                         'grid-cols-3'
             }`}>
-                {
-                    isFetchingItems ? (
-                        <ItemCardSkeleton/>
-                    ) : filteredItems && filteredItems.length > 0 ?
-                        (
-                            <Suspense fallback={<ItemCardSkeleton/>}>
-                                <ItemsList items={filteredItems}/>
-                            </Suspense>
-                        ) :
-                        (
-                            <p className="text-center text-muted-foreground col-span-full">
-                                No results found {filterSearch ? `for ${filterSearch}` : null}
-                            </p>
-                        )
-                }
+                {isFetchingItems ? (
+                    <ItemCardSkeleton/>
+                ) : filteredItems && filteredItems.length > 0 ? (
+                    <ItemsList items={filteredItems}/>
+                ) : (
+                    <p className="text-center text-muted-foreground col-span-full">
+                        No results found {filterSearch ? `for ${filterSearch}` : null}
+                    </p>
+                )}
 
             </div>
 

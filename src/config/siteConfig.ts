@@ -46,7 +46,7 @@ export const siteConfig = {
         {
             FAO: [
                 {
-                    EMPLOYEE: FAO_EMPLOYEE,
+                    PENALTY_MANAGER: FAO_EMPLOYEE,
                 },
                 {
                     SUPERVISOR: FAO_SUPERVISOR,
@@ -59,7 +59,7 @@ export const siteConfig = {
         {
             PLO: [
                 {
-                    EMPLOYEE: EMPLOYEE_MENULIST,
+                    INVENTORY_MANAGER: EMPLOYEE_MENULIST,
                 },
                 {
                     SUPERVISOR: SUPERVISOR_MENULIST,
@@ -72,7 +72,7 @@ export const siteConfig = {
         {
             LENDING_OFFICES: [
                 {
-                    EMPLOYEE: LENDING_OFFICE_EMPLOYEE,
+                    LENDING_EMPLOYEE: LENDING_OFFICE_EMPLOYEE,
                 },
                 {
                     SUPERVISOR: LENDING_OFFICE_SUPERVISOR,

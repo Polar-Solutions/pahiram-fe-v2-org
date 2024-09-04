@@ -40,8 +40,8 @@ export const endorserRoutes = ["/manage-endorsements"];
 export const OFFICE_FIRST_MENU_ITEM = () => {
     const cookieHeader = cookies().get('auth');
     const auth = cookieHeader ? JSON.parse(cookieHeader.value) : null;
-    const {role, departmentCode: departmentCode} = auth.user;
-    return getFirstMenuItemOffice(role, departmentCode);
+    const {role, department} = auth.user;
+    return getFirstMenuItemOffice(role, department);
 };
 
 

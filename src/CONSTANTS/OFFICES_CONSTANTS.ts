@@ -24,7 +24,7 @@ const OFFICES_CONSTANTS: OfficesConstants = {
         acronym: "ITRO",
         is_lending_office: true,
         roles: {
-            EMPLOYEE: { name: "EMPLOYEE" },
+            LENDING_EMPLOYEE: { name: "EMPLOYEE" },
             SUPERVISOR: { name: "SUPERVISOR" },
             COSUPERVISOR: { name: "COSUPERVISOR" },
         },
@@ -34,7 +34,7 @@ const OFFICES_CONSTANTS: OfficesConstants = {
         acronym: "BMO",
         is_lending_office: true,
         roles: {
-            EMPLOYEE: { name: "EMPLOYEE" },
+            LENDING_EMPLOYEE: { name: "EMPLOYEE" },
             SUPERVISOR: { name: "SUPERVISOR" },
             COSUPERVISOR: { name: "COSUPERVISOR" },
         },
@@ -44,7 +44,7 @@ const OFFICES_CONSTANTS: OfficesConstants = {
         acronym: "ESLO",
         is_lending_office: true,
         roles: {
-            EMPLOYEE: { name: "EMPLOYEE" },
+            LENDING_EMPLOYEE: { name: "EMPLOYEE" },
             SUPERVISOR: { name: "SUPERVISOR" },
             COSUPERVISOR: { name: "COSUPERVISOR" },
         },
@@ -54,7 +54,7 @@ const OFFICES_CONSTANTS: OfficesConstants = {
         acronym: "FAO",
         is_lending_office: false,
         roles: {
-            EMPLOYEE: { name: "EMPLOYEE" },
+            PENALTY_MANAGER: { name: "EMPLOYEE" },
             SUPERVISOR: { name: "SUPERVISOR" },
             COSUPERVISOR: { name: "COSUPERVISOR" },
         },
@@ -64,7 +64,7 @@ const OFFICES_CONSTANTS: OfficesConstants = {
         acronym: "PLO",
         is_lending_office: false,
         roles: {
-            EMPLOYEE: { name: "EMPLOYEE" },
+            INVENTORY_MANAGER: { name: "EMPLOYEE" },
             SUPERVISOR: { name: "SUPERVISOR" },
             COSUPERVISOR: { name: "COSUPERVISOR" },
         },
