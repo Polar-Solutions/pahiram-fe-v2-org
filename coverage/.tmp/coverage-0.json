@@ -1,1 +1,96 @@
-{"result":[{"scriptId":"1002","url":"file:///C:/Users/McJoseph/OneDrive%20-%20Asia%20Pacific%20College/Documents/GitHub/pahiram-fe-V2/__tests__/functions/loginUser.test.tsx","functions":[{"functionName":"","ranges":[{"startOffset":0,"endOffset":7566,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":13,"endOffset":7566,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":501,"endOffset":2468,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":631,"endOffset":1088,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":1168,"endOffset":1589,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":1653,"endOffset":1968,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":2049,"endOffset":2464,"count":1}],"isBlockCoverage":true}]},{"scriptId":"1003","url":"file:///C:/Users/McJoseph/OneDrive%20-%20Asia%20Pacific%20College/Documents/GitHub/pahiram-fe-V2/src/core/data-access/users.ts","functions":[{"functionName":"","ranges":[{"startOffset":0,"endOffset":5351,"count":1}],"isBlockCoverage":true},{"functionName":"","ranges":[{"startOffset":13,"endOffset":5351,"count":1}],"isBlockCoverage":true},{"functionName":"getUserByEmail","ranges":[{"startOffset":208,"endOffset":228,"count":0}],"isBlockCoverage":false},{"functionName":"get","ranges":[{"startOffset":332,"endOffset":362,"count":0}],"isBlockCoverage":false},{"functionName":"logoutUser","ranges":[{"startOffset":385,"endOffset":400,"count":0}],"isBlockCoverage":false},{"functionName":"get","ranges":[{"startOffset":500,"endOffset":526,"count":0}],"isBlockCoverage":false},{"functionName":"loginUser","ranges":[{"startOffset":548,"endOffset":1468,"count":4},{"startOffset":1005,"endOffset":1123,"count":3},{"startOffset":1123,"endOffset":1201,"count":1},{"startOffset":1265,"endOffset":1466,"count":0}],"isBlockCoverage":true},{"functionName":"get","ranges":[{"startOffset":1567,"endOffset":1592,"count":4}],"isBlockCoverage":true}]}]}
+{
+  "result": [
+    {
+      "scriptId": "1002",
+      "url": "file:///C:/Users/McJoseph/OneDrive%20-%20Asia%20Pacific%20College/Documents/GitHub/pahiram-fe-V2/__tests__/functions/loginUser.test.tsx",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 7566, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 7566, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 501, "endOffset": 2468, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 631, "endOffset": 1088, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 1168, "endOffset": 1589, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 1653, "endOffset": 1968, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 2049, "endOffset": 2464, "count": 1 }],
+          "isBlockCoverage": true
+        }
+      ]
+    },
+    {
+      "scriptId": "1003",
+      "url": "file:///C:/Users/McJoseph/OneDrive%20-%20Asia%20Pacific%20College/Documents/GitHub/pahiram-fe-V2/src/core/data-access/users.ts",
+      "functions": [
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 0, "endOffset": 5351, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "",
+          "ranges": [{ "startOffset": 13, "endOffset": 5351, "count": 1 }],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "getUserByEmail",
+          "ranges": [{ "startOffset": 208, "endOffset": 228, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "get",
+          "ranges": [{ "startOffset": 332, "endOffset": 362, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "logoutUser",
+          "ranges": [{ "startOffset": 385, "endOffset": 400, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "get",
+          "ranges": [{ "startOffset": 500, "endOffset": 526, "count": 0 }],
+          "isBlockCoverage": false
+        },
+        {
+          "functionName": "loginUser",
+          "ranges": [
+            { "startOffset": 548, "endOffset": 1468, "count": 4 },
+            { "startOffset": 1005, "endOffset": 1123, "count": 3 },
+            { "startOffset": 1123, "endOffset": 1201, "count": 1 },
+            { "startOffset": 1265, "endOffset": 1466, "count": 0 }
+          ],
+          "isBlockCoverage": true
+        },
+        {
+          "functionName": "get",
+          "ranges": [{ "startOffset": 1567, "endOffset": 1592, "count": 4 }],
+          "isBlockCoverage": true
+        }
+      ]
+    }
+  ]
+}
