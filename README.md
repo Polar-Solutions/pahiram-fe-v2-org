@@ -6,6 +6,14 @@
 This section outlines the tasks that are planned or currently being worked on for this project. Tasks are categorized for better organization and prioritization.
 
 ## Frontend Development
+- [ ] **Apply lazy loading to components, libraries, etc.**
+
+- [ ] **Mobile view of filter and search component**
+
+- [ ] **Ensure that all cookie storing or local storage storing has http only flags in it**
+
+- [x] **Store the filter, search, page, sort, item id, item-modal-open, state of borrowing cart in the URL**
+
 - [ ] **Create error, 404, unauthroized, etc. pages**
 
 - [ ] **Borrowing Cart**
@@ -27,7 +35,7 @@ This section outlines the tasks that are planned or currently being worked on fo
   *(File: `login-form.tsx`, Line: 154)*
   Create a dedicated page for terms and conditions.
 
-- [ ] **Make the filter, filter all the items and not just what's**
+- [ ] **Make the filter, filter all the items and not just what's in the page**
   *(File: `items-container.tsx`, Line: 2)*
   Enhance the filtering logic to apply to all items.
 
@@ -53,7 +61,7 @@ This section outlines the tasks that are planned or currently being worked on fo
   Implement the necessary attributes in the backend for proper data handling.
 
 - [ ] **Implement URL reading instead of useState**
-  *(File: `specific-item-modal.tsx`, Line: 18)*
+  *(File: `item-modal.tsx`, Line: 18)*
   Transition from `useState` to URL-based state management.
 
 - [ ] **Secure cookie, don't expose user data and tokens on cookie [security risk]**

@@ -35,15 +35,7 @@ export interface IItem {
 }
 
 export interface IAuthCookie {
-    "user": {
-        "apc_id": string,
-        "first_name": string,
-        "last_name": string,
-        "email": string,
-        "role": string,
-        "acc_status": string,
-        "department": string
-    },
+    "user": IUserFromCookie,
     "pahiram_token": string,
     "apcis_token": string,
     "expires_at": string,

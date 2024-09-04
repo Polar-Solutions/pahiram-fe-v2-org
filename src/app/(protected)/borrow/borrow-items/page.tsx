@@ -3,6 +3,7 @@ import Content from "@/components/common/content";
 import ItemsContainer from "@/components/borrow/containers/items-container";
 import DynamicBreadcrumbsComponent from '@/components/common/dynamic-breadcrumbs-component';
 
+
 export default function Page() {
     return (
         <ContentLayout title="Borrow Items">

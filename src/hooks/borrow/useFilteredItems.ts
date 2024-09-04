@@ -1,21 +1,30 @@
 import {useMemo} from "react";
 import {IItem} from "@/lib/interfaces";
+import {getURLParams} from "@/helper/borrow/getURLParams";
 
 interface IUseFilteredItems {
     items: IItem[]
-    filterCategory: string
-    filterSearch: string
-    filterOffice: string
-    sortBy: string
+    // filterCategory: string
+    // filterSearch: string
+    // filterOffice: string
+    // sortBy: string
 }
 
 export const useFilteredItems = ({
                                      items,
-                                     filterCategory,
-                                     filterSearch,
-                                     filterOffice,
-                                     sortBy
+                                     // filterCategory,
+                                     // filterSearch,
+                                     // filterOffice,
+                                     // sortBy
                                  }: IUseFilteredItems) => {
+
+    const {
+        filterOffice,
+        filterSearch,
+        filterCategory,
+        sortBy
+    } = getURLParams();
+
 
     return useMemo(() => {
         return items
@@ -33,9 +42,9 @@ export const useFilteredItems = ({
                 return true;
             })
             .sort((a, b) => {
-                if (sortBy === "name") {
+                if (sortBy === "Name") {
                     return a.model_name.localeCompare(b.model_name)
-                } else if (sortBy === "office") {
+                } else if (sortBy === "Office") {
                     return a.department.localeCompare(b.department)
                 }
                 return 0

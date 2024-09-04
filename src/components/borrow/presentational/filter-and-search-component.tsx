@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, {useCallback, useMemo, useState} from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -6,60 +6,73 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { OFFICES_CONSTANTS } from "@/CONSTANTS/OFFICES_CONSTANTS";
-import { Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
+import {Button} from "@/components/ui/button";
+import {LENDING_OFFICES, OFFICES_CONSTANTS} from "@/CONSTANTS/OFFICES_CONSTANTS";
+import {Search} from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {ChevronDownIcon} from "@radix-ui/react-icons";
+import {useRouter} from "next/navigation";
+import {updateURLParams} from "@/helper/borrow/updateURLParams";
+import {getURLParams} from "@/helper/borrow/getURLParams";
 
-interface IFilterAndSearchProps {
-    showFilters: boolean;
-    filterCategory: string;
-    setFilterCategory: (category: string) => void;
-    filterOffice: string;
-    setFilterOffice: (office: string) => void;
-    sortBy: string;
-    setSortBy: (sort: string) => void;
-    filterSearch: string;
-    setFilterSearch: (search: string) => void;
-}
 
-export default function FilterAndSearchComponent({ props }: { props: IFilterAndSearchProps }) {
+export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean } ) {
+
+    const router = useRouter();
     const {
-        showFilters,
-        filterCategory,
-        setFilterCategory,
-        filterOffice,
-        setFilterOffice,
         sortBy,
-        setSortBy,
+        filterCategory,
         filterSearch,
-        setFilterSearch
-    } = props;
+        filterOffice
+    } = getURLParams();
 
-    const LIST_OF_OFFICES = useMemo(() => Object.keys(OFFICES_CONSTANTS), []);
+    const LIST_OF_OFFICES = useMemo(() => Object.keys(LENDING_OFFICES), []);
 
-    const handleSortChange = useCallback((sort: string) => {
-        setSortBy(sort);
-    }, [setSortBy]);
+    const handleSortChange = useCallback((sortOption: string) => {
+        // setSortBy(sortOption);
+        const newUrl = updateURLParams({sort: sortOption});
+        router.push(newUrl);
+    }, []);
 
-    const handleCategoryChange = useCallback((category: string) => {
-        setFilterCategory(category);
-    }, [setFilterCategory]);
+    const handleCategoryChange = useCallback((categoryOption: string) => {
+        // setFilterCategory(categoryOption);
+        const newUrl = updateURLParams({category: categoryOption});
+        router.push(newUrl);
+    }, []);
 
-    const handleOfficeChange = useCallback((office: string) => {
-        setFilterOffice(office);
-    }, [setFilterOffice]);
+    const handleOfficeChange = useCallback((officeOption: string) => {
+        // setFilterOffice(officeOption);
+        const newUrl = updateURLParams({office: officeOption});
+        router.push(newUrl);
+    }, []);
+
+
+    const [searchQuery, setSearchQuery] = useState(filterSearch || "");
 
     const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        setFilterSearch(e.target.value);
-    }, [setFilterSearch]);
+        const query = e.target.value;
+        setSearchQuery(query);
+
+        if (query.trim() === "") {
+            const newUrl = updateURLParams({ q: '' });
+            router.push(newUrl);
+        }
+    }, [router]);
+
+    const handleSearchKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            const newUrl = updateURLParams({ q: searchQuery });
+            router.push(newUrl);
+        }
+    }, [searchQuery, router]);
 
     const renderCategoryItems = useMemo(() => (
         ["Electronics", "Stationery", "Equipment"].map((category) => (
             <DropdownMenuItem
                 key={category}
-                onSelect={() => handleCategoryChange(category)}
+                onSelect={() => {
+                    handleCategoryChange(category)
+                }}
                 className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
             >
                 {category}
@@ -71,7 +84,9 @@ export default function FilterAndSearchComponent({ props }: { props: IFilterAndS
         LIST_OF_OFFICES.map((office: string) => (
             <DropdownMenuItem
                 key={office}
-                onSelect={() => handleOfficeChange(OFFICES_CONSTANTS[office].acronym)}
+                onSelect={() => {
+                    handleOfficeChange(OFFICES_CONSTANTS[office].acronym)
+                }}
                 className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
             >
                 {`${OFFICES_CONSTANTS[office].acronym} | ${OFFICES_CONSTANTS[office].office}`}
@@ -79,6 +94,7 @@ export default function FilterAndSearchComponent({ props }: { props: IFilterAndS
         ))
     ), [LIST_OF_OFFICES, handleOfficeChange]);
 
+    // TODO: Mobile view of filters and search
     if (!showFilters) return null;
 
     return (
@@ -87,13 +103,13 @@ export default function FilterAndSearchComponent({ props }: { props: IFilterAndS
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
-                            Sort by: {sortBy === "name" ? "Name" : "Office"}
+                            Sort by: {sortBy || "Name"}
                             <ChevronDownIcon className="h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
-                        <DropdownMenuItem onSelect={() => handleSortChange("name")}>Name</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleSortChange("office")}>Office</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleSortChange("Name")}>Name</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleSortChange("Office")}>Office</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
                 <DropdownMenu>
@@ -105,7 +121,9 @@ export default function FilterAndSearchComponent({ props }: { props: IFilterAndS
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                         <DropdownMenuItem
-                            onSelect={() => handleCategoryChange("")}
+                            onSelect={() => {
+                                handleCategoryChange("")
+                            }}
                             className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
                         >
                             All Categories
@@ -137,10 +155,11 @@ export default function FilterAndSearchComponent({ props }: { props: IFilterAndS
                 <Search className="h-5 w-5 text-muted-foreground"/>
                 <Input
                     type="search"
-                    placeholder="Search items..."
-                    value={filterSearch}
+                    placeholder="Search items by Name, Office, or Category"
+                    value={searchQuery}
                     onChange={handleSearchChange}
-                    className="flex-grow min-w-[30dvh]"
+                    onKeyDown={handleSearchKeyDown}
+                    className="flex-grow min-w-[42dvh]"
                 />
             </div>
         </div>
