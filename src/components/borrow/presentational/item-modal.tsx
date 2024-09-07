@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import Image from "next/image";
 import { useCart } from "@/providers/CartContext";
+import {IItem} from "@/lib/interfaces";
 
 interface ISpecificItemModalProps {
   showModal: boolean;
@@ -78,7 +79,6 @@ export default function ItemModal() {
 
   const handleAddToCart = () => {
     if (item) {
-      addItemToCart(item);
       // setShowModal(false); // Optionally close the modal
     }
   };

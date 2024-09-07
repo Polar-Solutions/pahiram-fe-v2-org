@@ -14,9 +14,10 @@ import {ChevronDownIcon} from "@radix-ui/react-icons";
 import {useRouter} from "next/navigation";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {getURLParams} from "@/helper/borrow/getURLParams";
+import {DynamicFilterCombobox} from "@/components/common/dynamic-filter-combobox";
 
 
-export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean } ) {
+export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean; page:number } ) {
 
     const router = useRouter();
     const {
@@ -112,26 +113,7 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
                         <DropdownMenuItem onSelect={() => handleSortChange("Office")}>Office</DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="flex items-center gap-2">
-                            {filterCategory || "All Categories"}
-                            <ChevronDownIcon className="h-4 w-4"/>
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                        <DropdownMenuItem
-                            onSelect={() => {
-                                handleCategoryChange("")
-                            }}
-                            className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
-                        >
-                            All Categories
-                        </DropdownMenuItem>
-                        <DropdownMenuSeparator/>
-                        {renderCategoryItems}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <DynamicFilterCombobox />
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
