@@ -21,23 +21,28 @@ export const preloadItem = (id: string) => {
 
 export const getItem = cache(async (id: string) => {
     try {
-        const response = await PahiramAxiosConfig.get(`/item-inventory/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching item:', error);
-        throw error;
-    }
-});
-
-export const getItemsPagination = async (page: number): Promise<IGetItemsPaginationApiResponse> => {
-    try {
-        const response = await PahiramAxiosConfig.get(`/item-inventory`, {
-            params: { page }
-        });
-
-        return response.data;
+      const response = await PahiramAxiosConfig.get(`/item-inventory/${id}`);
+      return response.data;
     } catch (error) {
         console.error('Error fetching items:', error);
-        throw error;
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch items: ${error.message}`);
+        } else {
+            throw new Error('Failed to fetch items: Unknown error');
+        }
     }
-};
+  });
+  
+  export const getItemsPagination = async (page: number): Promise<IGetItemsPaginationApiResponse> => {
+    try {
+      const response = await PahiramAxiosConfig.get(`/item-inventory?page=${page}`);
+      return response.data;
+    } catch (error) {
+        console.error('Error fetching items:', error);
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch items: ${error.message}`);
+        } else {
+            throw new Error('Failed to fetch items: Unknown error');
+        }
+    }
+  };
