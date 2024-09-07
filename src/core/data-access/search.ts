@@ -17,7 +17,6 @@ export const searchItems = cache(async (modelName: string, categoryName: string,
                 category_name: categoryName,
                 department_acronym: departmentAcronym
             },
-            timeout: 10000
         });
         
         if (response.status !== 200) {
