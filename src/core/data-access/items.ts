@@ -7,6 +7,7 @@ import {cache} from 'react'
 // } from 'react'
 import {IGetItemsPaginationApiResponse} from "@/lib/interfaces";
 import {getParsedAuthCookie} from "@/core/data-access/cookies";
+import {PahiramAxiosConfig} from '@/config/api/BackendAxiosConfig'
 
 export const preloadItemsPagination = (page: number) => {
     void getItemsPagination(page);
@@ -19,40 +20,24 @@ export const preloadItem = (id: string) => {
 }
 
 export const getItem = cache(async (id: string) => {
-
-        return fetch(`http://127.0.0.1/api/item-inventory/${id}`)
-            .then(response => response.json())
-            .then(data => {
-                return data
-            })
-            .catch(error => console.log(error))
+    try {
+        const response = await PahiramAxiosConfig.get(`/item-inventory/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching item:', error);
+        throw error;
     }
-)
+});
 
 export const getItemsPagination = async (page: number): Promise<IGetItemsPaginationApiResponse> => {
-    const authCookie = await getParsedAuthCookie();
-    const userPahiramToken = authCookie?.pahiram_token;
     try {
-        const response = await fetch(`http://127.0.0.1/api/item-inventory?page=${page}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${userPahiramToken}`
-            }
+        const response = await PahiramAxiosConfig.get(`/item-inventory`, {
+            params: { page }
         });
 
-        if (!response.ok) {
-            const errorBody = await response.text();
-            throw new Error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
-        }
-
-        return await response.json();
+        return response.data;
     } catch (error) {
         console.error('Error fetching items:', error);
-        if (error instanceof Error) {
-            throw new Error(`Failed to fetch items: ${error.message}`);
-        } else {
-            throw new Error('Failed to fetch items: Unknown error');
-        }
+        throw error;
     }
-}
+};
