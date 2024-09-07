@@ -60,7 +60,7 @@ export default function ItemsContainer() {
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.5}}
         >
-            <FilterAndSearchComponent showFilters={showFilters} page={page}/>
+            <FilterAndSearchComponent showFilters={showFilters}/>
 
             <div className={`grid gap-4 ${
                 gridColumns === 1 ? 'grid-cols-1' :
