@@ -16,7 +16,9 @@ import {useRouter} from "next/navigation";
 
 
 export default function ItemsContainer() {
-    const {items, isFetchingItems, totalPages, page} = useItems();
+    const {page} = getURLParams();
+
+    const {items, isFetchingItems, totalPages} = useItems(page);
 
     const filteredItems = useFilteredItems({items});
 
@@ -58,7 +60,7 @@ export default function ItemsContainer() {
             animate={{opacity: 1, y: 0}}
             transition={{duration: 0.5}}
         >
-            <FilterAndSearchComponent showFilters={showFilters}/>
+            <FilterAndSearchComponent showFilters={showFilters} page={page}/>
 
             <div className={`grid gap-4 ${
                 gridColumns === 1 ? 'grid-cols-1' :
