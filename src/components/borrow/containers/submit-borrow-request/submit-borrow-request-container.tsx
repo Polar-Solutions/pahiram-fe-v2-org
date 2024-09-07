@@ -17,7 +17,7 @@ export const SubmitBorrowRequestContainer = () => {
       transition={{ duration: 0.5 }}
     >
       <h3 className="text-3xl">Borrowing Request</h3>
-      <div className="w-full flex flex-col sm:flex-row gap-8">
+      <div className="w-full flex flex-col md:flex-row gap-8">
         <BorrowRequestFormContainer />
         <BorrowRequestItemsContainer />
       </div>
