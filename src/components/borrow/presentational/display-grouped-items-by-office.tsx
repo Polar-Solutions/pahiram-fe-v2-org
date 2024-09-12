@@ -19,11 +19,11 @@ export const DisplayGroupedItemsByOffice = () => {
   }
 
   return (
-    <>
+    <div className="h-full max-h-[400px] overflow-y-auto">
       {Object.entries(groupedCartItems).map(([department, items]) => (
         <Accordion
-          type="single"
-          collapsible
+          type="multiple"
+          defaultValue={[department]}
           className="w-full"
           key={`accordion-${department}`}
         >
@@ -37,6 +37,6 @@ export const DisplayGroupedItemsByOffice = () => {
           </AccordionItem>
         </Accordion>
       ))}
-    </>
+    </div>
   );
 };

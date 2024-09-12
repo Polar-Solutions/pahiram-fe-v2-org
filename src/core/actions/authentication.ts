@@ -1,12 +1,12 @@
 "use server";
 
-import {flattenValidationErrors} from "next-safe-action";
-import {LoginSchema} from "@/lib/form-schemas";
-import {actionClient} from "@/lib/safe-action";
-import {loginUserUseCase} from "@/core/use-cases/users";
-import {cookies} from "next/headers";
-import {loginUser} from "@/core/data-access/users";
-import {setAuthCookie} from "@/core/data-access/cookies";
+import { flattenValidationErrors } from "next-safe-action";
+import { LoginSchema } from "@/lib/form-schemas/form-schemas";
+import { actionClient } from "@/lib/safe-action";
+import { loginUserUseCase } from "@/core/use-cases/users";
+import { cookies } from "next/headers";
+import { loginUser } from "@/core/data-access/users";
+import { setAuthCookie } from "@/core/data-access/cookies";
 
 // TODO: Implement zsa
 /**
@@ -58,17 +58,17 @@ export const loginUserAction = actionClient
     );
 
 export const logoutUserAction = actionClient.action(async () => {
-    return new Promise((resolve, reject) => {
-        try {
-            const cookiesToDelete = cookies().getAll();
-            cookiesToDelete.forEach((cookie) => {
-                cookies().delete(cookie.name);
-            });
-            setTimeout(() => {
-                resolve(!cookies().has("auth"));
-            }, 100);
-        } catch (error) {
-            reject(error);
-        }
-    });
+  return new Promise((resolve, reject) => {
+    try {
+      const cookiesToDelete = cookies().getAll();
+      cookiesToDelete.forEach((cookie) => {
+        cookies().delete(cookie.name);
+      });
+      setTimeout(() => {
+        resolve(!cookies().has("auth"));
+      }, 100);
+    } catch (error) {
+      reject(error);
+    }
+  });
 });

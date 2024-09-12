@@ -39,4 +39,22 @@ function convertDateForHumanConsumption(inputDate: string) {
   return formattedString;
 }
 
-export { convertDateForHumanConsumption };
+function convertDatesToApiFormat(
+  obj: Record<string, any>
+): Record<string, any> {
+  for (const key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      if (
+        typeof obj[key] === "string" &&
+        obj[key].match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/)
+      ) {
+        obj[key] = obj[key].replace("T", " ").concat(":00");
+      } else if (typeof obj[key] === "object" && obj[key] !== null) {
+        convertDatesToApiFormat(obj[key]);
+      }
+    }
+  }
+  return obj;
+}
+
+export { convertDateForHumanConsumption, convertDatesToApiFormat };

@@ -21,7 +21,7 @@ import listPlugin from "@fullcalendar/list";
 import { DateSelectArg } from "@fullcalendar/core";
 
 import React, { useState } from "react";
-import { convertDateForHumanConsumption } from "@/helper/DateUtility";
+import { convertDateForHumanConsumption } from "@/helper/date-utilities";
 
 interface CalendarModal {
   startDate: string;
