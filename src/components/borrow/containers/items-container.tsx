@@ -16,7 +16,7 @@ import {useRouter} from "next/navigation";
 
 
 export default function ItemsContainer() {
-    const {page} = getURLParams();
+    const {page, filterSearch} = getURLParams();
 
     const {items, isFetchingItems, totalPages} = useItems(page);
 
@@ -27,7 +27,6 @@ export default function ItemsContainer() {
 
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const {filterSearch} = getURLParams();
 
     const updateLayout = useCallback(() => {
         if (containerRef.current) {

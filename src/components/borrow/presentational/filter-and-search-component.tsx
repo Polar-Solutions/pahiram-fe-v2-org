@@ -8,16 +8,18 @@ import {
 } from "@/components/ui/dropdown-menu";
 import {Button} from "@/components/ui/button";
 import {LENDING_OFFICES, OFFICES_CONSTANTS} from "@/CONSTANTS/OFFICES_CONSTANTS";
-import {Search} from "lucide-react";
+import {Check, Search} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChevronDownIcon} from "@radix-ui/react-icons";
 import {useRouter} from "next/navigation";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {DynamicFilterCombobox} from "@/components/common/dynamic-filter-combobox";
+import MobileFilterAndSearchComponent from "@/components/borrow/presentational/mobile-filter-and-search-component";
+import {cn} from "@/lib/utils";
 
 
-export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean; page:number } ) {
+export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean; } ) {
 
     const router = useRouter();
     const {
@@ -67,20 +69,6 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
         }
     }, [searchQuery, router]);
 
-    const renderCategoryItems = useMemo(() => (
-        ["Electronics", "Stationery", "Equipment"].map((category) => (
-            <DropdownMenuItem
-                key={category}
-                onSelect={() => {
-                    handleCategoryChange(category)
-                }}
-                className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
-            >
-                {category}
-            </DropdownMenuItem>
-        ))
-    ), [handleCategoryChange]);
-
     const renderOfficeItems = useMemo(() => (
         LIST_OF_OFFICES.map((office: string) => (
             <DropdownMenuItem
@@ -90,13 +78,19 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
                 }}
                 className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
             >
+                <Check
+                    className={cn(
+                        "mr-2 h-4 w-4",
+                        filterOffice === OFFICES_CONSTANTS[office].acronym  ? "opacity-100" : "opacity-0"
+                    )}
+                />
                 {`${OFFICES_CONSTANTS[office].acronym} | ${OFFICES_CONSTANTS[office].office}`}
             </DropdownMenuItem>
         ))
-    ), [LIST_OF_OFFICES, handleOfficeChange]);
+    ), [LIST_OF_OFFICES, handleOfficeChange, filterOffice]);
 
     // TODO: Mobile view of filters and search
-    if (!showFilters) return null;
+    if (!showFilters) return <MobileFilterAndSearchComponent />;
 
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -109,11 +103,29 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
-                        <DropdownMenuItem onSelect={() => handleSortChange("Name")}>Name</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleSortChange("Office")}>Office</DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleSortChange("Name")}>
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    sortBy === "Name" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            Name
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onSelect={() => handleSortChange("Office")}>
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    sortBy === "Office" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            Office
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <DynamicFilterCombobox />
+
+                <DynamicFilterCombobox handleFilterChange={handleCategoryChange} filter={filterCategory} />
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
@@ -126,6 +138,12 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
                             onSelect={() => handleOfficeChange("")}
                             className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
                         >
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    filterOffice === "" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
                             All Offices
                         </DropdownMenuItem>
                         <DropdownMenuSeparator/>

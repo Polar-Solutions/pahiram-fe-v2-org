@@ -52,10 +52,10 @@ export default function ItemCard({props}: { props: IItemCardProps }) {
                         {item.description || 'No description available.'}
                     </p>
                     <CardDescription className="text-xs">
-                        {/* <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center justify-between mb-2">
                             <span>{item.group_category_id || 'No category'}</span>
                         </div>
-                        <span>{item.department || 'No office'}</span> */}
+                        <span>{item.department || 'No office'}</span>
                     </CardDescription>
                 </CardContent>
             </Card>
