@@ -51,16 +51,10 @@ export default function LoginForm() {
             .then((result) => {
                 const data = result?.data;
                 const message = data?.message;
-                const errors = data?.errors;
                 const userData = data?.data?.user;
                 const success = data?.success;
 
                 if (!success && message) {
-                    if (errors) {
-                        const errorArray = Object.values(errors as Record<string, string>);
-                        setError(errorArray);
-                        return;
-                    }
                     setError(message);
                     return;
                 }
@@ -147,7 +141,7 @@ export default function LoginForm() {
                 <Button
                     type="submit"
                     className="h-[40px] w-full bg-button text-gray-100"
-                    disabled={isExecuting}
+                    disabled={isExecuting || !!success}
                 >
                     {isExecuting ? "Logging in" : "Log in"}
                 </Button>

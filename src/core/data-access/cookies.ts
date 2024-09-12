@@ -1,7 +1,7 @@
 "use server";
 // TODO: Secure cookie, don't expose user data and tokens on cookie [security risk]
 import {cookies} from "next/headers";
-import {IAuthCookie, ILoginApiResponse, ILoginOutput, IUserFromCookie} from "@/lib/interfaces";
+import {IAuthCookie, ILoginApiResponse, ILoginOutput, IUser} from "@/lib/interfaces";
 
 const auth = "auth";
 
@@ -19,13 +19,13 @@ export const getParsedAuthCookie = async (): Promise<IAuthCookie> => {
 /**
  * Sets the authentication cookie with the provided login data.
  *
- * @param {ILoginApiResponse} loginOutput - The login data from the API response.
+ * @param {ILoginApiResponse} response - The login data from the API response.
  * @return {Promise<void>} - A Promise that resolves when the cookie is successfully set.
  */
-export const setAuthCookie = async (loginOutput: ILoginOutput): Promise<boolean> => {
+export const setAuthCookie = async (response: ILoginApiResponse): Promise<boolean> => {
     const authCookie = JSON.stringify({
-        ...loginOutput?.data,
-        isAuthenticated: "true",
+        ...response?.data,
+        is_authenticated: "true",
     });
     const isAuthCookieSet = cookies().set("auth", authCookie, {
         httpOnly: true,
@@ -38,9 +38,9 @@ export const setAuthCookie = async (loginOutput: ILoginOutput): Promise<boolean>
 /**
  * Function to get the user object from the auth cookie.
  *
- * @return {Promise<IUserFromCookie | null>} The user object from the auth cookie, or null if the cookie is not present.
+ * @return {Promise<IUser | null>} The user object from the auth cookie, or null if the cookie is not present.
  */
-export const getUserFromAuthCookie = async (): Promise<IUserFromCookie | null> => {
+export const getUserFromAuthCookie = async (): Promise<IUser | null> => {
     const cookie = cookies().get(auth);
     return cookie ? JSON.parse(cookie.value).user : null;
 }
@@ -58,9 +58,9 @@ export const deleteAuthCookie = async (): Promise<boolean> => {
 /**
  * Function to get the Pahiram Token from the auth cookie.
  *
- * @return {Promise<IUserFromCookie | null>} The user object from the auth cookie, or null if the cookie is not present.
+ * @return {Promise<IUser | null>} The user object from the auth cookie, or null if the cookie is not present.
  */
-export const getPahiramTokenFromAuthCookie = async (): Promise<IUserFromCookie | null> => {
+export const getPahiramTokenFromAuthCookie = async (): Promise<IUser | null> => {
     const cookie = cookies().get(auth);
     return cookie ? JSON.parse(cookie.value).pahiram_token : null;
 }
@@ -68,9 +68,9 @@ export const getPahiramTokenFromAuthCookie = async (): Promise<IUserFromCookie |
 /**
  * Function to get the APCIS Token from the auth cookie.
  *
- * @return {Promise<IUserFromCookie | null>} The user object from the auth cookie, or null if the cookie is not present.
+ * @return {Promise<IUser | null>} The user object from the auth cookie, or null if the cookie is not present.
  */
-export const getApcisTokenFromAuthCookie = async (): Promise<IUserFromCookie | null> => {
+export const getApcisTokenFromAuthCookie = async (): Promise<IUser | null> => {
     const cookie = cookies().get(auth);
     return cookie ? JSON.parse(cookie.value).apcis_token : null;
 }

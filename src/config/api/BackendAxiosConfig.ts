@@ -7,7 +7,6 @@ import axios from "axios";
 // Pahiram
 const PahiramAxiosConfig = axios.create({
   baseURL: process.env.NEXT_PUBLIC_PAH_BACKEND,
-  // timeout: 5000,
   headers: {
     Accept: "application/json",
     "Content-Type": "application/json",
@@ -29,7 +28,7 @@ PahiramAxiosConfig.interceptors.request.use(
 
 // APCIS Configuration
 const ApcisAxiosConfig = axios.create({
-  baseURL: process.env.APCIS_URL,
+  baseURL: process.env.NEXT_PUBLIC_APCIS_URL,
   timeout: 5000,
   headers: {
     Accept: "application/json",

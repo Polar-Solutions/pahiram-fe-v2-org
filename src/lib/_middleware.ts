@@ -125,7 +125,7 @@ export const borrowViewMiddleware = async ({
  */
 export const authMiddleware = async ({request}: MiddlewareFunctionProps) => {
     const auth = await getParsedAuthCookie();
-    const isAuthenticated = auth?.isAuthenticated;
+    const isAuthenticated = auth?.is_authenticated;
     const nextUrl = request.nextUrl || new URL(request.url);
     const isAuthRoute = authRoutes.includes(nextUrl.pathname);
     const isPublicRoute = publicRoutes.includes(nextUrl.pathname);
