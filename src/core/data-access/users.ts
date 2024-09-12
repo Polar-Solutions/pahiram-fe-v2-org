@@ -1,12 +1,12 @@
-import {ILoginInput, ILoginOutput} from "@/lib/interfaces";
+import { ILoginInput, ILoginOutput } from "@/lib/interfaces";
 
 export const getUserByEmail = async (email: string) => {
-//  TODO: Call the get user by email api and pass the email
-}
+  //  TODO: Call the get user by email api and pass the email
+};
 
 export const logoutUser = async () => {
-//  TODO: Call the logout api and pass the tokens
-}
+  //  TODO: Call the logout api and pass the tokens
+};
 
 /**
  * Logs in a user with the given credentials.
@@ -15,44 +15,46 @@ export const logoutUser = async () => {
  * @throws An error if there is an issue with the login process.
  */
 export const loginUser = async (input: ILoginInput): Promise<ILoginOutput> => {
-    const {email, password, remember} = input;
-    // TODO: Call the server api in the env for prod
-    const loginApi = "http://127.0.0.1/api" + "/login";
+  const { email, password, remember } = input;
+  // TODO: Call the server api in the env for prod
+  const loginApi = "http://127.0.0.1/api" + "/login";
 
-    try {
-        const response = await fetch(loginApi, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                remember_me: remember,
-            }),
-        });
+  try {
+    const response = await fetch(loginApi, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+        remember_me: remember,
+      }),
+    });
 
-        const loginApiResponseJson = await response.json();
+    const loginApiResponseJson = await response.json();
 
-        if (response.status !== 200) {
-            return {success: false, message: loginApiResponseJson?.message, errors: loginApiResponseJson?.errors};
-        }
-
-
-
-        return {
-            success: true,
-            data: {...loginApiResponseJson?.data},
-            message: "User logged in successfully! 🎉",
-        };
-
-    } catch
-        (error) {
-        console.error(error);
-        return {
-            success: false,
-            message: error instanceof Error ? error.message : "There was an error on our end. Please try again later. "
-        };
+    if (response.status !== 200) {
+      return {
+        success: false,
+        message: loginApiResponseJson?.message,
+        errors: loginApiResponseJson?.errors,
+      };
     }
 
-}
+    return {
+      success: true,
+      data: { ...loginApiResponseJson?.data },
+      message: "User logged in successfully! 🎉",
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : "There was an error on our end. Please try again later. ",
+    };
+  }
+};

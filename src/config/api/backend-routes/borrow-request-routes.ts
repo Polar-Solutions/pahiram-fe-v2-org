@@ -9,7 +9,7 @@ export const getItemGroupBookedDates = (resourceId: string) => {
   const endpoint = `/item-model/${resourceId}/booked-dates`;
   return endpoint;
 };
-export const postBorrowRequestEndpoint = "/user/borrow-request/submit";
+export const postBorrowRequestEndpoint = "/user/borrow-request/submit-V2";
 
 export const patchBorrowRequestEndpoint = (resourceId: string) => {
   const endpoint = `/user/borrow-request/${resourceId}/edit`;

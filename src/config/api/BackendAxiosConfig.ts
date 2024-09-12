@@ -2,16 +2,19 @@ import {
   getApcisTokenFromAuthCookie,
   getPahiramTokenFromAuthCookie,
 } from "@/core/data-access/cookies";
-import axios from "axios";
+import { handleApiServerSideErrorResponse } from "@/helper/handle-api-server-side-error-response";
+import axios, { AxiosResponse } from "axios";
+
+const regularHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
 
 // Pahiram
 const PahiramAxiosConfig = axios.create({
   baseURL: process.env.NEXT_PUBLIC_PAH_BACKEND,
   // timeout: 5000,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
+  headers: regularHeaders,
 });
 
 PahiramAxiosConfig.interceptors.request.use(
@@ -31,10 +34,7 @@ PahiramAxiosConfig.interceptors.request.use(
 const ApcisAxiosConfig = axios.create({
   baseURL: process.env.APCIS_URL,
   timeout: 5000,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
+  headers: regularHeaders,
 });
 
 ApcisAxiosConfig.interceptors.request.use(

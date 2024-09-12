@@ -11,8 +11,8 @@ import {zodResolver} from "@hookform/resolvers/zod";
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 import {useUserStore} from "@/hooks/useUser";
 
-import type {FormSchemas} from "@/lib/form-schemas";
-import {LoginSchema} from "@/lib/form-schemas";
+import type {FormSchemas} from "@/lib/form-schemas/form-schemas";
+import {LoginSchema} from "@/lib/form-schemas/form-schemas";
 import {loginUserAction} from "@/core/actions/authentication";
 import {useRouter} from "next/navigation";
 import {useAction} from "next-safe-action/hooks";
