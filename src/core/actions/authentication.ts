@@ -20,25 +20,42 @@ import { setAuthCookie } from "@/core/data-access/cookies";
  * @returns {Promise<LoginOutput>} - The login output.
  */
 export const loginUserAction = actionClient
-  .schema(LoginSchema, {
-    handleValidationErrorsShape: (ve) =>
-      flattenValidationErrors(ve).fieldErrors,
-  })
-  .action(async ({ parsedInput: { email, password, remember } }) => {
-    const response = await loginUser({ email, password, remember });
+    .schema(LoginSchema, {
+        handleValidationErrorsShape: (ve) =>
+            flattenValidationErrors(ve).fieldErrors,
+    })
+    .action(
+        async ({
+                   parsedInput: {email, password, remember},
+               }) => {
+            try {
+                const response = await loginUser({email, password, remember_me: remember});
 
-    // Handle the successful response here
-    const isSetSuccessful = await setAuthCookie(response);
+                // Handle the successful response here
+                const isSetSuccessful = await setAuthCookie(response);
 
-    if (!isSetSuccessful) {
-      return {
-        success: false,
-        message: "There was an error on our end. Please try again later. ",
-      };
-    }
+                if (!isSetSuccessful) {
+                    return {
+                        success: false,
+                        message: "There was an error on our end. Please try again later."
+                    }
+                }
 
-    return response;
-  });
+                return {
+                    success: true,
+                    data: response.data,
+                    message: "Login successful! 🎉"
+                }
+
+            } catch (error: any) {
+                return {
+                    success: false,
+                    message: error?.message
+                }
+            }
+
+        }
+    );
 
 export const logoutUserAction = actionClient.action(async () => {
   return new Promise((resolve, reject) => {

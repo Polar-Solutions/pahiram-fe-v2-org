@@ -57,33 +57,24 @@ export interface ICartItem extends IItem {
 }
 
 export interface IAuthCookie {
-  user: IUserFromCookie;
+  user: IUser;
   pahiram_token: string;
   apcis_token: string;
   expires_at: string;
-  isAuthenticated: string;
+  is_authenticated: string;
 }
 
 export interface ILoginInput {
   email: string;
   password: string;
-  remember: boolean | undefined;
+  remember_me: boolean | undefined;
 }
 
 export interface ILoginApiResponse {
   status: boolean;
+  mesage?: string;
   data: {
-    user: {
-      apc_id: string;
-      first_name: string;
-      last_name: string;
-      email: string;
-      course: string;
-      department: string | null;
-      role: string;
-      acc_status: string;
-      is_admin: boolean;
-    };
+    user: IUser;
     pahiram_token: string;
     apcis_token: string;
   };
@@ -97,7 +88,7 @@ export interface ILoginOutput {
   errors?: { [key: string]: string };
 }
 
-export interface IUserFromCookie {
+export interface IUser {
   apc_id: string;
   first_name: string;
   last_name: string;

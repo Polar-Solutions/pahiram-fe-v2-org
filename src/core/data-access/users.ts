@@ -1,4 +1,6 @@
-import { ILoginInput, ILoginOutput } from "@/lib/interfaces";
+import {ILoginApiResponse, ILoginInput} from "@/lib/interfaces";
+import {PahiramAxiosConfig} from "@/config/api/BackendAxiosConfig";
+import {loginRoute} from "@/config/api/backend-routes/auth-routes";
 
 export const getUserByEmail = async (email: string) => {
   //  TODO: Call the get user by email api and pass the email
@@ -14,47 +16,25 @@ export const logoutUser = async () => {
  * @returns A Promise that resolves when the user is logged in successfully.
  * @throws An error if there is an issue with the login process.
  */
-export const loginUser = async (input: ILoginInput): Promise<ILoginOutput> => {
-  const { email, password, remember } = input;
-  // TODO: Call the server api in the env for prod
-  const loginApi = "http://127.0.0.1/api" + "/login";
+export const loginUser = async (input: ILoginInput): Promise<ILoginApiResponse> => {
+    const {email, password, remember_me} = input;
+    try {
+        const response = await PahiramAxiosConfig.post(
+            loginRoute,
+            {email, password, remember_me}
+        );
 
-  try {
-    const response = await fetch(loginApi, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-        remember_me: remember,
-      }),
-    });
-
-    const loginApiResponseJson = await response.json();
-
-    if (response.status !== 200) {
-      return {
-        success: false,
-        message: loginApiResponseJson?.message,
-        errors: loginApiResponseJson?.errors,
-      };
+        if (!response.status || response.status >= 400) {
+            const errorBody =  response?.data?.message
+            console.error(`HTTP error! status: ${response.status}, body: ${errorBody}`);
+            throw new Error(errorBody);
+        }
+        return await response.data;
+    } catch (error) {
+        console.error('Error fetching items:', error);
+        if (error instanceof Error) {
+            throw new Error(`Wrong credentials`);
+        } else {
+            throw new Error(`Failed to login, please try again`);
+        }
     }
-
-    return {
-      success: true,
-      data: { ...loginApiResponseJson?.data },
-      message: "User logged in successfully! 🎉",
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : "There was an error on our end. Please try again later. ",
-    };
-  }
-};

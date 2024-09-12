@@ -2,8 +2,7 @@ import {
   getApcisTokenFromAuthCookie,
   getPahiramTokenFromAuthCookie,
 } from "@/core/data-access/cookies";
-import { handleApiServerSideErrorResponse } from "@/helper/handle-api-server-side-error-response";
-import axios, { AxiosResponse } from "axios";
+import axios from "axios";
 
 const regularHeaders = {
   Accept: "application/json",
@@ -32,7 +31,7 @@ PahiramAxiosConfig.interceptors.request.use(
 
 // APCIS Configuration
 const ApcisAxiosConfig = axios.create({
-  baseURL: process.env.APCIS_URL,
+  baseURL: process.env.NEXT_PUBLIC_APCIS_URL,
   timeout: 5000,
   headers: regularHeaders,
 });
