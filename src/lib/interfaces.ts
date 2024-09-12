@@ -1,3 +1,25 @@
+export interface IGetItemsCategoriesApiResponse {
+    "status": boolean,
+    "data": {
+        "categories": IItemCategory[],
+        "current_page":number,
+        "last_page": number,
+        "next_page_url": string,
+        "path": string,
+        "per_page": number,
+        "prev_page_url": null,
+        "to": number,
+        "total": number
+    },
+    "method": "GET"
+}
+
+export interface IItemCategory {
+    "id": string,
+    "category_name": string,
+    "is_consumable": boolean
+}
+
 export interface IGetItemsPaginationApiResponse {
   status: boolean;
   data: {

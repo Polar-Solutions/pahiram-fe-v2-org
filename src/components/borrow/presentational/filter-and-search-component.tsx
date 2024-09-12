@@ -6,15 +6,22 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { LENDING_OFFICES, OFFICES_CONSTANTS } from "@/CONSTANTS/OFFICES_CONSTANTS";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
-import { useRouter } from "next/navigation";
-import { updateURLParams } from "@/helper/borrow/updateURLParams";
-import { getURLParams } from "@/helper/borrow/getURLParams";
+import {Button} from "@/components/ui/button";
+import {LENDING_OFFICES, OFFICES_CONSTANTS} from "@/CONSTANTS/OFFICES_CONSTANTS";
+import {Check, Search} from "lucide-react";
+import {Input} from "@/components/ui/input";
+import {ChevronDownIcon} from "@radix-ui/react-icons";
+import {useRouter} from "next/navigation";
+import {updateURLParams} from "@/helper/borrow/updateURLParams";
+import {getURLParams} from "@/helper/borrow/getURLParams";
+import {DynamicFilterCombobox} from "@/components/common/dynamic-filter-combobox";
+import MobileFilterAndSearchComponent from "@/components/borrow/presentational/mobile-filter-and-search-component";
+import {cn} from "@/lib/utils";
 import { searchItemsUseCase } from '@/core/use-cases/search';
 import { SearchBar } from "@/components/common/search-bar/search-bar";
 import { useSearch } from '@/hooks/borrow/useSearch';
+
+
 
 export default function FilterAndSearchComponent({ showFilters }: { showFilters: boolean }) {
     const router = useRouter();
@@ -53,10 +60,10 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
 
     const handleSearchChange = useCallback(async (query: string) => {
         setSearchQuery(query);
-    
+
         const newUrl = updateURLParams({ q: query.trim() });
         router.push(newUrl);
-    
+
         if (query.trim() === "") {
             setSearchResults([]); // Clear search results when query is empty
         } else {
@@ -68,19 +75,7 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
             }
         }
     }, [filterCategory, filterOffice, router, setSearchQuery, setSearchResults]);
-    
 
-    const renderCategoryItems = useMemo(() => (
-        ["Electronics", "Stationery", "Equipment"].map((category) => (
-            <DropdownMenuItem
-                key={category}
-                onSelect={() => handleCategoryChange(category)}
-                className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
-            >
-                {category}
-            </DropdownMenuItem>
-        ))
-    ), [handleCategoryChange]);
 
     const renderOfficeItems = useMemo(() => (
         LIST_OF_OFFICES.map((office: string) => (
@@ -91,12 +86,19 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
                 }}
                 className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
             >
+                <Check
+                    className={cn(
+                        "mr-2 h-4 w-4",
+                        filterOffice === OFFICES_CONSTANTS[office].acronym  ? "opacity-100" : "opacity-0"
+                    )}
+                />
                 {`${OFFICES_CONSTANTS[office].acronym} | ${OFFICES_CONSTANTS[office].office}`}
             </DropdownMenuItem>
         ))
-    ), [LIST_OF_OFFICES, handleOfficeChange]);
+    ), [LIST_OF_OFFICES, handleOfficeChange, filterOffice]);
 
-    if (!showFilters) return null;
+    // TODO: Mobile view of filters and search
+    if (!showFilters) return <MobileFilterAndSearchComponent />;
 
     return (
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-4">
@@ -105,37 +107,38 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
                             Sort by: {sortBy || "Name"}
-                            <ChevronDownIcon className="h-4 w-4" />
+                            <ChevronDownIcon className="h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
-                        <DropdownMenuItem onSelect={() => handleSortChange("Name")}>Name</DropdownMenuItem>
-                        <DropdownMenuItem onSelect={() => handleSortChange("Office")}>Office</DropdownMenuItem>
-                    </DropdownMenuContent>
-                </DropdownMenu>
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <Button variant="outline" className="flex items-center gap-2">
-                            {filterCategory || "All Categories"}
-                            <ChevronDownIcon className="h-4 w-4" />
-                        </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="start">
-                        <DropdownMenuItem
-                            onSelect={() => handleCategoryChange("")}
-                            className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
-                        >
-                            All Categories
+                        <DropdownMenuItem onSelect={() => handleSortChange("Name")}>
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    sortBy === "Name" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            Name
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
-                        {renderCategoryItems}
+                        <DropdownMenuItem onSelect={() => handleSortChange("Office")}>
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    sortBy === "Office" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
+                            Office
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
+
+                <DynamicFilterCombobox handleFilterChange={handleCategoryChange} filter={filterCategory} />
+
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button variant="outline" className="flex items-center gap-2">
                             {filterOffice || "All Offices"}
-                            <ChevronDownIcon className="h-4 w-4" />
+                            <ChevronDownIcon className="h-4 w-4"/>
                         </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
@@ -143,9 +146,15 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
                             onSelect={() => handleOfficeChange("")}
                             className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
                         >
+                            <Check
+                                className={cn(
+                                    "mr-2 h-4 w-4",
+                                    filterOffice === "" ? "opacity-100" : "opacity-0"
+                                )}
+                            />
                             All Offices
                         </DropdownMenuItem>
-                        <DropdownMenuSeparator />
+                        <DropdownMenuSeparator/>
                         {renderOfficeItems}
                     </DropdownMenuContent>
                 </DropdownMenu>
