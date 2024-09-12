@@ -30,7 +30,7 @@ export const BorrowRequestFormContainer: React.FC<
   BorrowRequestFormContainerProps
 > = ({ control }) => {
   return (
-    <form className="flex flex-col gap-4 sm:w-full md:w-[40%] h-full">
+    <form className="flex flex-col gap-4 sm:w-full lg:max-w-[40%] h-full">
       <h5 className="text-xl">Borrowing details</h5>
 
       {/* Endorser */}

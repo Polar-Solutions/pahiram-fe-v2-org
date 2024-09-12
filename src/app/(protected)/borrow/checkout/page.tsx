@@ -1,6 +1,5 @@
 "use client";
 
-import CartItem from "@/components/borrow/cart-item";
 import { SubmitBorrowRequestContainer } from "@/components/borrow/containers/submit-borrow-request/submit-borrow-request-container";
 import Content from "@/components/common/content";
 import DynamicBreadcrumbsComponent from "@/components/common/dynamic-breadcrumbs-component";
@@ -11,6 +10,7 @@ import { prepareCartItemsForBorrowSubmission } from "@/helper/prepare-cart-items
 import { useCartStore } from "@/hooks/borrow/useCartStore";
 import { useToast } from "@/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -23,10 +23,16 @@ interface IFormValues {
 export default function page() {
   const { handleSubmit, control, reset, getValues } = useForm<IFormValues>();
   const { executeAsync, isExecuting } = useAction(submitBorrowRequestAction);
-  const { getAllCartItems, clearCart } = useCartStore();
+  const { getAllCartItems, clearCart, isCartEmpty } = useCartStore();
   const { toast } = useToast();
 
   const allCartItems = getAllCartItems();
+
+  const router = useRouter();
+
+  const addMoreAction = () => {
+    router.push("/borrow/borrow-items");
+  };
 
   const onSubmit = async () => {
     const formValues: IFormValues = getValues();
@@ -84,10 +90,12 @@ export default function page() {
 
         {/* Footer items */}
         <div className="flex flex-row justify-end w-full gap-4">
-          <Button variant="outline">Add more</Button>
+          <Button variant="outline" onClick={addMoreAction}>
+            Add more
+          </Button>
           <Button
             className="text-black"
-            disabled={allCartItems.length === 0 || isExecuting}
+            disabled={isCartEmpty() || isExecuting}
             onClick={handleSubmit(onSubmit)}
           >
             Submit request

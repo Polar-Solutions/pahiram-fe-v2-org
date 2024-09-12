@@ -15,7 +15,9 @@ export default function Content({ children }: IContentProps) {
 
   return (
     <Card className="rounded-lg border-none mt-6">
-      <CardContent className="px-8 py-8">
+      <CardContent
+        className={`px-8 py-8 ${footerChildren.length > 0 ? "pb-0" : ""}`}
+      >
         <div
           className="w-full flex flex-col md:flex-row gap-8 grid-cols-1"
           style={{
@@ -28,7 +30,7 @@ export default function Content({ children }: IContentProps) {
 
       {/* Render the second child separately */}
       {footerChildren.length > 0 && (
-        <CardFooter>{footerChildren}</CardFooter>
+        <CardFooter className="mt-auto pt-4">{footerChildren}</CardFooter>
       )}
     </Card>
   );

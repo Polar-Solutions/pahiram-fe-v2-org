@@ -12,6 +12,7 @@ type CartItemsState = {
   getAllCartItems: () => ICartItem[];
   getItemQuantityById: (itemId: string) => number | null;
   clearCart: () => void;
+  isCartEmpty: () => boolean;
 };
 
 // Create the Zustand store
@@ -111,6 +112,12 @@ export const useCartStore = create<CartItemsState>()(
             cartItems: [], // Set cartItems to an empty array to clear the cart
           });
         }
+      },
+
+      // Function to check if the cart is empty
+      isCartEmpty: () => {
+        const { cartItems } = get();
+        return cartItems.length === 0;
       },
     }),
 

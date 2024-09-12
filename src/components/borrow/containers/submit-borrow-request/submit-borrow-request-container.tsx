@@ -4,7 +4,6 @@ import React, { useRef } from "react";
 import { BorrowRequestFormContainer } from "./borrow-request-form-container";
 import { motion } from "framer-motion";
 import { BorrowRequestItemsContainer } from "./borrow-request-items-container";
-import { Button } from "@/components/ui/button";
 import { Control } from "react-hook-form";
 
 interface IFormValues {
@@ -30,9 +29,11 @@ export const SubmitBorrowRequestContainer: React.FC<
       transition={{ duration: 0.5 }}
     >
       <h3 className="text-3xl">Borrowing Request</h3>
-      <div className="w-full h-full flex flex-col md:flex-row gap-8 flex-grow">
+      <div className="w-full h-full flex flex-col lg:flex-row gap-8 flex-grow">
         <BorrowRequestFormContainer control={control} />
-        <BorrowRequestItemsContainer />
+        {/* <div className="w-full h-full max-h-[500px] overflow-y-auto"> */}
+          <BorrowRequestItemsContainer />
+        {/* </div> */}
       </div>
     </motion.div>
   );

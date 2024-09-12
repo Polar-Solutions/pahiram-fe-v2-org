@@ -5,10 +5,11 @@ import { DisplayGroupedItemsByOffice } from "../../presentational/display-groupe
 
 export const BorrowRequestItemsContainer = () => {
   return (
-    <div className="flex flex-col gap-4 sm:w-full md:w-[60%] h-full">
-   {/* <div className="flex flex-col gap-4 sm:w-full md:w-[60%] h-full max-h-[500px] overflow-y-auto"> */}
+    <div className="flex flex-col w-full gap-4 h-full">
       <h5 className="text-xl">Requested items</h5>
-      <DisplayGroupedItemsByOffice />
+      <div className="w-full h-full w-full max-h-[400px] overflow-y-auto">
+        <DisplayGroupedItemsByOffice />
+      </div>
     </div>
   );
 };
