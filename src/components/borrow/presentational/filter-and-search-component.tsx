@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, { useCallback, useMemo, useRef } from 'react';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -17,10 +17,13 @@ import {getURLParams} from "@/helper/borrow/getURLParams";
 import {DynamicFilterCombobox} from "@/components/common/dynamic-filter-combobox";
 import MobileFilterAndSearchComponent from "@/components/borrow/presentational/mobile-filter-and-search-component";
 import {cn} from "@/lib/utils";
+import { searchItemsUseCase } from '@/core/use-cases/search';
+import { SearchBar } from "@/components/common/search-bar/search-bar";
+import { useSearch } from '@/hooks/borrow/useSearch';
 
 
-export default function FilterAndSearchComponent({showFilters}: { showFilters: boolean; } ) {
 
+export default function FilterAndSearchComponent({ showFilters }: { showFilters: boolean }) {
     const router = useRouter();
     const {
         sortBy,
@@ -29,52 +32,57 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
         filterOffice
     } = getURLParams();
 
+    const { searchQuery, setSearchQuery, setSearchResults } = useSearch();
+    const abortControllerRef = useRef<AbortController | null>(null);
     const LIST_OF_OFFICES = useMemo(() => Object.keys(LENDING_OFFICES), []);
 
     const handleSortChange = useCallback((sortOption: string) => {
-        // setSortBy(sortOption);
-        const newUrl = updateURLParams({sort: sortOption});
+        const newUrl = updateURLParams({ sort: sortOption });
         router.push(newUrl);
-    }, []);
-
-    const handleCategoryChange = useCallback((categoryOption: string) => {
-        // setFilterCategory(categoryOption);
-        const newUrl = updateURLParams({category: categoryOption});
-        router.push(newUrl);
-    }, []);
-
-    const handleOfficeChange = useCallback((officeOption: string) => {
-        // setFilterOffice(officeOption);
-        const newUrl = updateURLParams({office: officeOption});
-        router.push(newUrl);
-    }, []);
-
-
-    const [searchQuery, setSearchQuery] = useState(filterSearch || "");
-
-    const handleSearchChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const query = e.target.value;
-        setSearchQuery(query);
-
-        if (query.trim() === "") {
-            const newUrl = updateURLParams({ q: '' });
-            router.push(newUrl);
-        }
     }, [router]);
 
-    const handleSearchKeyDown = useCallback((e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === 'Enter') {
-            const newUrl = updateURLParams({ q: searchQuery });
-            router.push(newUrl);
+    const handleCategoryChange = useCallback((categoryOption: string) => {
+        const newUrl = updateURLParams({ category: categoryOption });
+        router.push(newUrl);
+    }, [router]);
+
+    const handleOfficeChange = useCallback(async (officeOption: string) => {
+        const newUrl = updateURLParams({ office: officeOption });
+        router.push(newUrl);
+
+        try {
+            const results = await searchItemsUseCase(searchQuery, filterCategory || "", officeOption);
+            setSearchResults(results.data.items); // Update the search results with filtered items
+        } catch (error) {
+            console.error('Error fetching filtered items:', error);
         }
-    }, [searchQuery, router]);
+    }, [filterCategory, searchQuery, router]);
+
+    const handleSearchChange = useCallback(async (query: string) => {
+        setSearchQuery(query);
+
+        const newUrl = updateURLParams({ q: query.trim() });
+        router.push(newUrl);
+
+        if (query.trim() === "") {
+            setSearchResults([]); // Clear search results when query is empty
+        } else {
+            try {
+                const results = await searchItemsUseCase(query.trim(), filterCategory || "", filterOffice || "");
+                setSearchResults(results.data.items); // Update the search results
+            } catch (error) {
+                setSearchResults([]);
+            }
+        }
+    }, [filterCategory, filterOffice, router, setSearchQuery, setSearchResults]);
+
 
     const renderOfficeItems = useMemo(() => (
         LIST_OF_OFFICES.map((office: string) => (
             <DropdownMenuItem
                 key={office}
                 onSelect={() => {
-                    handleOfficeChange(OFFICES_CONSTANTS[office].acronym)
+                    handleOfficeChange(OFFICES_CONSTANTS[office].acronym);
                 }}
                 className="[&[data-highlighted]]:bg-accent [&[data-highlighted]]:text-accent-foreground"
             >
@@ -151,17 +159,7 @@ export default function FilterAndSearchComponent({showFilters}: { showFilters: b
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <div className="flex items-center gap-2 w-full sm:w-auto">
-                <Search className="h-5 w-5 text-muted-foreground"/>
-                <Input
-                    type="search"
-                    placeholder="Search items by Name, Office, or Category"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    onKeyDown={handleSearchKeyDown}
-                    className="flex-grow min-w-[42dvh]"
-                />
-            </div>
+            <SearchBar onSearchChange={handleSearchChange} searchQuery={searchQuery} />
         </div>
     );
 }

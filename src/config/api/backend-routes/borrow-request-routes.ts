@@ -25,3 +25,9 @@ export const getPenalizedTransacListEndpoint = "/user/penalized-transaction";
 
 export const getSpecificPenalizedTransacEndpoint = (resourceId: string) =>
   `${getPenalizedTransacListEndpoint}/${resourceId}`;
+
+export const getFilteredItemsEndpoint = (resourceId: string) => {
+  const endpoint = `/item/${resourceId}`;
+  return endpoint;
+}
+

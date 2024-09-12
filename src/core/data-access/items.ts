@@ -37,4 +37,4 @@ export const getItemsPagination = async (page: number): Promise<IGetItemsPaginat
             throw new Error('Failed to fetch items: Unknown error');
         }
     }
-}
+  };
