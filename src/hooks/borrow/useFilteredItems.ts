@@ -2,21 +2,10 @@ import {useMemo} from "react";
 import {IItem} from "@/lib/interfaces";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 
-interface IUseFilteredItems {
-    items: IItem[]
-    // filterCategory: string
-    // filterSearch: string
-    // filterOffice: string
-    // sortBy: string
-}
 
 export const useFilteredItems = ({
-                                     items,
-                                     // filterCategory,
-                                     // filterSearch,
-                                     // filterOffice,
-                                     // sortBy
-                                 }: IUseFilteredItems) => {
+                                     items
+                                 }: { items: IItem[] }) => {
 
     const {
         filterOffice,

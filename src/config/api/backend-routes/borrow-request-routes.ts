@@ -5,7 +5,7 @@ export const getBorrowResourceEndpoint = (resourceId: string) => {
   return endpoint;
 };
 
-export const getItemGroupBookedDates = (resourceId: string) => {
+export const getItemGroupBookedDatesEndpoint = (resourceId: string) => {
   const endpoint = `/item-model/${resourceId}/booked-dates`;
   return endpoint;
 };
