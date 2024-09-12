@@ -19,7 +19,7 @@ export const DisplayGroupedItemsByOffice = () => {
   }
 
   return (
-    <div className="h-full max-h-[400px] overflow-y-auto">
+    <>
       {Object.entries(groupedCartItems).map(([department, items]) => (
         <Accordion
           type="multiple"
@@ -37,6 +37,6 @@ export const DisplayGroupedItemsByOffice = () => {
           </AccordionItem>
         </Accordion>
       ))}
-    </div>
+    </>
   );
 };
