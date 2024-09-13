@@ -22,8 +22,8 @@ export const DisplayGroupedItemsByOffice = () => {
     <>
       {Object.entries(groupedCartItems).map(([department, items]) => (
         <Accordion
-          type="single"
-          collapsible
+          type="multiple"
+          defaultValue={[department]}
           className="w-full"
           key={`accordion-${department}`}
         >

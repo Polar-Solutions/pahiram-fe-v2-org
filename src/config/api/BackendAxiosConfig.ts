@@ -4,13 +4,16 @@ import {
 } from "@/core/data-access/cookies";
 import axios from "axios";
 
+const regularHeaders = {
+  Accept: "application/json",
+  "Content-Type": "application/json",
+};
+
 // Pahiram
 const PahiramAxiosConfig = axios.create({
   baseURL: process.env.NEXT_PUBLIC_PAH_BACKEND,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
+  // timeout: 5000,
+  headers: regularHeaders,
 });
 
 PahiramAxiosConfig.interceptors.request.use(
@@ -30,10 +33,7 @@ PahiramAxiosConfig.interceptors.request.use(
 const ApcisAxiosConfig = axios.create({
   baseURL: process.env.NEXT_PUBLIC_APCIS_URL,
   timeout: 5000,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
+  headers: regularHeaders,
 });
 
 ApcisAxiosConfig.interceptors.request.use(

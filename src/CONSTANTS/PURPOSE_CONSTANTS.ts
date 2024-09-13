@@ -33,4 +33,9 @@ export const PURPOSE_CONSTANTS: PurposeConstants = {
     purpose: "Other",
     description: "Borrower will indicate his specific purpose",
   },
-};
+} as const;
+
+// Extract keys as a tuple of string literals
+export const PURPOSE_CONSTANTS_KEYS = Object.keys(PURPOSE_CONSTANTS) as Array<
+  keyof typeof PURPOSE_CONSTANTS
+>;
