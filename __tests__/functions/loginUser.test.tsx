@@ -9,7 +9,7 @@ describe("loginUser", () => {
         const mockInput = {
             email: "jbberbon@student.apc.edu.ph",
             password: "12345678",
-            remember: false,
+            remember_me: false,
         };
         const mockResponse = {
             success: true,
@@ -28,7 +28,7 @@ describe("loginUser", () => {
         const mockInput = {
             email: "test@apc.edu.ph",
             password: "wrongpassword",
-            remember: false,
+            remember_me: false,
         };
         const mockResponse = {
             success: false,
@@ -46,7 +46,7 @@ describe("loginUser", () => {
         const mockInput = {
             email: "test@apc.edu.ph",
             password: "password",
-            remember: false,
+            remember_me: false,
         };
 
 
@@ -62,7 +62,7 @@ describe("loginUser", () => {
         const mockInput = {
             email: "",
             password: "",
-            remember: false,
+            remember_me: false,
         };
 
         const result = await loginUser(mockInput);
