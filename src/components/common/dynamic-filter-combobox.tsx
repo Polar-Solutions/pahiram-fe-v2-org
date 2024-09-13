@@ -12,12 +12,13 @@ import {LoadingSpinner} from "@/components/icons";
 const CATEGORY_CACHE_KEY = "categoryCache";
 const CURRENT_PAGE_KEY = "currentCategoryPage";
 const TOTAL_PAGES_KEY = "totalCategoryPages";
+const SELECTED_CATEGORY_KEY = "selectedCategory";
 
 export function DynamicFilterCombobox({handleFilterChange, filter}: {
     handleFilterChange: (filter: string) => void;
     filter: string
 }) {
-    const value = useSignal("");
+    const value = useSignal(localStorage.getItem(SELECTED_CATEGORY_KEY) || "");
     const categories = useSignal<IItemCategory[]>([]);
     const currentPage = useSignal(parseInt(localStorage.getItem(CURRENT_PAGE_KEY) || "1", 10));
     const totalPages = useSignal(parseInt(localStorage.getItem(TOTAL_PAGES_KEY) || "1", 10));
@@ -31,7 +32,7 @@ export function DynamicFilterCombobox({handleFilterChange, filter}: {
 
     const selectedCategory = useComputed(() => {
         const category = categories.value.find((category) => category.category_name === value.value);
-        return category ?? {category_name: "All Categories"};
+        return category ?? {category_name: value.value || "All Categories"};
     });
 
     const fetchCategories = useCallback(async (pageNum: number) => {
@@ -87,6 +88,10 @@ export function DynamicFilterCombobox({handleFilterChange, filter}: {
         }
     }, [loadAllCachedCategories, loadCategories]);
 
+    useEffect(() => {
+        handleFilterChange(value.value);
+    }, []);
+
     const handleShowMore = async () => {
         if (currentPage.value < totalPages.value && !isFetchingCategories.value) {
             await loadCategories(currentPage.value + 1);
@@ -95,6 +100,7 @@ export function DynamicFilterCombobox({handleFilterChange, filter}: {
 
     const handleSelect = useCallback((currentValue: string) => {
         value.value = currentValue === value.value ? "" : currentValue;
+        localStorage.setItem(SELECTED_CATEGORY_KEY, value.value);
         handleFilterChange(value.value);
         setOpen(false);
     }, [handleFilterChange]);
@@ -108,7 +114,7 @@ export function DynamicFilterCombobox({handleFilterChange, filter}: {
                     aria-expanded={open}
                     className="w-[200px] justify-between"
                 >
-                    {selectedCategory.value?.category_name}
+                    {selectedCategory.value.category_name}
                     <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50"/>
                 </Button>
             </PopoverTrigger>
