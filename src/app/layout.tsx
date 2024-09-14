@@ -1,15 +1,7 @@
 import type { Metadata } from "next";
-import "@radix-ui/themes/styles.css";
+import ClientLayout from "./client-layout";
 
-import { GeistSans } from "geist/font/sans";
-
-import { siteConfig } from "@/config/siteConfig";
-
-import "../styles/globals.css";
-
-import { ThemeProvider } from "@/providers/themeProvider";
-import { CartProvider } from "@/providers/CartContext";
-import { Toaster } from "@/components/ui/toaster";
+// Metadata configuration (server-side only)
 export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.APP_URL
@@ -18,38 +10,35 @@ export const metadata: Metadata = {
       ? `https://${process.env.VERCEL_URL}`
       : `http://localhost:${process.env.PORT || 3000}`
   ),
-  title: `${siteConfig.label}`,
-  description: `${siteConfig.description}`,
+  title: "Pahiram",
+  description: "A Web-Based Lending System For APC",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     url: "/",
-    title: `${siteConfig.label}`,
-    description: `${siteConfig.description}`,
+    title: "Pahiram",
+    description: "A Web-Based Lending System For APC",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.label}`,
-    description: `${siteConfig.description}`,
+    title: "Pahiram",
+    description: "A Web-Based Lending System For APC",
   },
 };
 
+// Main layout
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={GeistSans.className}>
-        <CartProvider>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            {children}
-          </ThemeProvider>
-        </CartProvider>
-        <Toaster />
+    <html lang="en">
+      <body>
+        {/* Client-side layout */}
+        <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
   );

@@ -6,6 +6,7 @@ import { updateURLParams } from "@/helper/borrow/updateURLParams";
 import { useRouter } from "next/navigation";
 import { IItem } from "@/lib/interfaces";
 import { ItemModalForm } from "./item-modal-form";
+import { Badge } from "@/components/ui/badge";
 
 interface ISpecificItemModalProps {
   showModal: boolean;
@@ -66,27 +67,29 @@ export default function ItemModal() {
                 {item?.model_name}
               </DialogTitle>
 
-              {/*TODO: Dynamic tag in circulation */}
               {/*Tags*/}
               <div className="flex items-center justify-between">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs font-medium ${
-                    item?.in_circulation
-                      ? "bg-green-100 text-green-600"
-                      : "bg-red-100 text-red-600"
-                  }`}
+                <Badge
+                  variant={
+                    item?.in_circulation === undefined ||
+                    item?.in_circulation === 0
+                      ? "destructive"
+                      : "default"
+                  }
                 >
-                  {item?.in_circulation
-                    ? `${item.in_circulation} in circulation`
+                  {item?.in_circulation || item?.in_circulation === 0
+                    ? `${item.in_circulation} Items Available`
                     : "Unavailable"}
-                </span>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-muted-foreground">
+                </Badge>
+
+                <div className="flex items-center gap-2">
+                  <Badge variant="outline">
                     {item?.group_category_id || "No category"}
-                  </span>
-                  <span className="text-sm text-muted-foreground">
+                  </Badge>
+                  <Badge variant="outline">
+                    {" "}
                     {item?.department || "No designated office"}
-                  </span>
+                  </Badge>
                 </div>
               </div>
               <div className="max-h-[130px] overflow-y-auto space-y-2">
@@ -144,8 +147,6 @@ export default function ItemModal() {
               {item && (
                 <ItemModalForm
                   item={item}
-                  // itemId={item.id}
-                  // department={item.department}
                   handleCloseItemModal={handleCloseModal}
                 />
               )}
