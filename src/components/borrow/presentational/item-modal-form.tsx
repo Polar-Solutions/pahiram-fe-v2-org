@@ -16,8 +16,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
   item,
   handleCloseItemModal,
 }) => {
-  const { handleSubmit, control, setValue, reset, getValues, watch } =
-    useForm();
+  const { handleSubmit, control, setValue, reset, watch } = useForm();
 
   // Define the internal submit handler
   const onSubmit: SubmitHandler<any> = (data) => {
@@ -47,7 +46,6 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
         <div>
           <Controller
             control={control}
-            // name={`items[${itemId}].quantity`}
             name="quantity"
             defaultValue={1}
             rules={{
@@ -91,6 +89,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
                 rules={{ required: "Return date is required" }}
                 render={({ field: returnField }) => (
                   <CalendarModal
+                    itemId={item.id}
                     startDate={startField.value}
                     returnDate={returnField.value}
                     onDateChange={(start, returnDate) => {
@@ -111,7 +110,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
         </Button>
 
         <Button className="text-black" type="submit">
-          Add to Borrowing Cart
+          Add to borrowing cart
         </Button>
       </div>
     </form>

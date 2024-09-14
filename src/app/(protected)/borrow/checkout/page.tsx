@@ -6,6 +6,10 @@ import DynamicBreadcrumbsComponent from "@/components/common/dynamic-breadcrumbs
 import { ContentLayout } from "@/components/panel/containers/content-layout";
 import { Button } from "@/components/ui/button";
 import { submitBorrowRequestAction } from "@/core/actions/submit-borrow-request-action";
+import {
+  handleApiClientSideError,
+  IClientSideApiHandlerResponse,
+} from "@/core/handle-api-client-side-error";
 import { prepareCartItemsForBorrowSubmission } from "@/helper/prepare-cart-items-for-borrow-submission";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
 import { useToast } from "@/hooks/use-toast";
@@ -37,44 +41,21 @@ export default function page() {
   const onSubmit = async () => {
     const formValues: IFormValues = getValues();
     const cartItems = prepareCartItemsForBorrowSubmission(allCartItems);
-
-    try {
-      const res = await executeAsync({
-        ...formValues,
-        items: cartItems,
-      });
-      // Check if the result contains an error
-      if (res?.data?.error) {
-        console.log(res?.data?.error);
-        if (Array.isArray(res?.data?.error)) {
-          res.data.error.forEach((error) => {
-            toast({
-              variant: "destructive",
-              description: error,
-            });
-          });
-          return;
-        }
-
-        toast({
-          variant: "destructive",
-          description: res?.data?.error,
-        });
-        return;
-      }
-
-      // Handle successful result
-      toast({
-        description: res?.data?.success,
-      });
+    
+    const res = await executeAsync({
+      ...formValues,
+      items: cartItems,
+    });
+    // Adjust according to actual response structure
+    const responseData: IClientSideApiHandlerResponse = {
+      success: res?.data?.success,
+      error: res?.data?.error,
+      isSuccessToast: true,
+    };
+    handleApiClientSideError(responseData);
+    if (res?.data?.success) {
       reset();
       clearCart();
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        description: "An unexpected error occurred.",
-      });
-      return;
     }
   };
 

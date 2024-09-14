@@ -22,24 +22,30 @@ import { DateSelectArg } from "@fullcalendar/core";
 
 import React, { useState } from "react";
 import { convertDateForHumanConsumption } from "@/helper/date-utilities";
+import { useBookedDates } from "@/core/data-access/items";
+import { toast } from "@/hooks/use-toast";
+import { ICalendarModal } from "@/lib/interfaces/get-booked-dates-request-interface";
+import { getURLParams } from "@/helper/borrow/getURLParams";
+import { Badge } from "@/components/ui/badge";
+import { handleApiClientSideError } from "@/core/handle-api-client-side-error";
 
-interface CalendarModal {
-  startDate: string;
-  returnDate: string;
-  onDateChange: (start: string, returnDate: string) => void;
-}
-export const CalendarModal: React.FC<CalendarModal> = ({
+export const CalendarModal: React.FC<ICalendarModal> = ({
   startDate,
   returnDate,
   onDateChange,
+  itemId,
 }) => {
+  const { item } = getURLParams();
+  const { data, isLoading, isError } = useBookedDates(itemId);
+  const dataProperty = data?.data?.data;
+
+  console.log("Data Property ", dataProperty);
+
   const [newEvent, setNewEvent] = useState<Object>({});
 
   const handleDateSelect = (info: DateSelectArg) => {
-    console.log("Handle Select Date", info);
     const origStartDateStr = new Date(info.startStr);
     const origEndDateStr = new Date(info.endStr);
-
     origStartDateStr.setMinutes(
       origStartDateStr.getMinutes() - origStartDateStr.getTimezoneOffset()
     );
@@ -50,16 +56,50 @@ export const CalendarModal: React.FC<CalendarModal> = ({
     const formattedStartDate = origStartDateStr.toISOString().slice(0, 16);
     const formattedEndDate = origEndDateStr.toISOString().slice(0, 16);
 
-    // setStartDate(formattedStartDate);
-    // setEndDate(formattedEndDate);
-
     onDateChange(formattedStartDate, formattedEndDate);
-
     setNewEvent({
       start: formattedStartDate,
       end: formattedEndDate,
     });
   };
+
+  // Add delay because the toast error is showing up immediately
+  // after opening calendar for errors like unreachable server
+  const handleErrorToast = () => {
+    setTimeout(() => {
+      handleApiClientSideError(data);
+    }, 2000);
+  };
+
+  if (isLoading)
+    return (
+      <div className="flex flex-col flex-start">
+        <Label
+          htmlFor="borrow-duration-selector"
+          className="text-sm font-medium mb-1"
+        >
+          Borrow Duration
+        </Label>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              id="borrow-duration-selector"
+              className="w-full justify-start text-left font-normal"
+              disabled
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {startDate && returnDate
+                ? convertDateForHumanConsumption(startDate) +
+                  " to " +
+                  convertDateForHumanConsumption(returnDate)
+                : "Select date range"}
+            </Button>
+          </DialogTrigger>
+        </Dialog>
+      </div>
+    );
 
   return (
     <div className="flex flex-col flex-start">
@@ -69,12 +109,14 @@ export const CalendarModal: React.FC<CalendarModal> = ({
       >
         Borrow Duration
       </Label>
+
       <Dialog>
         <DialogTrigger asChild>
           <Button
             variant="outline"
             id="borrow-duration-selector"
             className="w-full justify-start text-left font-normal"
+            onClick={handleErrorToast}
           >
             <CalendarIcon className="mr-2 h-4 w-4" />
             {startDate && returnDate
@@ -85,11 +127,33 @@ export const CalendarModal: React.FC<CalendarModal> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] w-full">
-          <DialogHeader>
-            <DialogTitle>Share link</DialogTitle>
-            <DialogDescription>
-              Anyone who has this link will be able to view this.
+        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] w-full overflow-y-auto">
+          <DialogHeader className="flex gap-1">
+            <DialogTitle className="text-2xl font-bold">
+              {item?.model_name}
+            </DialogTitle>
+            <DialogDescription className="flex gap-2">
+              {/* {itemData?.active_items} */}
+              <Badge
+                variant={
+                  item?.in_circulation === undefined ||
+                  item?.in_circulation === 0
+                    ? "destructive"
+                    : "default"
+                }
+              >
+                {item?.in_circulation || item?.in_circulation === 0
+                  ? `${item.in_circulation} items in circulation`
+                  : "Unavailable"}
+              </Badge>
+
+              <Badge variant="outline">
+                {item?.group_category_id || "No category"}
+              </Badge>
+              <Badge variant="outline">
+                {" "}
+                {item?.department || "No designated office"}
+              </Badge>
             </DialogDescription>
           </DialogHeader>
 
@@ -147,7 +211,7 @@ export const CalendarModal: React.FC<CalendarModal> = ({
             }}
             select={handleDateSelect}
             events={[
-              // ...bookedDates,
+              ...(dataProperty?.dates || []),
               { title: "Chosen Date", ...newEvent, color: "#e7b426" },
             ]}
             slotMinTime={"07:30:00"}
@@ -162,6 +226,7 @@ export const CalendarModal: React.FC<CalendarModal> = ({
               },
               {
                 // PM
+                // TODO: Adjust the ending dates depending on the clients needs
                 daysOfWeek: [1, 2, 3, 4, 5, 6],
                 startTime: "13:00", // 1pm
                 endTime: "18:00", // 6pm

@@ -31,9 +31,7 @@ export const SubmitBorrowRequestContainer: React.FC<
       <h3 className="text-3xl">Borrowing Request</h3>
       <div className="w-full h-full flex flex-col lg:flex-row gap-8 flex-grow">
         <BorrowRequestFormContainer control={control} />
-        {/* <div className="w-full h-full max-h-[500px] overflow-y-auto"> */}
-          <BorrowRequestItemsContainer />
-        {/* </div> */}
+        <BorrowRequestItemsContainer />
       </div>
     </motion.div>
   );
