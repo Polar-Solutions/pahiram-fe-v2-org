@@ -1,24 +1,31 @@
 import axios, { AxiosResponse } from "axios";
-import { extractStringValues } from "./extract-string-values-from-object";
+import { extractStringValues } from "../helper/extract-string-values-from-object";
 
-interface HandleApiServerSideErrorResponse {
-  method: () => Promise<AxiosResponse>; // The method should be an async function that returns a promise
+// Define a generic interface for the response
+interface IHandleApiServerSideErrorResponse<T> {
+  request: () => Promise<AxiosResponse<T>>; // Function that returns a promise of AxiosResponse with type T
   successMessage?: string; // Optional success message to be used when the operation succeeds
 }
 
-export const handleApiServerSideErrorResponse = async ({
-  method,
+export const handleApiServerSideErrorResponse = async <T>({
+  request,
   successMessage = "Operation successful! 🎉",
-}: HandleApiServerSideErrorResponse) => {
+}: IHandleApiServerSideErrorResponse<T>): Promise<{
+  success?: string;
+  error?: string | string[];
+  data?: T;
+}> => {
   try {
+    // Perform the Axios request
+    const response = await request();
+
     // Check if the response status is exactly 200
-    const response = await method();
     if (response.status === 200) {
-      return { success: successMessage };
+      return { success: successMessage, data: response.data };
     }
 
     // Handle other 2xx
-    return { error: "Unexpected status code received." };
+    return { error: "Unexpected status code received.", data: response.data };
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       // The request was made and the server responded with a status code
@@ -43,7 +50,11 @@ export const handleApiServerSideErrorResponse = async ({
 
         // Handle other specific errors that are not 500 or 404
         if (![500, 404].includes(error.response.status)) {
-          return { error: "Something went wrong. Try again later." };
+          return {
+            error:
+              error?.response?.data?.message ||
+              "Something went wrong. Try again later.",
+          };
         }
 
         // Handle server errors and not found errors
@@ -54,7 +65,7 @@ export const handleApiServerSideErrorResponse = async ({
           return { error: "Resource not found. Please check the URL or data." };
         }
 
-        // Fallback for other error with HTTP Status
+        // Fallback for other errors with HTTP status
         return {
           error:
             error.response.data?.message ||
@@ -62,7 +73,7 @@ export const handleApiServerSideErrorResponse = async ({
         };
       } else if (error.request) {
         // The request was made but no response was received
-        return { error: "Unexpected server response. Try again later." };
+        return { error: "Internal server error. Please try again later." };
       } else {
         // Fallback for other errors
         return { error: "An unexpected error occurred." };
