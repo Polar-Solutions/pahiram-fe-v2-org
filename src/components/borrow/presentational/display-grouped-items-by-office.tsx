@@ -31,7 +31,7 @@ export const DisplayGroupedItemsByOffice = () => {
             <AccordionTrigger>{department}</AccordionTrigger>
             <AccordionContent>
               {items.map((item) => (
-                <CartItem key={item.id} item={item} />
+                <CartItem key={item.item_group_id} item={item} />
               ))}
             </AccordionContent>
           </AccordionItem>

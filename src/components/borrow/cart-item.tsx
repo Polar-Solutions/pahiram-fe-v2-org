@@ -3,11 +3,11 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Placeholder from "../../../public/image-placeholder.png";
 import { Button } from "../ui/button";
-import { IItem } from "@/lib/interfaces";
+import { IItem, IItemGroup } from "@/lib/interfaces";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
 
 interface CartItemProps {
-  item: IItem;
+  item: IItemGroup;
 }
 
 export default function CartItem({ item }: CartItemProps) {
@@ -33,19 +33,19 @@ export default function CartItem({ item }: CartItemProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 my-2">
                   <Button
-                    onClick={() => decrementQuantity(item.id)}
+                    onClick={() => decrementQuantity(item.item_group_id)}
                     variant="outline"
                     className="px-2 py-1"
                   >
                     -
                   </Button>
                   <span className="text-lg font-medium text-slate-600 dark:text-gray-400">
-                    {getItemQuantityById(item.id)}
+                    {getItemQuantityById(item.item_group_id)}
                   </span>
                   <Button
                     onClick={() => {
-                      console.log("Increment clicked", item.id);
-                      incrementQuantity(item.id);
+                      console.log("Increment clicked", item.item_group_id);
+                      incrementQuantity(item.item_group_id);
                     }}
                     variant="outline"
                     className="px-2 py-1"
@@ -65,7 +65,7 @@ export default function CartItem({ item }: CartItemProps) {
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth="2"
-            onClick={() => removeCartItem(item.id)} // Call onRemove when clicked
+            onClick={() => removeCartItem(item.item_group_id)} // Call onRemove when clicked
           >
             <path
               strokeLinecap="round"

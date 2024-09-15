@@ -15,8 +15,7 @@ import { updateURLParams } from "@/helper/borrow/updateURLParams";
 import { useRouter } from "next/navigation";
 
 export default function ItemsContainer() {
-  const { page, filterSearch } = getURLParams();
-
+  const { page, filterSearch, showItemGroupModal } = getURLParams();
   const { items, isFetchingItems, totalPages } = useItems(page);
 
   const filteredItems = useFilteredItems({ items });
@@ -84,8 +83,9 @@ export default function ItemsContainer() {
           onPageChange={handlePageChange}
         />
       </div>
-
-      <SpecificItemModal />
+      
+      {/* Render modal if show-item-group-modal exists in URL */}
+      {showItemGroupModal && <SpecificItemModal />}
     </motion.div>
   );
 }

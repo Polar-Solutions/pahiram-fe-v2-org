@@ -4,7 +4,7 @@ import { z } from "zod";
 const PurposeSchema = z.enum(PURPOSE_CONSTANTS_KEYS as [string, ...string[]]);
 
 // Define the schema for individual items in the items array
-const ItemSchema = z.object({
+export const ItemSchema = z.object({
   item_group_id: z.string(), // Validates as UUID
   quantity: z
     .number({ invalid_type_error: "Quantity must be a number" })

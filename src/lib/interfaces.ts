@@ -1,29 +1,29 @@
 export interface IGetItemsCategoriesApiResponse {
-    "status": boolean,
-    "data": {
-        "categories": IItemCategory[],
-        "current_page":number,
-        "last_page": number,
-        "next_page_url": string,
-        "path": string,
-        "per_page": number,
-        "prev_page_url": null,
-        "to": number,
-        "total": number
-    },
-    "method": "GET"
+  status: boolean;
+  data: {
+    categories: IItemCategory[];
+    current_page: number;
+    last_page: number;
+    next_page_url: string;
+    path: string;
+    per_page: number;
+    prev_page_url: null;
+    to: number;
+    total: number;
+  };
+  method: "GET";
 }
 
 export interface IItemCategory {
-    "id": string,
-    "category_name": string,
-    "is_consumable": boolean
+  id: string;
+  category_name: string;
+  is_consumable: boolean;
 }
 
 export interface IGetItemsPaginationApiResponse {
   status: boolean;
   data: {
-    items: IItem[];
+    items: IItemGroup[];
     current_page: number;
     last_page: number;
     next_page_url: string;
@@ -36,21 +36,36 @@ export interface IGetItemsPaginationApiResponse {
   method: string;
 }
 
+// this is not an item. The attributes are for ITEM_GROUPS
+// Change this later
 export interface IItem {
   id: string;
   image: string;
   model_name: string;
-  // TODO: Suggest to change to category and return a string with spaces and not _ as the separator
   group_category_id: string;
+  group_category: string;
   department: string;
-  // TODO: Add these attributes in the backend
   in_circulation: number;
   availability: string;
   description: string;
   status: string;
 }
 
-export interface ICartItem extends IItem {
+// This is much better for naming 
+export interface IItemGroup {
+  item_group_id: string;
+  image: string;
+  model_name: string;
+  group_category_id: string;
+  group_category: string;
+  department: string;
+  in_circulation: number;
+  availability: string;
+  description: string;
+  status: string;
+}
+
+export interface ICartItem extends IItemGroup {
   start_date: string;
   return_date: string;
   quantity: number;

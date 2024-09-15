@@ -5,11 +5,11 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { CalendarModal } from "./calendar-modal";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
-import { ICartItem, IItem } from "@/lib/interfaces";
+import { ICartItem, IItem, IItemGroup } from "@/lib/interfaces";
 
 interface ItemModalFormProps {
   handleCloseItemModal: () => void;
-  item: IItem;
+  item: IItemGroup;
 }
 
 export const ItemModalForm: React.FC<ItemModalFormProps> = ({
@@ -34,8 +34,8 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
   };
 
   // Watch for date range changes
-  const startDate = watch(`items[${item.id}].start_date`);
-  const returnDate = watch(`items[${item.id}].end_date`);
+  const startDate = watch(`items[${item.item_group_id}].start_date`);
+  const returnDate = watch(`items[${item.item_group_id}].end_date`);
 
   const { addCartItem, getCartItemById } = useCartStore();
 
@@ -79,17 +79,19 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
           <Controller
             name="start_date"
             control={control}
-            defaultValue={getCartItemById(item.id)?.start_date || ""}
+            defaultValue={getCartItemById(item.item_group_id)?.start_date || ""}
             rules={{ required: "Start date is required" }}
             render={({ field: startField }) => (
               <Controller
                 name="return_date"
                 control={control}
-                defaultValue={getCartItemById(item.id)?.return_date || ""}
+                defaultValue={
+                  getCartItemById(item.item_group_id)?.return_date || ""
+                }
                 rules={{ required: "Return date is required" }}
                 render={({ field: returnField }) => (
                   <CalendarModal
-                    itemId={item.id}
+                    itemGroupId={item.item_group_id}
                     startDate={startField.value}
                     returnDate={returnField.value}
                     onDateChange={(start, returnDate) => {

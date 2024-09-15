@@ -28,18 +28,20 @@ import { ICalendarModal } from "@/lib/interfaces/get-booked-dates-request-interf
 import { getURLParams } from "@/helper/borrow/getURLParams";
 import { Badge } from "@/components/ui/badge";
 import { handleApiClientSideError } from "@/core/handle-api-client-side-error";
+import { useItemGroupStore } from "@/hooks/useItemGroupStore";
 
 export const CalendarModal: React.FC<ICalendarModal> = ({
   startDate,
   returnDate,
   onDateChange,
-  itemId,
+  itemGroupId,
 }) => {
-  const { item } = getURLParams();
-  const { data, isLoading, isError } = useBookedDates(itemId);
+  const { data, isLoading } = useBookedDates(itemGroupId);
+  const { getItemGroupById } = useItemGroupStore();
   const dataProperty = data?.data?.data;
+  console.log("Data property, CALENDAR RENDERED", dataProperty);
 
-  console.log("Data Property ", dataProperty);
+  const item = getItemGroupById(itemGroupId);
 
   const [newEvent, setNewEvent] = useState<Object>({});
 
@@ -143,12 +145,12 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
                 }
               >
                 {item?.in_circulation || item?.in_circulation === 0
-                  ? `${item.in_circulation} items in circulation`
+                  ? `${item?.in_circulation} Items Available`
                   : "Unavailable"}
               </Badge>
 
               <Badge variant="outline">
-                {item?.group_category_id || "No category"}
+                {item?.group_category || "No category"}
               </Badge>
               <Badge variant="outline">
                 {" "}

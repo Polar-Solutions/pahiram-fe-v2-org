@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { getURLParams } from "@/helper/borrow/getURLParams";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
 import { useRouter } from "next/navigation";
-import { IItem } from "@/lib/interfaces";
+import { IItem, IItemGroup } from "@/lib/interfaces";
 import { ItemModalForm } from "./item-modal-form";
 import { Badge } from "@/components/ui/badge";
+import { useGetSpecificItemGroupData } from "@/core/data-access/items";
+import { useItemGroupStore } from "@/hooks/useItemGroupStore";
 
 interface ISpecificItemModalProps {
   showModal: boolean;
@@ -18,13 +20,21 @@ interface ISpecificItemModalProps {
 export default function ItemModal() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [shouldTruncate, setShouldTruncate] = useState(false);
-
-  const { item, showModalItem } = getURLParams();
-
   const router = useRouter();
 
+  const { itemGroupId, showItemGroupModal } = getURLParams();
+
+  const { getItemGroupById } = useItemGroupStore();
+
+  const specificItemGroup: IItemGroup | undefined = getItemGroupById(
+    itemGroupId || ""
+  );
+
   const handleCloseModal = () => {
-    const newUrl = updateURLParams({ item: "", showModalItem: 0 });
+    const newUrl = updateURLParams({
+      "item-group-id": "",
+      "show-item-group-modal": 0,
+    });
     router.push(newUrl);
   };
 
@@ -35,10 +45,10 @@ export default function ItemModal() {
   };
 
   useEffect(() => {
-    if (item?.description) {
-      setShouldTruncate(item.description.length > 150);
+    if (specificItemGroup?.description) {
+      setShouldTruncate(specificItemGroup.description.length > 150);
     }
-  }, [item]);
+  }, [specificItemGroup]);
 
   const toggleDescription = () => {
     setIsDescriptionExpanded(!isDescriptionExpanded);
@@ -51,44 +61,45 @@ export default function ItemModal() {
 
   return (
     <>
-      <Dialog open={showModalItem} onOpenChange={handleOpenChange}>
+      <Dialog open={showItemGroupModal} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-[900px] max-h-[100dvh] overflow-y-auto">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-4">
               <img
-                src={item?.image || "/image-placeholder.png"}
-                alt={item?.model_name}
+                src={specificItemGroup?.image || "/image-placeholder.png"}
+                alt={specificItemGroup?.model_name}
                 width={400}
                 height={300}
                 className="rounded-lg object-cover w-full mt-5 md:mt-0"
                 style={{ aspectRatio: "4/3", objectFit: "cover" }}
               />
               <DialogTitle className="text-2xl font-bold">
-                {item?.model_name}
+                {specificItemGroup?.model_name}
               </DialogTitle>
 
               {/*Tags*/}
               <div className="flex items-center justify-between">
                 <Badge
                   variant={
-                    item?.in_circulation === undefined ||
-                    item?.in_circulation === 0
+                    specificItemGroup?.in_circulation === undefined ||
+                    specificItemGroup?.in_circulation === 0
                       ? "destructive"
                       : "default"
                   }
                 >
-                  {item?.in_circulation || item?.in_circulation === 0
-                    ? `${item.in_circulation} Items Available`
+                  {specificItemGroup?.in_circulation ||
+                  specificItemGroup?.in_circulation === 0
+                    ? `${specificItemGroup?.in_circulation} Items Available`
                     : "Unavailable"}
                 </Badge>
 
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">
-                    {item?.group_category_id || "No category"}
+                    {specificItemGroup?.group_category || "No category"}
                   </Badge>
                   <Badge variant="outline">
                     {" "}
-                    {item?.department || "No designated office"}
+                    {specificItemGroup?.department || "No designated office"}
                   </Badge>
                 </div>
               </div>
@@ -96,10 +107,12 @@ export default function ItemModal() {
                 <p className="text-muted-foreground">
                   {shouldTruncate && !isDescriptionExpanded
                     ? truncateDescription(
-                        item?.description || "No description available.",
+                        specificItemGroup?.description ||
+                          "No description available.",
                         150
                       )
-                    : item?.description || "No description available."}
+                    : specificItemGroup?.description ||
+                      "No description available."}
                 </p>
                 {shouldTruncate && (
                   <Button
@@ -144,9 +157,9 @@ export default function ItemModal() {
               </div>
 
               {/* Form within the item modal, and within it is the calendar modal */}
-              {item && (
+              {specificItemGroup && (
                 <ItemModalForm
-                  item={item}
+                  item={specificItemGroup}
                   handleCloseItemModal={handleCloseModal}
                 />
               )}
