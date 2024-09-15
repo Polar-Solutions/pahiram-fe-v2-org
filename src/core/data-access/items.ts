@@ -1,4 +1,4 @@
-"use-client";
+"use-client"
 
 import { getItemGroupBookedDatesEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
 import {
@@ -73,7 +73,7 @@ export const getBookedDates = async (itemGroupId: string) => {
   };
 
   return await handleApiServerSideErrorResponse({
-    request,
+    request
   });
 };
 

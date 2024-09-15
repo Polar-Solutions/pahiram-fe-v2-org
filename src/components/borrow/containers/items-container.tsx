@@ -16,7 +16,6 @@ import { useRouter } from "next/navigation";
 
 export default function ItemsContainer() {
   const { page, filterSearch, showItemGroupModal } = getURLParams();
-
   const { items, isFetchingItems, totalPages } = useItems(page);
 
   const filteredItems = useFilteredItems({ items });
