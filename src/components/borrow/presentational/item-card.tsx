@@ -7,7 +7,7 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import Image from "next/image";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -85,14 +85,14 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
           <h1 className="text-lg font-semibold mt-2 mb-1 dark:group-hover:text-primary-foreground">
             {item.model_name || "Item Group (Item Model)"}
           </h1>
-          <CardDescription className="text-xs">
+          <div className="text-xs">
             <div className="flex items-center justify-between mb-2">
               <Badge variant="outline">
                 {item.group_category || "No category"}
               </Badge>
               <Badge variant="outline">{item.department || "No office"}</Badge>
             </div>
-          </CardDescription>
+          </div>
         </CardContent>
       </Card>
     </motion.div>
