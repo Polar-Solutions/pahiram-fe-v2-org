@@ -28,7 +28,6 @@ export default function page() {
   const { handleSubmit, control, reset, getValues } = useForm<IFormValues>();
   const { executeAsync, isExecuting } = useAction(submitBorrowRequestAction);
   const { getAllCartItems, clearCart, isCartEmpty } = useCartStore();
-  const { toast } = useToast();
 
   const allCartItems = getAllCartItems();
 

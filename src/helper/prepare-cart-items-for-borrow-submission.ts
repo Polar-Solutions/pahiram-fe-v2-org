@@ -9,7 +9,7 @@ export interface ICartItem {
 
 export const prepareCartItemsForBorrowSubmission = (
   cartItems: Array<{
-    id: string;
+    item_group_id: string;
     start_date: string;
     return_date: string;
     quantity: number;
@@ -28,7 +28,7 @@ export const prepareCartItemsForBorrowSubmission = (
     // Use reduce to create a new object with only the retained properties
     const result = retainedProperties.reduce((acc, key) => {
       if (key === "item_group_id") {
-        acc[key] = item.id; // Map 'id' to 'item_group_id'
+        acc[key] = item.item_group_id; // Map 'id' to 'item_group_id'
       } else if (key in item) {
         acc[key] = item[key];
       }

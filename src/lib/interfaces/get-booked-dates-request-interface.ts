@@ -46,6 +46,7 @@ interface IBookedDatesApiResponseDataValue {
 export interface IBookedDatesApiResponse {
   status: boolean; // Status of the response, e.g., true
   data?: IBookedDatesApiResponseDataValue; // Data object containing item and date details
+  error?: any;
   method: string; // HTTP method used, e.g., "GET"
 }
 
@@ -54,5 +55,5 @@ export interface ICalendarModal {
   startDate: string;
   returnDate: string;
   onDateChange: (start: string, returnDate: string) => void;
-  itemId: string;
+  itemGroupId: string;
 }
