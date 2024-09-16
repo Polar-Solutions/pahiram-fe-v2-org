@@ -8,9 +8,10 @@ import { useSearch } from "@/hooks/borrow/useSearch"; // Import the Zustand stor
 interface SearchBarProps {
   onSearchChange?: (query: string) => void;
   searchQuery?: string;
+  placeholder?: string;
 }
 
-export const SearchBar: React.FC<SearchBarProps> = ({ onSearchChange }) => {
+export const SearchBar: React.FC<SearchBarProps> = ({ onSearchChange, placeholder }) => {
   const { searchQuery, setSearchQuery } = useSearch();
 
   const handleInputChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,7 +32,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearchChange }) => {
       <Search className="h-5 w-5 text-muted-foreground" />
       <Input
         type="search"
-        placeholder="Search items by Name, Office, or Category"
+        placeholder={placeholder || "Search"}
         value={searchQuery}
         onChange={handleInputChange}
         onKeyDown={handleSearchKeyDown}

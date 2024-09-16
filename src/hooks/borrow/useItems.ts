@@ -7,6 +7,7 @@ export const useItems = (page: number) => {
   const [totalPages, setTotalPages] = useState(1);
   const [isFetchingItems, setIsFetchingItems] = useState(false);
 
+
   // Use a ref to store cached items per page
   const cachedItems = useRef<{ [page: number]: IItemGroup[] }>({});
 

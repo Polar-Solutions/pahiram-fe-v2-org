@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItem, IItemGroup, IBorrowRequest} from "@/lib/interfaces";
 
 export const getURLParams = () => {
   const searchParams = useSearchParams();
@@ -8,6 +8,7 @@ export const getURLParams = () => {
   const filterCategory = searchParams.get("category") || "";
   const filterOffice = searchParams.get("office") || "";
   const filterSearch = searchParams.get("q") || "";
+  const filterStatus = searchParams.get("status") || "";
   const page = Number(searchParams.get("page")) || 1;
   const itemGroupId: IItemGroup["item_group_id"] | undefined = (() => {
     try {
@@ -28,6 +29,7 @@ export const getURLParams = () => {
     filterCategory,
     filterOffice,
     filterSearch,
+    filterStatus,
     page,
     itemGroupId,
     showItemGroupModal,
