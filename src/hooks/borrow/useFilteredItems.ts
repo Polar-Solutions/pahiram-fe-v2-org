@@ -8,15 +8,15 @@ export const useFilteredItems = ({ items }: { items: IItemGroup[] }) => {
   return useMemo(() => {
     return items
       .filter((item) => {
-        if (filterCategory && item.group_category_id !== filterCategory)
+        if (filterCategory && item.group_category !== filterCategory)
           return false;
         if (filterOffice && item.department !== filterOffice) return false;
         if (filterSearch) {
           const searchLower = filterSearch.toLowerCase();
           return (
             item.model_name.toLowerCase().includes(searchLower) ||
-            (item.group_category_id &&
-              item.group_category_id.toLowerCase().includes(searchLower)) ||
+            (item.group_category &&
+              item.group_category.toLowerCase().includes(searchLower)) ||
             (item.department &&
               item.department.toLowerCase().includes(searchLower))
           );

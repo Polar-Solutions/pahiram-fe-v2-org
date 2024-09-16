@@ -39,15 +39,31 @@ export default function ItemsContainer() {
     return () => window.removeEventListener("resize", updateLayout);
   }, [updateLayout]);
 
-  const router = useRouter();
+  useEffect(() => {
+    const handlePopState = () => {
+      // Re-render the component when the user navigates back/forward
+      setRenderKey(prev => prev + 1);
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
 
   const handlePageChange = useCallback((page: number) => {
     const newUrl = updateURLParams({ page: page.toString() });
-    router.push(newUrl);
+    window.history.pushState({}, '', newUrl);
+    // Trigger a re-render
+    setRenderKey(prev => prev + 1);
   }, []);
+
+  const [renderKey, setRenderKey] = useState(0);
 
   return (
     <motion.div
+      key={renderKey}
       ref={containerRef}
       className="w-full"
       initial={{ opacity: 0, y: 20 }}
@@ -83,9 +99,11 @@ export default function ItemsContainer() {
           onPageChange={handlePageChange}
         />
       </div>
-      
+
       {/* Render modal if show-item-group-modal exists in URL */}
-      {showItemGroupModal && <SpecificItemModal />}
+      {showItemGroupModal &&
+          <SpecificItemModal />
+      }
     </motion.div>
   );
 }
