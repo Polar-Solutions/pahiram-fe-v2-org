@@ -66,7 +66,6 @@ export const BorrowingCartNav = () => {
               action: "Clear Cart",
               actionFn: () => {
                 clearCart();
-                console.log("Action executed");
               },
             }}
           >
@@ -80,7 +79,11 @@ export const BorrowingCartNav = () => {
           </ConfirmationDialog>
 
           <SheetClose>
-            <Button onClick={handleClick} className="flex items-center">
+            <Button
+              disabled={isCartEmpty()}
+              onClick={handleClick}
+              className="flex items-center"
+            >
               <ChevronRight className="mr-2 h-4 w-4" />
               Proceed to checkout
             </Button>

@@ -1,64 +1,100 @@
 "use client";
 
-import {Card, CardContent, CardDescription, CardHeader} from "@/components/ui/card";
-import Image from 'next/image';
-import {IItem} from "@/lib/interfaces";
-import {updateURLParams} from "@/helper/borrow/updateURLParams";
-import {useRouter} from "next/navigation";
-import {motion} from 'framer-motion';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
+import Image from "next/image";
+import { IItemGroup } from "@/lib/interfaces";
+import { updateURLParams } from "@/helper/borrow/updateURLParams";
+import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
+import { Badge } from "@/components/ui/badge";
+import { useGetSpecificItemGroupData } from "@/core/data-access/items";
+import { useItemGroupStore } from "@/hooks/useItemGroupStore";
 
 interface IItemCardProps {
-    item: IItem
-    // setShowModal: React.Dispatch<React.SetStateAction<boolean>>
-    // setModalItem: React.Dispatch<React.SetStateAction<IItem | undefined>>
+  item: IItemGroup;
 }
 
 // TODO: Remove scrollbar when opened
 
+export default function ItemCard({ props }: { props: IItemCardProps }) {
+  const { item } = props;
+  const router = useRouter();
 
-export default function ItemCard({props}: { props: IItemCardProps }) {
-    const {item} = props;
-    const router = useRouter();
+  const { data, isSuccess, isLoading, refetch } = useGetSpecificItemGroupData(
+    item.item_group_id
+  );
+  const { addItemGroup, itemGroupExists } = useItemGroupStore();
 
-    const handleRequestClick = () => {
-        const serializedItem = encodeURIComponent(JSON.stringify(item));
-        const newUrl = updateURLParams({item: serializedItem, showModalItem: 1});
-        router.push(newUrl);
-    };
-
-
-    return (
-        <motion.div
-            whileHover={{y: -5}}
-            className="w-full h-full flex flex-col cursor-pointer group"
-        >
-            <Card onClick={() => {
-                handleRequestClick()
-            }} className="w-full h-full flex flex-col cursor-pointer hover:bg-[hsl(var(--primary))] group">
-                <CardHeader className="p-0">
-                    <div className="relative w-full aspect-[4/3]">
-                        <Image
-                            src={item.image || "/image-placeholder.png"}
-                            alt={item.model_name || 'item'}
-                            layout="fill"
-                            objectFit="cover"
-                            className="rounded-t-lg"
-                        />
-                    </div>
-                </CardHeader>
-                <CardContent className="flex-grow">
-                    <h1 className="text-lg font-semibold mt-2 mb-1 dark:group-hover:text-primary-foreground">{item.model_name || 'Item Group (Item Model)'}</h1>
-                    <p className="text-sm text-neutral-500 mb-2 line-clamp-2">
-                        {item.description || 'No description available.'}
-                    </p>
-                    <CardDescription className="text-xs">
-                        <div className="flex items-center justify-between mb-2">
-                            <span>{item.group_category_id || 'No category'}</span>
-                        </div>
-                        <span>{item.department || 'No office'}</span>
-                    </CardDescription>
-                </CardContent>
-            </Card>
-        </motion.div>
+  const handleClickItemGroupCard = async () => {
+    // Push to the URL
+    const serializedItem = encodeURIComponent(
+      JSON.stringify(item.item_group_id)
     );
+    const newUrl = updateURLParams({
+      "item-group-id": serializedItem,
+      "show-item-group-modal": 1,
+    });
+    router.push(newUrl);
+
+    // Trigger refetching of API
+    try {
+      if (!itemGroupExists(item.item_group_id)) {
+        const refetchResult = await refetch(); // Refetch the data
+        // Access API response data
+        if (
+          refetchResult?.data?.data?.data &&
+          refetchResult.status === "success"
+        ) {
+          addItemGroup(refetchResult?.data?.data?.data); // Insert data into Zustand store
+        }
+      }
+    } catch (error) {
+      console.error("Error during refetch", error);
+    }
+  };
+
+  return (
+    <motion.div
+      whileHover={{ y: -5 }}
+      className="w-full h-full flex flex-col cursor-pointer group"
+    >
+      <Card
+        onClick={() => {
+          handleClickItemGroupCard();
+        }}
+        className="w-full h-full flex flex-col cursor-pointer hover:bg-[hsl(var(--primary))] group"
+      >
+        <CardHeader className="p-0">
+          <div className="relative w-full aspect-[4/3]">
+            <Image
+              src={item.image || "/image-placeholder.png"}
+              alt={item.model_name || "item"}
+              layout="fill"
+              objectFit="cover"
+              className="rounded-t-lg"
+            />
+          </div>
+        </CardHeader>
+
+        <CardContent className="flex-grow">
+          <h1 className="text-lg font-semibold mt-2 mb-1 dark:group-hover:text-primary-foreground">
+            {item.model_name || "Item Group (Item Model)"}
+          </h1>
+          <div className="text-xs">
+            <div className="flex items-center justify-between mb-2">
+              <Badge variant="outline">
+                {item.group_category || "No category"}
+              </Badge>
+              <Badge variant="outline">{item.department || "No office"}</Badge>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </motion.div>
+  );
 }

@@ -1,17 +1,17 @@
 import { create } from 'zustand';
-import { IItem } from '@/lib/interfaces';
+import { IItem, IItemGroup } from '@/lib/interfaces';
 
 interface SearchStore {
   searchQuery: string;
   filterCategory: string;
   filterOffice: string;
   sortBy: string;
-  searchResults: IItem[];
+  searchResults: IItemGroup[];
   setSearchQuery: (query: string) => void;
   setFilterCategory: (category: string) => void;
   setFilterOffice: (office: string) => void;
   setSortBy: (sortBy: string) => void;
-  setSearchResults: (results: IItem[]) => void;
+  setSearchResults: (results: IItemGroup[]) => void;
 }
 
 export const useSearch = create<SearchStore>((set) => ({
