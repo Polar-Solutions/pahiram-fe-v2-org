@@ -3,12 +3,12 @@
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
-import { useItems } from "@/hooks/borrow/useItems";
-import { useFilteredItems } from "@/hooks/borrow/useFilteredItems";
+import { useRequests } from "@/hooks/request/useRequests";
+import { useFilteredRequests } from "@/hooks/request/useFilteredRequests";
 import TabsAndSearchComponent from "@/components/request/presentational/tabs-and-search-component";
 import RequestListSkeleton from "@/components/request/presentational/request-list-skeleton";
 import FilterTabs from "@/components/request/presentational/filter-tabs-component";
-import ItemsPagination from "@/components/borrow/presentational/items-pagination";
+import RequestPagination from "@/components/request/presentational/request-pagination";
 import RequestList from "@/components/request/presentational/request-list";
 import { getURLParams } from "@/helper/borrow/getURLParams";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
@@ -16,19 +16,19 @@ import { useRouter } from "next/navigation";
 import { useTabsStore } from "@/hooks/request/useTabs";
 
 export default function ItemsContainer() {
-    const { page: currentPage } = getURLParams(); 
-    const { items, isFetchingItems, totalPages } = useItems(currentPage);
-    const filteredItems = useFilteredItems({ items }); 
+    const {page, filterSearch} = getURLParams();
+    const { requests, isFetchingRequests, totalPages } = useRequests(page);
     const { activeTab } = useTabsStore();
+
+    const filteredRequests = useFilteredRequests({ requests });
 
     const [showFilters, setShowFilters] = useState(true);
     const [gridColumns, setGridColumns] = useState(3);
     const containerRef = useRef<HTMLDivElement>(null);
-    const { filterSearch } = getURLParams();
 
     const requestTabs = [
-        { value: 'request', label: 'Request' },
-        { value: 'transaction', label: 'Transaction' },
+        { value: 'Request', label: 'Request' },
+        { value: 'Transaction', label: 'Transaction' },
     ];
 
     // Layout update for responsive design
@@ -62,23 +62,36 @@ export default function ItemsContainer() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
         >
-            <TabsAndSearchComponent />
+            <TabsAndSearchComponent borrow_requests={filteredRequests}/>
 
-            {/* List of requests or transactions */}
-            <div className="grid grid-cols-1 gap-4">
-                {isFetchingItems ? (
-                    // Show a skeleton loader when fetching items
+            <div
+                className={`grid gap-1 ${
+                gridColumns === 1
+                    ? "grid-cols-1"
+                    : ""
+                }`}
+            >
+                {isFetchingRequests ? (
                     <RequestListSkeleton />
-                ) : filteredItems && filteredItems.length > 0 ? (
-                    // Show filtered items if available
-                    <RequestList selectedTab={requestTabs[0].value}/>
+                ) : filteredRequests && filteredRequests.length > 0 ? (
+                    <RequestList
+                        borrow_requests={filteredRequests}
+                    />
                 ) : (
-                    // Show a no results message if no items found
-                    <p className="text-center text-muted-foreground col-span-full">
-                        No results found {filterSearch ? `for "${filterSearch}"` : ""}
-                    </p>
+                <p className="text-center text-muted-foreground col-span-full">
+                    No results found {filterSearch ? `for ${filterSearch}` : null}
+                </p>
                 )}
             </div>
+
+            <div className="mt-4">
+                <RequestPagination
+                currentPage={page}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                />
+            </div>
+            
         </motion.div>
     );
 }

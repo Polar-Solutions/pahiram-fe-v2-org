@@ -3,19 +3,20 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsStore } from '@/hooks/request/useTabs';
 
 interface TabOption {
-  values: string[];  // Array of tab values
+  values: { value: string; label: string }[];  // Array of objects with value and label
   onTabChange: (value: string) => void;  // Callback for tab change
 }
 
+
 export default function FilterTabs({ values = [], onTabChange }: TabOption) {
-  const [defaultTab, setDefaultTab] = useState(values[0]);
+  const [defaultTab, setDefaultTab] = useState(values[0]?.value); // Set initial tab value
   const { selectedFilterTab } = useTabsStore();
 
   useEffect(() => {
-    if (values.includes(selectedFilterTab)) {
+    if (values.some(tab => tab.value === selectedFilterTab)) {
       setDefaultTab(selectedFilterTab);
     }
-  }, [selectedFilterTab, values,]);
+  }, [selectedFilterTab, values]);
 
   const activeTab = (value: string) => {
     return selectedFilterTab === value
@@ -25,17 +26,16 @@ export default function FilterTabs({ values = [], onTabChange }: TabOption) {
 
 
   return (
-    <Tabs defaultValue={values[0]} onValueChange={onTabChange}>
+    <Tabs defaultValue={defaultTab} onValueChange={onTabChange}>
     <TabsList>
-      {values.map((value) => (
-        <TabsTrigger 
-        key={value} 
-        value={value} 
-        className={`rounded-lg transition-all ${activeTab(value)}`}
-
-      >
-        {value}
-      </TabsTrigger>
+      {values.map(({ value, label }) => (
+        <TabsTrigger
+          key={value}
+          value={value}
+          className={`rounded-lg transition-all ${activeTab(value)}`}
+        >
+          {label}  {/* Display label instead of value */}
+        </TabsTrigger>
       ))}
     </TabsList>
   </Tabs>
