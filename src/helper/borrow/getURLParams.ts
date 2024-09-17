@@ -1,5 +1,5 @@
 import { useSearchParams } from "next/navigation";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 
 export const getURLParams = () => {
   const searchParams = useSearchParams();

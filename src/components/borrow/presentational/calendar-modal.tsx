@@ -3,7 +3,6 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTrigger,
@@ -18,9 +17,10 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
+import multiMonthPlugin from "@fullcalendar/multimonth";
 import { DateSelectArg } from "@fullcalendar/core";
 
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { convertDateForHumanConsumption } from "@/helper/date-utilities";
 import { useBookedDates } from "@/core/data-access/items";
 import { toast } from "@/hooks/use-toast";
@@ -29,6 +29,13 @@ import { getURLParams } from "@/helper/borrow/getURLParams";
 import { Badge } from "@/components/ui/badge";
 import { handleApiClientSideError } from "@/core/handle-api-client-side-error";
 import { useItemGroupStore } from "@/hooks/useItemGroupStore";
+import { CustomDatePickerModal } from "./custom-date-picker-modal";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 export const CalendarModal: React.FC<ICalendarModal> = ({
   startDate,
@@ -39,11 +46,10 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
   const { data, isLoading } = useBookedDates(itemGroupId);
   const { getItemGroupById } = useItemGroupStore();
   const dataProperty = data?.data?.data;
-  console.log("Data property, CALENDAR RENDERED", dataProperty);
-
   const item = getItemGroupById(itemGroupId);
 
   const [newEvent, setNewEvent] = useState<Object>({});
+  const [isOpenDateModalPicker, setisOpenDateModalPicker] = useState(false);
 
   const handleDateSelect = (info: DateSelectArg) => {
     const origStartDateStr = new Date(info.startStr);
@@ -129,12 +135,12 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] w-full overflow-y-auto">
+        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] max-h-[90%] w-full overflow-y-auto">
           <DialogHeader className="flex gap-1">
             <DialogTitle className="text-2xl font-bold">
               {item?.model_name}
             </DialogTitle>
-            <DialogDescription className="flex gap-2">
+            <div className="flex gap-2">
               {/* {itemData?.active_items} */}
               <Badge
                 variant={
@@ -156,91 +162,102 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
                 {" "}
                 {item?.department || "No designated office"}
               </Badge>
-            </DialogDescription>
+            </div>
           </DialogHeader>
 
-          <FullCalendar
-            plugins={[
-              dayGridPlugin,
-              interactionPlugin,
-              timeGridPlugin,
-              listPlugin,
-            ]}
-            headerToolbar={{
-              start: "prev,next",
-              center: "title",
-              end: "timeGridWeek,timeGridDay",
-            }}
-            // buttonText={{
-            //   listWeek: "List Week",
-            //   listDay: "List Day",
-            // }}
-            // views={["dayGridWeek", "dayGridDay", "listWeek"]}
-            initialView="timeGridWeek"
-            //   views={["dayGridWeek", "dayGridDay"]}
-            views={{
-              timeGridWeek: {
-                type: "timeGrid", // Ensure the correct type for the view
-                duration: { weeks: 1 },
-              },
-              timeGridDay: {
-                type: "timeGrid",
-                duration: { days: 1 },
-              },
-              dayGridMonth: {
-                type: "dayGrid",
-                duration: { months: 1 },
-              },
-            }}
-            hiddenDays={[0]} // Sunday Hidden
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            displayEventEnd={true}
-            allDaySlot={false}
-            validRange={() => {
-              const nowDate = new Date();
-              const nextTwoMonthsDate = new Date(nowDate);
-              const localNowDate = new Date(
-                nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-              );
-              return {
-                start: localNowDate,
-                end: nextTwoMonthsDate.setMonth(
-                  nextTwoMonthsDate.getMonth() + 2
-                ),
-              };
-            }}
-            select={handleDateSelect}
-            events={[
-              ...(dataProperty?.dates || []),
-              { title: "Chosen Date", ...newEvent, color: "#e7b426" },
-            ]}
-            slotMinTime={"07:30:00"}
-            slotMaxTime={"17:30:00"}
-            nextDayThreshold={"09:00:00"}
-            businessHours={[
-              {
-                // AM
-                daysOfWeek: [1, 2, 3, 4, 5, 6],
-                startTime: "7:30",
-                endTime: "12:00",
-              },
-              {
-                // PM
-                // TODO: Adjust the ending dates depending on the clients needs
-                daysOfWeek: [1, 2, 3, 4, 5, 6],
-                startTime: "13:00", // 1pm
-                endTime: "18:00", // 6pm
-              },
-            ]}
-            contentHeight={"auto"}
-            height={"parent"}
-            // selectConstraint={"businessHours"}
-            //   eventBackgroundColor={secondaryMain}
-          />
+          <div className="h-full overflow-y-auto">
+            <FullCalendar
+              dateClick={() => {
+                setisOpenDateModalPicker(true);
+              }}
+              // stickyHeaderDates={true}
+              handleWindowResize
+              dragScroll
+              nowIndicator={true}
+              // displayEventTime={true}
+              // eventResizableFromStart={true}
+              // eventDurationEditable={true}
+              // eventDrop={handleEventDrop}
+              // eventReceive={handleEventDrop} // To handle events dragged from outside the calendar
+              plugins={[
+                dayGridPlugin,
+                interactionPlugin,
+                timeGridPlugin,
+                listPlugin,
+              ]}
+              headerToolbar={{
+                start: "prev,next",
+                center: "title",
+                end: "timeGridWeek,timeGrid",
+              }}
+              buttonText={{
+                listWeek: "List Week",
+                listDay: "List Day",
+              }}
+              initialView="timeGridWeek"
+              views={{
+                timeGridWeek: {
+                  type: "timeGrid", // Ensure the correct type for the view
+                  duration: { weeks: 1 },
+                },
+                timeGridDay: {
+                  type: "timeGrid",
+                  duration: { days: 5 },
+                },
+                dayGridMonth: {
+                  type: "dayGrid",
+                  duration: { months: 1 },
+                },
+              }}
+              hiddenDays={[0]} // Sunday Hidden
+              selectable={true}
+              selectMirror={true}
+              dayMaxEvents={true}
+              displayEventEnd={true}
+              allDaySlot={false}
+              validRange={() => {
+                const nowDate = new Date();
+                const nextTwoMonthsDate = new Date(nowDate);
+                const localNowDate = new Date(
+                  nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
+                );
+                return {
+                  start: localNowDate,
+                  end: nextTwoMonthsDate.setMonth(
+                    nextTwoMonthsDate.getMonth() + 2
+                  ),
+                };
+              }}
+              select={handleDateSelect}
+              events={[
+                ...(dataProperty?.dates || []),
+                { title: "Chosen Date", ...newEvent, color: "#e7b426" },
+              ]}
+              slotMinTime={"07:30:00"}
+              slotMaxTime={"17:30:00"}
+              nextDayThreshold={"09:00:00"}
+              businessHours={[
+                {
+                  // AM
+                  daysOfWeek: [1, 2, 3, 4, 5, 6],
+                  startTime: "7:30",
+                  endTime: "12:00",
+                },
+                {
+                  // PM
+                  // TODO: Adjust the ending dates depending on the clients needs
+                  daysOfWeek: [1, 2, 3, 4, 5, 6],
+                  startTime: "13:00", // 1pm
+                  endTime: "18:00", // 6pm
+                },
+              ]}
+              contentHeight={"auto"}
+              height={"100%"}
+              // selectConstraint={"businessHours"}
+            />
+          </div>
 
-          <DialogFooter className="sm:justify-start">
+          <DialogFooter className="sm:justify-end">
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Close
@@ -249,6 +266,13 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {isOpenDateModalPicker && (
+        <CustomDatePickerModal
+          isOpen={isOpenDateModalPicker}
+          onClose={() => setisOpenDateModalPicker(false)}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { IItem, IItemGroup } from '@/lib/interfaces';
+import { IItemGroup } from '@/lib/interfaces';
 
 interface SearchStore {
   searchQuery: string;

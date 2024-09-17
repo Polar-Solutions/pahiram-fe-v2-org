@@ -1,4 +1,4 @@
-import { IItem, IItemGroup } from "../interfaces";
+import { IItemGroup } from "../interfaces";
 
 
 export interface ISpecificItemGroupApiResponse {

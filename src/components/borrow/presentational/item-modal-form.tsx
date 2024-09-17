@@ -5,7 +5,7 @@ import React from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { CalendarModal } from "./calendar-modal";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
-import { ICartItem, IItem, IItemGroup } from "@/lib/interfaces";
+import { ICartItem, IItemGroup } from "@/lib/interfaces";
 
 interface ItemModalFormProps {
   handleCloseItemModal: () => void;

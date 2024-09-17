@@ -3,7 +3,7 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import Placeholder from "../../../public/image-placeholder.png";
 import { Button } from "../ui/button";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
 
 interface CartItemProps {

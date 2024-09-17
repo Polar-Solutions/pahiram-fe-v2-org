@@ -74,9 +74,10 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
             <Image
               src={item.image || "/image-placeholder.png"}
               alt={item.model_name || "item"}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-lg"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover rounded-t-lg"
+              priority
             />
           </div>
         </CardHeader>

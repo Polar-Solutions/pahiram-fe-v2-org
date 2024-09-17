@@ -1,4 +1,4 @@
-import { ICartItem, IItem } from "@/lib/interfaces";
+import { ICartItem } from "@/lib/interfaces";
 import { ICartItemsStoreState } from "@/lib/interfaces/zustand-store-states";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
@@ -60,7 +60,9 @@ export const useCartStore = create<ICartItemsStoreState>()(
        */
       removeCartItem: (itemGroupId: string): void =>
         set((state) => ({
-          cartItems: state.cartItems.filter((item) => item.item_group_id !== itemGroupId),
+          cartItems: state.cartItems.filter(
+            (item) => item.item_group_id !== itemGroupId
+          ),
         })),
 
       /**
@@ -112,7 +114,9 @@ export const useCartStore = create<ICartItemsStoreState>()(
        */
       getItemQuantityById: (itemGroupId: string): number | null => {
         const { cartItems } = get();
-        const item = cartItems.find((item) => item.item_group_id === itemGroupId);
+        const item = cartItems.find(
+          (item) => item.item_group_id === itemGroupId
+        );
         return item ? item.quantity : null;
       },
 
