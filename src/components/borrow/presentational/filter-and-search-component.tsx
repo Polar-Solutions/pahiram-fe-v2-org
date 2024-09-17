@@ -159,7 +159,7 @@ export default function FilterAndSearchComponent({ showFilters }: { showFilters:
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            <SearchBar onSearchChange={handleSearchChange} searchQuery={searchQuery} />
+            <SearchBar onSearchChange={handleSearchChange} searchQuery={searchQuery} placeholder='Search items by Name, Office, or Category' />
         </div>
     );
 }

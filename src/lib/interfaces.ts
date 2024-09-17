@@ -14,6 +14,35 @@ export interface IGetItemsCategoriesApiResponse {
   method: "GET";
 }
 
+export interface IGetBorrowRequestApiResponse {
+  status: boolean;
+  data: {
+    borrow_requests: IBorrowRequest[];
+    current_page: number;
+    last_page: number;
+    next_page_url: string;
+    path: string;
+    per_page: number;
+    prev_page_url: string;
+    to: number;
+    total: number;
+  };
+  method: "GET";
+}
+
+export interface IBorrowRequest {
+  id: string;
+  custom_transac_id: string;
+  department_acronym: string;
+  transac_status: string;
+  purpose: string;
+  user_defined_purpose: string;
+  penalty: number;
+  remarks_by_endorser: string;
+  remarks_by_approver: string;
+  created_at: string;
+}
+
 export interface IItemCategory {
   id: string;
   category_name: string;
