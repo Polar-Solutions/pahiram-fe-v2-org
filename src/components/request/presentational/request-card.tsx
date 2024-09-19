@@ -50,7 +50,6 @@ export default function RequestCard({ props }: { props: BorrowRequestCardProps }
                     hour12: false // For 24-hour format
                   })}`}
                 </span>
-
             </div>
           </CardContent>
         </Card>
