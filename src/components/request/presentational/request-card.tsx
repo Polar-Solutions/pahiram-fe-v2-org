@@ -39,7 +39,18 @@ export default function RequestCard({ props }: { props: BorrowRequestCardProps }
             <div>
                 <h3 className="text-xl font-semibold mb-2">{borrow_request.custom_transac_id}</h3>
                 <p className="text-lg font-semibold mb-4">{borrow_request.department_acronym}</p>
-                <span className="text-sm text-muted-foreground">{`Submitted ${borrow_request.created_at}`}</span>
+                <span className="text-sm text-muted-foreground">
+                  {`Submitted ${new Date(borrow_request.created_at).toLocaleString('en-US', {
+                    month: 'long', // Full month name
+                    day: 'numeric',
+                    year: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: false // For 24-hour format
+                  })}`}
+                </span>
+
             </div>
           </CardContent>
         </Card>
