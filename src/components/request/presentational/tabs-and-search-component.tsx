@@ -33,7 +33,6 @@ export default function TabsAndSearchComponent({ borrow_requests } : TabsAndSear
     setSearchQuery(query);
   }
 
-
   // Handle office change
   const handleOfficeChange = (office: string) => {
     setFilterOffice(office);
