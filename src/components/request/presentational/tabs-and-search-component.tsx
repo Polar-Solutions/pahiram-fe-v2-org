@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useCallback } from 'react';
 import DynamicBreadcrumbsComponent from '@/components/common/dynamic-breadcrumbs-component';
 import FilterTabs from "@/components/request/presentational/filter-tabs-component";
 import {
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { ChevronDownIcon } from "@radix-ui/react-icons";  
 import { SearchBar } from '@/components/common/search-bar/search-bar';
 import RequestList from '@/components/request/presentational/request-list';
+import { useSearch } from '@/hooks/borrow/useSearch';
 import { useTabsStore } from '@/hooks/request/useTabs';
 import { LENDING_OFFICES_ACRONYMS, OFFICES_CONSTANTS } from '@/CONSTANTS/OFFICES_CONSTANTS';
 import { Check } from "lucide-react";
@@ -25,6 +26,13 @@ interface TabsAndSearchComponentProps {
 
 export default function TabsAndSearchComponent({ borrow_requests } : TabsAndSearchComponentProps) {
   const { activeTab, selectedFilterTab, setActiveTab, setSelectedFilterTab, filterOffice, setFilterOffice } = useTabsStore();
+  const { searchQuery, setSearchQuery, setSearchResults } = useSearch();
+
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  }
+
 
   // Handle office change
   const handleOfficeChange = (office: string) => {
@@ -100,7 +108,7 @@ export default function TabsAndSearchComponent({ borrow_requests } : TabsAndSear
 
         {/* Right side: Search Bar */}
         <div className="flex">
-          <SearchBar searchQuery="" placeholder="Search request/transaction ID" />
+          <SearchBar onSearchChange={handleSearchChange} searchQuery={searchQuery} placeholder="Search request/transaction ID" />
         </div>
       </div>
 

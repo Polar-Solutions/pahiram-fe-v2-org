@@ -11,7 +11,7 @@ export const preloadSearchResults = (modelName: string, categoryName: string, de
 // Cached search function
 export const searchItems = cache(async (modelName: string, categoryName: string, departmentAcronym: string): Promise<IGetItemsPaginationApiResponse> => {
     try {
-        const response = await PahiramAxiosConfig.get(`/item-inventory`, {
+        const response = await PahiramAxiosConfig.get(`/item-group`, {
             params: {
                 model_name: modelName,
                 category_name: categoryName,
