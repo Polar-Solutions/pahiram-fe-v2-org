@@ -39,7 +39,6 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
   const { data, isLoading } = useBookedDates(itemGroupId);
   const { getItemGroupById } = useItemGroupStore();
   const dataProperty = data?.data?.data;
-  console.log("Data property, CALENDAR RENDERED", dataProperty);
 
   const item = getItemGroupById(itemGroupId);
 
@@ -129,7 +128,7 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] w-full overflow-y-auto">
+        <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] w-full max-h-[90vh] overflow-y-auto">
           <DialogHeader className="flex gap-1">
             <DialogTitle className="text-2xl font-bold">
               {item?.model_name}
@@ -137,16 +136,16 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
             <DialogDescription className="flex gap-2">
               {/* {itemData?.active_items} */}
               <Badge
-                variant={
-                  item?.in_circulation === undefined ||
-                  item?.in_circulation === 0
-                    ? "destructive"
-                    : "default"
-                }
+                  variant={
+                    item?.in_circulation === undefined ||
+                    item?.in_circulation === 0
+                        ? "destructive"
+                        : "default"
+                  }
               >
                 {item?.in_circulation || item?.in_circulation === 0
-                  ? `${item?.in_circulation} Items Available`
-                  : "Unavailable"}
+                    ? `${item?.in_circulation} Items Available`
+                    : "Unavailable"}
               </Badge>
 
               <Badge variant="outline">
@@ -159,96 +158,86 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
             </DialogDescription>
           </DialogHeader>
 
-          <FullCalendar
-            plugins={[
-              dayGridPlugin,
-              interactionPlugin,
-              timeGridPlugin,
-              listPlugin,
-            ]}
-            headerToolbar={{
-              start: "prev,next",
-              center: "title",
-              end: "timeGridWeek,timeGridDay",
-            }}
-            // buttonText={{
-            //   listWeek: "List Week",
-            //   listDay: "List Day",
-            // }}
-            // views={["dayGridWeek", "dayGridDay", "listWeek"]}
-            initialView="timeGridWeek"
-            //   views={["dayGridWeek", "dayGridDay"]}
-            views={{
-              timeGridWeek: {
-                type: "timeGrid", // Ensure the correct type for the view
-                duration: { weeks: 1 },
-              },
-              timeGridDay: {
-                type: "timeGrid",
-                duration: { days: 1 },
-              },
-              dayGridMonth: {
-                type: "dayGrid",
-                duration: { months: 1 },
-              },
-            }}
-            hiddenDays={[0]} // Sunday Hidden
-            selectable={true}
-            selectMirror={true}
-            dayMaxEvents={true}
-            displayEventEnd={true}
-            allDaySlot={false}
-            validRange={() => {
-              const nowDate = new Date();
-              const nextTwoMonthsDate = new Date(nowDate);
-              const localNowDate = new Date(
-                nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-              );
-              return {
-                start: localNowDate,
-                end: nextTwoMonthsDate.setMonth(
-                  nextTwoMonthsDate.getMonth() + 2
-                ),
-              };
-            }}
-            select={handleDateSelect}
-            events={[
-              ...(dataProperty?.dates || []),
-              { title: "Chosen Date", ...newEvent, color: "#e7b426" },
-            ]}
-            slotMinTime={"07:30:00"}
-            slotMaxTime={"17:30:00"}
-            nextDayThreshold={"09:00:00"}
-            businessHours={[
-              {
-                // AM
-                daysOfWeek: [1, 2, 3, 4, 5, 6],
-                startTime: "7:30",
-                endTime: "12:00",
-              },
-              {
-                // PM
-                // TODO: Adjust the ending dates depending on the clients needs
-                daysOfWeek: [1, 2, 3, 4, 5, 6],
-                startTime: "13:00", // 1pm
-                endTime: "18:00", // 6pm
-              },
-            ]}
-            contentHeight={"auto"}
-            height={"parent"}
-            // selectConstraint={"businessHours"}
-            //   eventBackgroundColor={secondaryMain}
-          />
+          <div className="calendar-container" style={{height: 'calc(70vh - 100px)'}}>
+            <FullCalendar
+                plugins={[
+                  dayGridPlugin,
+                  interactionPlugin,
+                  timeGridPlugin,
+                  listPlugin,
+                ]}
+                headerToolbar={{
+                  start: "prev,next",
+                  center: "title",
+                  end: "timeGridWeek,timeGridDay",
+                }}
+                initialView="timeGridWeek"
+                views={{
+                  timeGridWeek: {
+                    type: "timeGrid",
+                    duration: {weeks: 1},
+                  },
+                  timeGridDay: {
+                    type: "timeGrid",
+                    duration: {days: 1},
+                  },
+                  dayGridMonth: {
+                    type: "dayGrid",
+                    duration: {months: 1},
+                  },
+                }}
+                hiddenDays={[0]}
+                selectable={true}
+                selectMirror={true}
+                dayMaxEvents={true}
+                displayEventEnd={true}
+                allDaySlot={false}
+                validRange={() => {
+                  const nowDate = new Date();
+                  const nextTwoMonthsDate = new Date(nowDate);
+                  const localNowDate = new Date(
+                      nowDate.toLocaleString("en-US", {timeZone: "Asia/Manila"})
+                  );
+                  return {
+                    start: localNowDate,
+                    end: nextTwoMonthsDate.setMonth(
+                        nextTwoMonthsDate.getMonth() + 2
+                    ),
+                  };
+                }}
+                select={handleDateSelect}
+                events={[
+                  ...(dataProperty?.dates || []),
+                  {title: "Chosen Date", ...newEvent, color: "#e7b426"},
+                ]}
+                slotMinTime={"07:30:00"}
+                slotMaxTime={"17:30:00"}
+                nextDayThreshold={"09:00:00"}
+                businessHours={[
+                  {
+                    daysOfWeek: [1, 2, 3, 4, 5, 6],
+                    startTime: "7:30",
+                    endTime: "12:00",
+                  },
+                  {
+                    daysOfWeek: [1, 2, 3, 4, 5, 6],
+                    startTime: "13:00",
+                    endTime: "18:00",
+                  },
+                ]}
+                height="100%"
+            />
+          </div>
 
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Close
-              </Button>
-            </DialogClose>
-          </DialogFooter>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button type="button" variant="secondary">
+                  Close
+                </Button>
+              </DialogClose>
+            </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  );
+);
 };

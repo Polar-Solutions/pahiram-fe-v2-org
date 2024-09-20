@@ -33,9 +33,6 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
     handleCloseItemModal();
   };
 
-  // Watch for date range changes
-  const startDate = watch(`items[${item.item_group_id}].start_date`);
-  const returnDate = watch(`items[${item.item_group_id}].end_date`);
 
   const { addCartItem, getCartItemById } = useCartStore();
 

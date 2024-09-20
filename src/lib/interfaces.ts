@@ -57,7 +57,6 @@ export interface IItemGroup {
   image: string;
   model_name: string;
   group_category: string;
-  group_category: string;
   department: string;
   in_circulation: number;
   availability: string;

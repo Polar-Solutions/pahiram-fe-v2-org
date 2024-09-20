@@ -11,13 +11,6 @@ import {useItemGroupStore} from "@/hooks/useItemGroupStore";
 import ItemModalSkeleton from "@/components/borrow/presentational/item-modal-skeleton";
 import {specificItemGroupDataIsFetching} from "@/signals/shared-signals";
 
-interface ISpecificItemModalProps {
-    showModal: boolean;
-    setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
-    modalItem: IItem | undefined;
-}
-
-// TODO: Implement URL reading instead of useState
 
 export default function ItemModal() {
     const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
