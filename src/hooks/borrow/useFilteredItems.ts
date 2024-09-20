@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 import { getURLParams } from "@/helper/borrow/getURLParams";
 
 export const useFilteredItems = ({ items }: { items: IItemGroup[] }) => {

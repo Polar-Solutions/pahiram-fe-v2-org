@@ -48,6 +48,7 @@ export const getItemsPagination = async (
     const response = await PahiramAxiosConfig.get(
       getItemsPaginationEndpoint(page)
     );
+
     if (!response.status || response.status >= 400) {
       const errorBody = await response.statusText;
       throw new Error(

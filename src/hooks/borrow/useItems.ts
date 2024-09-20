@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { getItemsPaginationUseCase } from "@/core/use-cases/items";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 
 export const useItems = (page: number) => {
   const [items, setItems] = useState<IItemGroup[]>([]);
   const [totalPages, setTotalPages] = useState(1);
   const [isFetchingItems, setIsFetchingItems] = useState(false);
+
 
   // Use a ref to store cached items per page
   const cachedItems = useRef<{ [page: number]: IItemGroup[] }>({});

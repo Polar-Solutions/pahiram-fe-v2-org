@@ -24,7 +24,6 @@ export default function ItemsContainer() {
   const [gridColumns, setGridColumns] = useState(3);
 
   const containerRef = useRef<HTMLDivElement>(null);
-
   const updateLayout = useCallback(() => {
     if (containerRef.current) {
       const width = containerRef.current.offsetWidth;

@@ -1,4 +1,7 @@
-export const getBorrowListEndpoint = "/user/borrow-request";
+export const getBorrowListEndpoint = (page: number) => {
+  return `/user/borrow-request?page=${page}`;
+};
+
 
 export const getBorrowResourceEndpoint = (resourceId: string) => {
   const endpoint = `/user/borrow-request/${resourceId}`;
