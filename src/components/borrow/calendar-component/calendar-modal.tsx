@@ -7,7 +7,6 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { CalendarIcon } from "lucide-react";
@@ -17,39 +16,42 @@ import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
-import multiMonthPlugin from "@fullcalendar/multimonth";
 import { DateSelectArg } from "@fullcalendar/core";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import { convertDateForHumanConsumption } from "@/helper/date-utilities";
 import { useBookedDates } from "@/core/data-access/items";
 import { toast } from "@/hooks/use-toast";
 import { ICalendarModal } from "@/lib/interfaces/get-booked-dates-request-interface";
-import { getURLParams } from "@/helper/borrow/getURLParams";
+
 import { Badge } from "@/components/ui/badge";
 import { handleApiClientSideError } from "@/core/handle-api-client-side-error";
 import { useItemGroupStore } from "@/hooks/useItemGroupStore";
-import { CustomDatePickerModal } from "./custom-date-picker-modal";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { CustomBorrowDateRangeModal } from "./custom-borrow-date-range-modal";
+import { useFormContext } from "react-hook-form";
+import { FormMessage } from "@/components/ui/form";
 
-export const CalendarModal: React.FC<ICalendarModal> = ({
-  startDate,
-  returnDate,
-  onDateChange,
-  itemGroupId,
-}) => {
+export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
+  const {
+    setValue,
+    watch,
+    formState: { errors },
+  } = useFormContext();
   const { data, isLoading } = useBookedDates(itemGroupId);
-  const { getItemGroupById } = useItemGroupStore();
   const dataProperty = data?.data?.data;
+
+  const { getItemGroupById } = useItemGroupStore();
   const item = getItemGroupById(itemGroupId);
 
-  const [newEvent, setNewEvent] = useState<Object>({});
+  const chosenDateRage = {
+    start: watch("start_date"),
+    end: watch("return_date"),
+  };
+
   const [isOpenDateModalPicker, setisOpenDateModalPicker] = useState(false);
+  const handleOpenDateRangeModal = () => {
+    setisOpenDateModalPicker(true);
+  };
 
   const handleDateSelect = (info: DateSelectArg) => {
     const origStartDateStr = new Date(info.startStr);
@@ -64,11 +66,9 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
     const formattedStartDate = origStartDateStr.toISOString().slice(0, 16);
     const formattedEndDate = origEndDateStr.toISOString().slice(0, 16);
 
-    onDateChange(formattedStartDate, formattedEndDate);
-    setNewEvent({
-      start: formattedStartDate,
-      end: formattedEndDate,
-    });
+    // Use setValue to directly update RHF form state
+    setValue("start_date", formattedStartDate);
+    setValue("return_date", formattedEndDate);
   };
 
   // Add delay because the toast error is showing up immediately
@@ -82,13 +82,6 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
   if (isLoading)
     return (
       <div className="flex flex-col flex-start">
-        <Label
-          htmlFor="borrow-duration-selector"
-          className="text-sm font-medium mb-1"
-        >
-          Borrow Duration
-        </Label>
-
         <Dialog>
           <DialogTrigger asChild>
             <Button
@@ -97,11 +90,11 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
               className="w-full justify-start text-left font-normal"
               disabled
             >
-              <CalendarIcon className="mr-2 h-4 w-4" />
-              {startDate && returnDate
-                ? convertDateForHumanConsumption(startDate) +
-                  " to " +
-                  convertDateForHumanConsumption(returnDate)
+              <CalendarIcon className="mr-2 h-4 w-4" />{" "}
+              {watch("start_date") && watch("return_date")
+                ? `${convertDateForHumanConsumption(
+                    watch("start_date")
+                  )} to ${convertDateForHumanConsumption(watch("return_date"))}`
                 : "Select date range"}
             </Button>
           </DialogTrigger>
@@ -111,29 +104,24 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
 
   return (
     <div className="flex flex-col flex-start">
-      <Label
-        htmlFor="borrow-duration-selector"
-        className="text-sm font-medium mb-1"
-      >
-        Borrow Duration
-      </Label>
-
       <Dialog>
-        <DialogTrigger asChild>
-          <Button
-            variant="outline"
-            id="borrow-duration-selector"
-            className="w-full justify-start text-left font-normal"
-            onClick={handleErrorToast}
-          >
-            <CalendarIcon className="mr-2 h-4 w-4" />
-            {startDate && returnDate
-              ? convertDateForHumanConsumption(startDate) +
-                " to " +
-                convertDateForHumanConsumption(returnDate)
-              : "Select date range"}
-          </Button>
-        </DialogTrigger>
+        <div>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              id="borrow-duration-selector"
+              className="w-full justify-start text-left font-normal"
+              onClick={handleErrorToast}
+            >
+              <CalendarIcon className="mr-2 h-4 w-4" />
+              {watch("start_date") && watch("return_date")
+                ? `${convertDateForHumanConsumption(
+                    watch("start_date")
+                  )} to ${convertDateForHumanConsumption(watch("return_date"))}`
+                : "Select date range"}
+            </Button>
+          </DialogTrigger>
+        </div>
 
         <DialogContent className="sm:max-w-[80%] lg:max-w-[60%] max-h-[90%] w-full overflow-y-auto">
           <DialogHeader className="flex gap-1">
@@ -167,18 +155,12 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
 
           <div className="h-full overflow-y-auto">
             <FullCalendar
-              dateClick={() => {
-                setisOpenDateModalPicker(true);
-              }}
+              dragScroll={true}
+              // eventMinWidth={1}
+              dateClick={() => handleOpenDateRangeModal()}
               // stickyHeaderDates={true}
               handleWindowResize
-              dragScroll
               nowIndicator={true}
-              // displayEventTime={true}
-              // eventResizableFromStart={true}
-              // eventDurationEditable={true}
-              // eventDrop={handleEventDrop}
-              // eventReceive={handleEventDrop} // To handle events dragged from outside the calendar
               plugins={[
                 dayGridPlugin,
                 interactionPlugin,
@@ -231,7 +213,11 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
               select={handleDateSelect}
               events={[
                 ...(dataProperty?.dates || []),
-                { title: "Chosen Date", ...newEvent, color: "#e7b426" },
+                {
+                  title: "Chosen Date",
+                  ...chosenDateRage,
+                  color: "#e7b426",
+                },
               ]}
               slotMinTime={"07:30:00"}
               slotMaxTime={"17:30:00"}
@@ -253,11 +239,17 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
               ]}
               contentHeight={"auto"}
               height={"100%"}
-              // selectConstraint={"businessHours"}
             />
           </div>
 
           <DialogFooter className="sm:justify-end">
+            <Button
+              onClick={() => handleOpenDateRangeModal()}
+              type="button"
+              variant="secondary"
+            >
+              Open Custom Date Picker
+            </Button>
             <DialogClose asChild>
               <Button type="button" variant="secondary">
                 Close
@@ -267,8 +259,9 @@ export const CalendarModal: React.FC<ICalendarModal> = ({
         </DialogContent>
       </Dialog>
 
+      {/* Custom Date Selector Modal */}
       {isOpenDateModalPicker && (
-        <CustomDatePickerModal
+        <CustomBorrowDateRangeModal
           isOpen={isOpenDateModalPicker}
           onClose={() => setisOpenDateModalPicker(false)}
         />

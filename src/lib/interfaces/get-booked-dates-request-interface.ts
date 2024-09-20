@@ -52,8 +52,5 @@ export interface IBookedDatesApiResponse {
 
 // Calendar Component Props
 export interface ICalendarModal {
-  startDate: string;
-  returnDate: string;
-  onDateChange: (start: string, returnDate: string) => void;
   itemGroupId: string;
 }

@@ -95,8 +95,8 @@ export interface IItemGroup {
 }
 
 export interface ICartItem extends IItemGroup {
-  start_date: string;
-  return_date: string;
+  start_date: Date | string;
+  return_date: Date |string;
   quantity: number;
 }
 
