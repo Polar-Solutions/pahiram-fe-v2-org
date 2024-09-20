@@ -23,14 +23,14 @@ interface ComboboxProps {
   options: { value: string; label: string }[];
   placeholder?: string;
   onSelect: (value: string) => void;
-  selectedTime?: string;
+  selectedItem?: string;
 }
 
 export function ComboboxWithNoApiIntegration({
   options,
   placeholder = "Select an option...",
   onSelect,
-  selectedTime = "",
+  selectedItem = "",
 }: ComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -43,8 +43,8 @@ export function ComboboxWithNoApiIntegration({
           aria-expanded={open}
           className="w-full min-w-[100px] justify-between"
         >
-          {selectedTime
-            ? options.find((option) => option.value === selectedTime)?.label
+          {selectedItem
+            ? options.find((option) => option.value === selectedItem)?.label
             : placeholder}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -60,14 +60,14 @@ export function ComboboxWithNoApiIntegration({
                   key={option.value}
                   value={option.value}
                   onSelect={(currentValue) => {
-                    onSelect(currentValue === selectedTime ? "" : currentValue);
+                    onSelect(currentValue === selectedItem ? "" : currentValue);
                     setOpen(false);
                   }}
                 >
                   <Check
                     className={cn(
                       "mr-2 h-4 w-4",
-                      selectedTime === option.value
+                      selectedItem === option.value
                         ? "opacity-100"
                         : "opacity-0"
                     )}

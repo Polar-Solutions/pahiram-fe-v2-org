@@ -197,19 +197,19 @@ export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
               dayMaxEvents={true}
               displayEventEnd={true}
               allDaySlot={false}
-              validRange={() => {
-                const nowDate = new Date();
-                const nextTwoMonthsDate = new Date(nowDate);
-                const localNowDate = new Date(
-                  nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-                );
-                return {
-                  start: localNowDate,
-                  end: nextTwoMonthsDate.setMonth(
-                    nextTwoMonthsDate.getMonth() + 2
-                  ),
-                };
-              }}
+              // validRange={() => {
+              //   const nowDate = new Date();
+              //   const nextTwoMonthsDate = new Date(nowDate);
+              //   const localNowDate = new Date(
+              //     nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
+              //   );
+              //   return {
+              //     start: localNowDate,
+              //     end: nextTwoMonthsDate.setMonth(
+              //       nextTwoMonthsDate.getMonth() + 2
+              //     ),
+              //   };
+              // }}
               select={handleDateSelect}
               events={[
                 ...(dataProperty?.dates || []),
