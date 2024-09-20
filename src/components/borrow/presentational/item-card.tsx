@@ -14,6 +14,7 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useGetSpecificItemGroupData } from "@/core/data-access/items";
 import { useItemGroupStore } from "@/hooks/useItemGroupStore";
+import { useCartStore } from "@/hooks/borrow/useCartStore";
 
 interface IItemCardProps {
   item: IItemGroup;
@@ -29,6 +30,7 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
     item.item_group_id
   );
   const { addItemGroup, itemGroupExists } = useItemGroupStore();
+  const { getIndexOfItemGroupInCart } = useCartStore();
 
   const handleClickItemGroupCard = async () => {
     // Push to the URL
@@ -38,6 +40,7 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
     const newUrl = updateURLParams({
       "item-group-id": serializedItem,
       "show-item-group-modal": 1,
+      // "cart-index": getIndexOfItemGroupInCart(item.item_group_id),
     });
     router.push(newUrl);
 
@@ -74,9 +77,10 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
             <Image
               src={item.image || "/image-placeholder.png"}
               alt={item.model_name || "item"}
-              layout="fill"
-              objectFit="cover"
-              className="rounded-t-lg"
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              className="object-cover rounded-t-lg"
+              priority
             />
           </div>
         </CardHeader>
