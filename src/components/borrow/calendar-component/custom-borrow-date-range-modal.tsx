@@ -19,7 +19,6 @@ import {
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { ComboboxWithNoApiIntegration } from "@/components/common/combobox/combobox-no-api-integration";
-import { FormProvider, useForm } from "react-hook-form";
 
 import { BORROW_TIME_SLOTS } from "@/CONSTANTS/BORROW_TIME_SLOTS";
 import { ControlledDatePicker } from "../../common/controlled-date-picker";
@@ -104,7 +103,7 @@ export const CustomBorrowDateRangeModal: React.FC<
                   options={BORROW_TIME_SLOTS}
                   placeholder="Start time"
                   onSelect={(time: string) => handleStartTimeChange(time)}
-                  selectedTime={startTime}
+                  selectedItem={startTime}
                 />
               </div>
             </div>
@@ -132,7 +131,7 @@ export const CustomBorrowDateRangeModal: React.FC<
                   options={BORROW_TIME_SLOTS}
                   placeholder="Return time"
                   onSelect={(time: string) => handleReturnTimeChange(time)}
-                  selectedTime={returnTime}
+                  selectedItem={returnTime}
                 />
               </div>
             </div>

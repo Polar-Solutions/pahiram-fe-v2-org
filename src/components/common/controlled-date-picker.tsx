@@ -1,6 +1,6 @@
 import * as React from "react";
 import { CalendarIcon } from "lucide-react";
-import { format, parseISO } from "date-fns";
+import { format, parseISO, isSameDay, isValid } from "date-fns";
 import { cn } from "@/lib/utils"; // Your utility function for class names
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar"; // Your Calendar component
 import { format as formatZonedTime, toZonedTime } from "date-fns-tz";
+
 interface DatePickerProps {
   selectedDate: string;
   onDateChange: (date: string) => void;
@@ -27,18 +28,27 @@ export function ControlledDatePicker({
   buttonClassName = "w-full min-w[100px] justify-start text-left font-normal",
   calendarProps = {},
 }: DatePickerProps) {
+  const [calendarOpen, setCalendarOpen] = React.useState(false);
+
   const timeZone = "Asia/Manila"; // Manila time zone
   const date = parseISO(selectedDate);
 
-  const handleDateChange = (date: Date) => {
+  const handleDateChange = (selected: Date | null) => {
+    // Check if the selected date is valid
+    if (!selected || !isValid(selected)) {
+      setCalendarOpen(false); 
+      return;
+    }
+
     // Convert the Date object to Manila time
-    const zonedDate = toZonedTime(date, timeZone);
+    const zonedDate = toZonedTime(selected, timeZone);
     const dateString = formatZonedTime(zonedDate, "yyyy-MM-dd", { timeZone }); // Format it to ensure proper date in the timezone
     onDateChange(dateString); // Call the parent callback with the string date in Manila time
+    setCalendarOpen(false);
   };
 
   return (
-    <Popover>
+    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"

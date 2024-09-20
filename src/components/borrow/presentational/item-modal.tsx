@@ -9,10 +9,7 @@ import { useRouter } from "next/navigation";
 import { IItemGroup } from "@/lib/interfaces";
 import { ItemModalForm } from "./item-modal-form";
 import { Badge } from "@/components/ui/badge";
-import { useGetSpecificItemGroupData } from "@/core/data-access/items";
 import { useItemGroupStore } from "@/hooks/useItemGroupStore";
-import { useForm } from "react-hook-form";
-import { useCartStore } from "@/hooks/borrow/useCartStore";
 
 export default function ItemModal() {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
@@ -22,7 +19,6 @@ export default function ItemModal() {
   const { itemGroupId, showItemGroupModal } = getURLParams();
 
   const { getItemGroupById } = useItemGroupStore();
-  const rhfMethods = useForm();
 
   const specificItemGroup: IItemGroup | undefined = getItemGroupById(
     itemGroupId || ""
@@ -31,7 +27,6 @@ export default function ItemModal() {
   const handleCloseModal = () => {
     const newUrl = updateURLParams({
       "item-group-id": "",
-      "cart-index": 0,
       "show-item-group-modal": 0,
     });
     router.push(newUrl);
@@ -40,7 +35,7 @@ export default function ItemModal() {
   const handleOpenChange = (open: boolean) => {
     if (!open) {
       handleCloseModal();
-      rhfMethods.reset();
+      // rhfMethods.reset();
     }
   };
 

@@ -7,7 +7,6 @@ import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CalendarModal } from "../calendar-component/calendar-modal";
 import { useCartStore } from "@/hooks/borrow/useCartStore";
 import { ICartItem, IItemGroup } from "@/lib/interfaces";
-import { NEVER, z, ZodIssueCode } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   FormField,
@@ -17,6 +16,7 @@ import {
   FormItem,
 } from "@/components/ui/form";
 import { SuperRefineItemSchema } from "@/lib/form-schemas/submit-borrow-request-form-schema";
+import { z } from "zod";
 
 interface ItemModalFormProps {
   handleCloseItemModal: () => void;
@@ -46,7 +46,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
     formState: { errors },
   } = form;
 
-  const handleCloseModal = () => {
+  const handleCloseModalAndResetForm = () => {
     form.reset();
     handleCloseItemModal();
   };
@@ -62,7 +62,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
     };
 
     addCartItem(formData);
-    handleCloseModal();
+    handleCloseModalAndResetForm();
   };
 
   return (
@@ -117,7 +117,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
         </div>
 
         <div className="flex justify-end gap-2 mt-4">
-          <Button variant="outline" onClick={handleCloseModal}>
+          <Button variant="outline" onClick={handleCloseModalAndResetForm}>
             Cancel
           </Button>
 
