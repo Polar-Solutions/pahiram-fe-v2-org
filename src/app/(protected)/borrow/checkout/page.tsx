@@ -16,7 +16,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAction } from "next-safe-action/hooks";
 import { useRouter } from "next/navigation";
 import React from "react";
-import { useForm } from "react-hook-form";
+import { FormProvider, useForm } from "react-hook-form";
 
 interface IFormValues {
   endorser: string;
@@ -40,7 +40,7 @@ export default function page() {
   const onSubmit = async () => {
     const formValues: IFormValues = getValues();
     const cartItems = prepareCartItemsForBorrowSubmission(allCartItems);
-    
+
     const res = await executeAsync({
       ...formValues,
       items: cartItems,
@@ -66,21 +66,21 @@ export default function page() {
       />
       <Content>
         {/* Main Content */}
-        <SubmitBorrowRequestContainer control={control} />
+          <SubmitBorrowRequestContainer control={control} />
 
-        {/* Footer items */}
-        <div className="flex flex-row justify-end w-full gap-4">
-          <Button variant="outline" onClick={addMoreAction}>
-            Add more
-          </Button>
-          <Button
-            className="text-black"
-            disabled={isCartEmpty() || isExecuting}
-            onClick={handleSubmit(onSubmit)}
-          >
-            Submit request
-          </Button>
-        </div>
+          {/* Footer items */}
+          <div className="flex flex-row justify-end w-full gap-4">
+            <Button variant="outline" onClick={addMoreAction}>
+              Add more
+            </Button>
+            <Button
+              className="text-black"
+              disabled={isCartEmpty() || isExecuting}
+              onClick={handleSubmit(onSubmit)}
+            >
+              Submit request
+            </Button>
+          </div>
       </Content>
     </ContentLayout>
   );

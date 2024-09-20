@@ -48,7 +48,7 @@ export const useItemGroupStore = create<IItemGroupStoreState>()(
        * Retrieves specific item group data by its ID.
        *
        * @param {string} itemGroupId - The ID of the item group to retrieve.
-       * @returns {IItem | undefined} - The item group if found, otherwise undefined.
+       * @returns {IItemGroup | undefined} - The item group if found, otherwise undefined.
        */
       getItemGroupById: (itemGroupId: string): IItemGroup | undefined => {
         const { itemGroups } = get();

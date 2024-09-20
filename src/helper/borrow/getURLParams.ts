@@ -1,9 +1,8 @@
 import { useSearchParams } from "next/navigation";
-import { IItem, IItemGroup, IBorrowRequest} from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 
 export const getURLParams = () => {
   const searchParams = useSearchParams();
-
   const sortBy = searchParams.get("sort") || "Name";
   const filterCategory = searchParams.get("category") || "";
   const filterOffice = searchParams.get("office") || "";
