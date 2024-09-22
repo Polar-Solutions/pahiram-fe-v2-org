@@ -26,11 +26,10 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
   const { item } = props;
   const router = useRouter();
 
-  const { data, isSuccess, isLoading, refetch } = useGetSpecificItemGroupData(
+  const { refetch } = useGetSpecificItemGroupData(
     item.item_group_id
   );
   const { addItemGroup, itemGroupExists } = useItemGroupStore();
-  const { getIndexOfItemGroupInCart } = useCartStore();
 
   const handleClickItemGroupCard = async () => {
     // Push to the URL
@@ -40,7 +39,6 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
     const newUrl = updateURLParams({
       "item-group-id": serializedItem,
       "show-item-group-modal": 1,
-      // "cart-index": getIndexOfItemGroupInCart(item.item_group_id),
     });
     router.push(newUrl);
 
