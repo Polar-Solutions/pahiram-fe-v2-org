@@ -11,7 +11,6 @@ export type ICartItemsStoreState = {
   getItemQuantityById: (itemId: string) => number | null;
   clearCart: () => void;
   isCartEmpty: () => boolean;
-  getIndexOfItemGroupInCart: (itemId: string) => number;
 };
 
 export type IItemGroupStoreState = {

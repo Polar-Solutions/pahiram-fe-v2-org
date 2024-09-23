@@ -152,21 +152,7 @@ export const useCartStore = create<ICartItemsStoreState>()(
       isCartEmpty: (): boolean => {
         const { cartItems } = get();
         return cartItems.length === 0;
-      },
-
-      /**
-       * Determines the index of the item
-       *
-       * @returns {number} - If match found, returns the actual index, if not, length of cart + 1
-       */
-      getIndexOfItemGroupInCart: (itemGroupId: string): number => {
-        const { cartItems } = get();
-        const index = cartItems.findIndex(
-          (cartItem) => cartItem.item_group_id === itemGroupId
-        );
-
-        return index == -1 ? cartItems.length + 1 : index;
-      },
+      }
     }),
 
     {
