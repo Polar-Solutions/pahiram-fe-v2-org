@@ -1,70 +1,84 @@
 "use client"
 
-import { Input } from "@/components/ui/input";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { PURPOSE_CONSTANTS } from "@/CONSTANTS/PURPOSE_CONSTANTS";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { BorrowRequestFormContainerProps } from "@/components/borrow/containers/submit-borrow-request/submit-borrow-request-container";
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Textarea} from "@/components/ui/textarea";
+import {PURPOSE_CONSTANTS, PURPOSE_OPTIONS_CONSTANTS} from "@/CONSTANTS/PURPOSE_CONSTANTS";
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {useFormContext} from "react-hook-form";
+import {requestFormIsSubmitting} from "@/signals/shared-signals";
+import React from "react";
+import {ComboboxWithNoApiIntegration} from "@/components/common/combobox/combobox-no-api-integration";
 
-export const BorrowRequestFormContainer: React.FC<BorrowRequestFormContainerProps> = ({ form }) => {
+export const BorrowRequestFormContainer = () => {
+
+    const form = useFormContext();
+
     return (
         <div className="flex flex-col gap-4 w-full">
             <h5 className="text-xl">Borrowing details</h5>
 
             <FormField
+                disabled={requestFormIsSubmitting.value}
                 control={form.control}
                 name="endorsed_by"
-                render={({ field }) => (
+                render={({field}) => (
                     <FormItem>
-                        <FormLabel htmlFor="submit-request-endorser">Endorser</FormLabel>
+                        <FormLabel>Endorser</FormLabel>
                         <FormControl>
-                            <Input id="submit-request-endorser" {...field} />
+                            <Input {...field} />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage/>
                     </FormItem>
                 )}
             />
-
             <FormField
+                disabled={requestFormIsSubmitting.value}
                 control={form.control}
                 name="purpose"
-                render={({ field }) => (
+                render={({field}) => (
                     <FormItem>
-                        <FormLabel htmlFor="submit-request-purpose-dropdown">Purpose</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                                <SelectTrigger id="submit-request-purpose-dropdown">
-                                    <SelectValue placeholder="Select purpose" />
-                                </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                                {Object.entries(PURPOSE_CONSTANTS).map(([key, { purpose }]) => (
-                                    <SelectItem key={key} value={key}>
-                                        {purpose}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <FormMessage />
+                        <FormLabel>Purpose</FormLabel>
+                        <ComboboxWithNoApiIntegration
+                            isDisabled={requestFormIsSubmitting.value}
+                            selectedItem={field.value}
+                            onSelect={field.onChange}
+                            options={PURPOSE_OPTIONS_CONSTANTS}
+                            placeholder="Select purpose"
+                        />
+                        {/*<Select onValueChange={field.onChange} defaultValue={field.value}>*/}
+                        {/*    <FormControl>*/}
+                        {/*        <SelectTrigger>*/}
+                        {/*            <SelectValue onReset={} placeholder="Select purpose"/>*/}
+                        {/*        </SelectTrigger>*/}
+                        {/*    </FormControl>*/}
+                        {/*    <SelectContent>*/}
+                        {/*        {Object.entries(PURPOSE_CONSTANTS).map(([key, {purpose}]) => (*/}
+                        {/*            <SelectItem key={key} value={key}>*/}
+                        {/*                {purpose}*/}
+                        {/*            </SelectItem>*/}
+                        {/*        ))}*/}
+                        {/*    </SelectContent>*/}
+                        {/*</Select>*/}
+                        <FormMessage/>
                     </FormItem>
                 )}
             />
 
             <FormField
+                disabled={requestFormIsSubmitting.value}
                 control={form.control}
                 name="user_defined_purpose"
-                render={({ field }) => (
+                render={({field}) => (
                     <FormItem>
-                        <FormLabel htmlFor="specific-purpose">Specific purpose</FormLabel>
+                        <FormLabel>Specific purpose</FormLabel>
                         <FormControl>
                             <Textarea
-                                id="specific-purpose"
                                 placeholder="Type your purpose here..."
                                 {...field}
                             />
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage/>
                     </FormItem>
                 )}
             />
