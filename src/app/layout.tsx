@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import ClientLayout from "./client-layout";
+import '@radix-ui/themes/styles.css';
+
 
 // Metadata configuration (server-side only)
 export const metadata: Metadata = {

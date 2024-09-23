@@ -29,6 +29,8 @@ export const BorrowingCartNav = () => {
     router.push("/borrow/checkout");
   };
 
+  // TODO: Add number of items in cart as badge
+
   return (
     <Sheet>
       {/* Cart Icon on nav bar */}
