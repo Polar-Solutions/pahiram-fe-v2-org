@@ -21,7 +21,6 @@ import { DateSelectArg } from "@fullcalendar/core";
 import React, { useState } from "react";
 import { convertDateForHumanConsumption } from "@/helper/date-utilities";
 import { useBookedDates } from "@/core/data-access/items";
-import { toast } from "@/hooks/use-toast";
 import { ICalendarModal } from "@/lib/interfaces/get-booked-dates-request-interface";
 
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +29,8 @@ import { useItemGroupStore } from "@/hooks/useItemGroupStore";
 import { CustomBorrowDateRangeModal } from "./custom-borrow-date-range-modal";
 import { useFormContext } from "react-hook-form";
 import { FormMessage } from "@/components/ui/form";
+import { addAdditionalInfoFieldsForBorrowCalendar } from "@/helper/borrow-calendar-additional-info-fields";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
   const {
@@ -81,25 +82,21 @@ export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
 
   if (isLoading)
     return (
-      <div className="flex flex-col flex-start">
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button
-              variant="outline"
-              id="borrow-duration-selector"
-              className="w-full justify-start text-left font-normal"
-              disabled
-            >
-              <CalendarIcon className="mr-2 h-4 w-4" />{" "}
-              {watch("start_date") && watch("return_date")
-                ? `${convertDateForHumanConsumption(
-                    watch("start_date")
-                  )} to ${convertDateForHumanConsumption(watch("return_date"))}`
-                : "Select date range"}
-            </Button>
-          </DialogTrigger>
-        </Dialog>
-      </div>
+      <Button
+        variant="outline"
+        id="borrow-duration-selector"
+        className="w-full justify-start text-left font-normal"
+        disabled
+      >
+        <CalendarIcon className="mr-2 h-4 w-4" />{" "}
+        {watch("start_date") && watch("return_date")
+          ? `${convertDateForHumanConsumption(
+              watch("start_date")
+            )} to ${convertDateForHumanConsumption(watch("return_date"))}`
+          : "Select date range"}
+        {" "}
+        <LoadingSpinner className="w-4 ml-2" />
+      </Button>
     );
 
   return (
@@ -129,7 +126,6 @@ export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
               {item?.model_name}
             </DialogTitle>
             <div className="flex gap-2">
-              {/* {itemData?.active_items} */}
               <Badge
                 variant={
                   item?.in_circulation === undefined ||
@@ -197,22 +193,12 @@ export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
               dayMaxEvents={true}
               displayEventEnd={true}
               allDaySlot={false}
-              // validRange={() => {
-              //   const nowDate = new Date();
-              //   const nextTwoMonthsDate = new Date(nowDate);
-              //   const localNowDate = new Date(
-              //     nowDate.toLocaleString("en-US", { timeZone: "Asia/Manila" })
-              //   );
-              //   return {
-              //     start: localNowDate,
-              //     end: nextTwoMonthsDate.setMonth(
-              //       nextTwoMonthsDate.getMonth() + 2
-              //     ),
-              //   };
-              // }}
               select={handleDateSelect}
               events={[
-                ...(dataProperty?.dates || []),
+                ...(addAdditionalInfoFieldsForBorrowCalendar(
+                  dataProperty?.dates,
+                  dataProperty?.item_group_data.active_items
+                ) || []),
                 {
                   title: "Chosen Date",
                   ...chosenDateRage,
@@ -221,24 +207,24 @@ export const CalendarModal: React.FC<ICalendarModal> = ({ itemGroupId }) => {
               ]}
               slotMinTime={"07:30:00"}
               slotMaxTime={"17:30:00"}
-              nextDayThreshold={"09:00:00"}
+              nextDayThreshold={"00:00:00"}
               businessHours={[
                 {
-                  // AM
+                  // AM Business Hours
                   daysOfWeek: [1, 2, 3, 4, 5, 6],
                   startTime: "7:30",
                   endTime: "12:00",
                 },
                 {
-                  // PM
-                  // TODO: Adjust the ending dates depending on the clients needs
+                  // PM Hours
                   daysOfWeek: [1, 2, 3, 4, 5, 6],
                   startTime: "13:00", // 1pm
                   endTime: "18:00", // 6pm
                 },
               ]}
               contentHeight={"auto"}
-              height={"100%"}
+              height={"!100%"}
+              expandRows={true}
             />
           </div>
 

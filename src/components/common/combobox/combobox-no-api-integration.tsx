@@ -35,7 +35,7 @@ export function ComboboxWithNoApiIntegration({
   const [open, setOpen] = React.useState(false);
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen} modal={true}>
       <PopoverTrigger asChild>
         <Button
           variant="outline"
@@ -53,6 +53,8 @@ export function ComboboxWithNoApiIntegration({
         <Command>
           <CommandInput placeholder={`Search ${placeholder.toLowerCase()}`} />
           <CommandList>
+            {" "}
+            {/* Set a max height for the CommandList */}
             <CommandEmpty>No option found.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => (
