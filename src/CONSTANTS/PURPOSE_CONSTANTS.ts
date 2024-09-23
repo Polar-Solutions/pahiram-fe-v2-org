@@ -39,3 +39,8 @@ export const PURPOSE_CONSTANTS: PurposeConstants = {
 export const PURPOSE_CONSTANTS_KEYS = Object.keys(PURPOSE_CONSTANTS) as Array<
   keyof typeof PURPOSE_CONSTANTS
 >;
+
+export const PURPOSE_OPTIONS_CONSTANTS = Object.entries(PURPOSE_CONSTANTS).map(([key, { purpose }]) => ({
+  value: key,
+  label: purpose,
+}));

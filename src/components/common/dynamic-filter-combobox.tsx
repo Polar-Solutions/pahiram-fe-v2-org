@@ -165,7 +165,7 @@ export function DynamicFilterCombobox({handleFilterChange, filter}: {
                     )}
                     {isFetchingCategories.value && (
                         <div className="flex items-center justify-center p-2">
-                            <LoadingSpinner className="mr-2 h-4 w-4 animate-spin"/>
+                            <LoadingSpinner size={4} strokeColor="hsl(var(--primary))" className="mr-2  animate-spin"/>
                             <span>Fetching categories...</span>
                         </div>
                     )}

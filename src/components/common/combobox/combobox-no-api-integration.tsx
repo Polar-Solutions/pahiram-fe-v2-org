@@ -1,38 +1,30 @@
 "use client";
 
 import * as React from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
+import {Check, ChevronsUpDown} from "lucide-react";
 
-import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import {cn} from "@/lib/utils";
+import {Button} from "@/components/ui/button";
+import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command";
+import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
+import {requestFormIsSubmitting} from "@/signals/shared-signals";
 
 interface ComboboxProps {
-  options: { value: string; label: string }[];
-  placeholder?: string;
-  onSelect: (value: string) => void;
-  selectedItem?: string;
+    options: { value: string; label: string }[];
+    placeholder?: string;
+    onSelect: (value: string) => void;
+    selectedItem?: string;
+    isDisabled?: boolean;
 }
 
 export function ComboboxWithNoApiIntegration({
-  options,
-  placeholder = "Select an option...",
-  onSelect,
-  selectedItem = "",
-}: ComboboxProps) {
-  const [open, setOpen] = React.useState(false);
+                                                 options,
+                                                 placeholder = "Select an option...",
+                                                 onSelect,
+                                                 selectedItem = "",
+                                                 isDisabled = false,
+                                             }: ComboboxProps) {
+    const [open, setOpen] = React.useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
@@ -49,7 +41,7 @@ export function ComboboxWithNoApiIntegration({
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-full p-0">
         <Command>
           <CommandInput placeholder={`Search ${placeholder.toLowerCase()}`} />
           <CommandList>
