@@ -1,127 +1,87 @@
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { PURPOSE_CONSTANTS } from "@/CONSTANTS/PURPOSE_CONSTANTS";
-import { Control, Controller } from "react-hook-form";
+"use client"
 
-const style = "flex flex-col gap-2";
-// Define the interface for form data
-interface IFormValues {
-  endorser: string;
-  purpose: string;
-  user_defined_purpose: string;
-}
+import {Input} from "@/components/ui/input";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
+import {Textarea} from "@/components/ui/textarea";
+import {PURPOSE_CONSTANTS, PURPOSE_OPTIONS_CONSTANTS} from "@/CONSTANTS/PURPOSE_CONSTANTS";
+import {FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
+import {useFormContext} from "react-hook-form";
+import {requestFormIsSubmitting} from "@/signals/shared-signals";
+import React from "react";
+import {ComboboxWithNoApiIntegration} from "@/components/common/combobox/combobox-no-api-integration";
 
-// Define the props interface including Control from RHF
-interface BorrowRequestFormContainerProps {
-  control: Control<IFormValues>;
-}
+export const BorrowRequestFormContainer = () => {
 
-export const BorrowRequestFormContainer: React.FC<
-  BorrowRequestFormContainerProps
-> = ({ control }) => {
-  return (
-    <form className="flex flex-col gap-4 sm:w-full lg:max-w-[40%] h-full">
-      <h5 className="text-xl">Borrowing details</h5>
+    const form = useFormContext();
 
-      {/* Endorser */}
-      <div className={style}>
-        <Controller
-          control={control}
-          name="endorser"
-          defaultValue=""
-          rules={{
-            min: { value: 1, message: "Quantity must be at least 1" },
-            max: { value: 3, message: "Quantity cannot exceed 3" },
-          }}
-          render={({ field }) => (
-            <>
-              <Label htmlFor="submit-request-endorser">Endorser</Label>
-              <Input id="submit-request-endorser" />
-            </>
-          )}
-        />
-      </div>
+    return (
+        <div className="flex flex-col gap-4 w-full">
+            <h5 className="text-xl">Borrowing details</h5>
 
-      {/* Purpose */}
-      <div className={style}>
-        <Controller
-          control={control}
-          name="purpose"
-          defaultValue=""
-          rules={{
-            required: "Purpose is required",
-            // validate: (value) =>
-            //   value !== OFFICES.SELECT_OFFICE.office || "Select Office",
-          }}
-          render={({ field }) => (
-            <>
-              <Label htmlFor="submit-request-purpose-dropdown">Purpose</Label>
-              <Select
-                value={field.value}
-                onValueChange={(value) => field.onChange(value)}
-              >
-                <SelectTrigger id="submit-request-purpose-dropdown">
-                  <SelectValue placeholder="Select purpose" />
-                </SelectTrigger>
-                <SelectContent {...field}>
-                  {Object.entries(PURPOSE_CONSTANTS).map(
-                    ([key, { purpose }]) => (
-                      <SelectItem key={key} value={key}>
-                        {purpose}
-                      </SelectItem>
-                    )
-                  )}
-                </SelectContent>
-              </Select>
-            </>
-          )}
-        />
-      </div>
+            <FormField
+                disabled={requestFormIsSubmitting.value}
+                control={form.control}
+                name="endorsed_by"
+                render={({field}) => (
+                    <FormItem>
+                        <FormLabel>Endorser</FormLabel>
+                        <FormControl>
+                            <Input {...field} />
+                        </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                )}
+            />
+            <FormField
+                disabled={requestFormIsSubmitting.value}
+                control={form.control}
+                name="purpose"
+                render={({field}) => (
+                    <FormItem>
+                        <FormLabel>Purpose</FormLabel>
+                        <ComboboxWithNoApiIntegration
+                            isDisabled={requestFormIsSubmitting.value}
+                            selectedItem={field.value}
+                            onSelect={field.onChange}
+                            options={PURPOSE_OPTIONS_CONSTANTS}
+                            placeholder="Select purpose"
+                        />
+                        {/*<Select onValueChange={field.onChange} defaultValue={field.value}>*/}
+                        {/*    <FormControl>*/}
+                        {/*        <SelectTrigger>*/}
+                        {/*            <SelectValue onReset={} placeholder="Select purpose"/>*/}
+                        {/*        </SelectTrigger>*/}
+                        {/*    </FormControl>*/}
+                        {/*    <SelectContent>*/}
+                        {/*        {Object.entries(PURPOSE_CONSTANTS).map(([key, {purpose}]) => (*/}
+                        {/*            <SelectItem key={key} value={key}>*/}
+                        {/*                {purpose}*/}
+                        {/*            </SelectItem>*/}
+                        {/*        ))}*/}
+                        {/*    </SelectContent>*/}
+                        {/*</Select>*/}
+                        <FormMessage/>
+                    </FormItem>
+                )}
+            />
 
-      {/* Specific Purpose */}
-      <div className={style}>
-        <Controller
-          control={control}
-          name="user_defined_purpose"
-          defaultValue=""
-          rules={{
-            required: "Purpose is required",
-            minLength: {
-              value: 5,
-              message: "Purpose should be at least 5 characters",
-            },
-            maxLength: {
-              value: 30,
-              message: "Purpose should not exceed 30 characters",
-            },
-            pattern: {
-              value: /^[a-zA-Z0-9\s-]+$/,
-              message:
-                "Invalid input. Only letters, numbers, and hyphens are allowed.",
-            },
-          }}
-          render={({ field }) => (
-            <>
-              <Label htmlFor="specific-purpose">Specific purpose</Label>
-              <Textarea
-                {...field}
-                id="specific-purpose"
-                placeholder="Type your purpose here..."
-              />
-            </>
-          )}
-        />
-      </div>
-    </form>
-  );
+            <FormField
+                disabled={requestFormIsSubmitting.value}
+                control={form.control}
+                name="user_defined_purpose"
+                render={({field}) => (
+                    <FormItem>
+                        <FormLabel>Specific purpose</FormLabel>
+                        <FormControl>
+                            <Textarea
+                                placeholder="Type your purpose here..."
+                                {...field}
+                            />
+                        </FormControl>
+                        <FormMessage/>
+                    </FormItem>
+                )}
+            />
+        </div>
+    );
 };

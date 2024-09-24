@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import page from "@/app/(protected)/borrow/checkout/page";
 import { getBorrowListEndpoint } from "@/config/api/backend-routes/borrow-request-routes";

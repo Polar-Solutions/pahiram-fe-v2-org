@@ -4,22 +4,23 @@ import {useState} from "react";
 
 import {Input} from "@/components/ui/input";
 import {Checkbox} from "@/components/ui/checkbox";
-import {Button} from "@/components/ui/button";
 import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
 import {useUserStore} from "@/hooks/useUser";
 
-import type {FormSchemas} from "@/lib/form-schemas/form-schemas";
+import type {TLoginFormValues} from "@/lib/form-schemas/form-schemas";
 import {LoginSchema} from "@/lib/form-schemas/form-schemas";
 import {loginUserAction} from "@/core/actions/authentication";
 import {useRouter} from "next/navigation";
 import {useAction} from "next-safe-action/hooks";
 import {FormError} from "@/components/common/form-error";
 import {FormSuccess} from "@/components/common/form-success";
+import {SubmitButton} from "@/components/common/submit-button";
 
 export default function LoginForm() {
+
     const [success, setSuccess] = useState<string | undefined>("");
     const [error, setError] = useState<string[] | string | Object | undefined>("");
 
@@ -27,7 +28,7 @@ export default function LoginForm() {
 
     const router = useRouter();
 
-    const form = useForm<FormSchemas>({
+    const form = useForm<TLoginFormValues>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
             email: "",
@@ -38,15 +39,9 @@ export default function LoginForm() {
 
     const {setUserData} = useUserStore();
 
-    // TODO: Add loading spinner
-
 
     function onSubmit() {
-        // execute({
-        //     email: "",
-        //     password: "",
-        //     remember_me: null
-        // })
+
         executeAsync(form.getValues())
             .then((result) => {
                 const data = result?.data;
@@ -71,6 +66,7 @@ export default function LoginForm() {
 
         form.reset(form.getValues());
     }
+
 
     return (
         <Form {...form}>
@@ -121,35 +117,32 @@ export default function LoginForm() {
                         </FormItem>
                     )}
                 />
-                {/*Container for the error and success messages*/}
-                {success || error ?
+                {success || error ? (
                     <div className="space-y-2">
                         {/*Maps the error if its an array then displays the form error*/}
                         {Array.isArray(error) && error.map((e: string, index: number) => (
-                            <FormError message={e} key={index}/>
+                            <FormError message={e} key={index} />
                         ))}
-
                         {/*Renders the form error if the error has value and is a string*/}
-                        {typeof error === "string" && <FormError message={error}/>}
-
-                        <FormSuccess message={success}/>
-
+                        {typeof error === "string" && <FormError message={error} />}
+                        <FormSuccess message={success} />
                     </div>
-                    : null
-                }
+                ) : null}
 
-                <Button
-                    type="submit"
-                    className="h-[40px] w-full bg-button text-gray-100"
+                <SubmitButton
                     disabled={isExecuting || !!success}
-                >
-                    {isExecuting ? "Logging in" : "Log in"}
-                </Button>
+                    isLoading={isExecuting || !!success}
+                    label="Log in"
+                    isLoadingLabel="Logging in"
+                    type="submit"
+                    className="w-full"
+                />
+
                 {/*TODO: Make a terms and condition page*/}
-                <FormDescription className="text-center">
+                <FormDescription className="text-center h-[40px]">
                     Upon signing in you accept the terms and conditions.
                 </FormDescription>
             </form>
         </Form>
-    );
-}
+    )
+};

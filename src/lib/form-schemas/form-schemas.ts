@@ -12,4 +12,4 @@ export const LoginSchema = z.object({
   remember: z.boolean().optional(),
 });
 
-export type FormSchemas = z.infer<typeof LoginSchema>;
+export type TLoginFormValues = z.infer<typeof LoginSchema>;

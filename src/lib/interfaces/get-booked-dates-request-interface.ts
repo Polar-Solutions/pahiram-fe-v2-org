@@ -32,7 +32,7 @@ export interface IDateInfo {
   start: string; // ISO format date string, e.g., "2025-11-29T15:00"
   end: string; // ISO format date string, e.g., "2025-11-30T16:35"
   count: number; // Reserved count, e.g., 3
-  title: string; // Descriptive title, e.g., "Reserved quantity: 3"
+  title?: string; // Descriptive title, e.g., "Reserved quantity: 3"
   color?: string;
 }
 
@@ -52,8 +52,5 @@ export interface IBookedDatesApiResponse {
 
 // Calendar Component Props
 export interface ICalendarModal {
-  startDate: string;
-  returnDate: string;
-  onDateChange: (start: string, returnDate: string) => void;
   itemGroupId: string;
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { getItemsPaginationUseCase } from "@/core/use-cases/items";
-import { IItem, IItemGroup } from "@/lib/interfaces";
+import { IItemGroup } from "@/lib/interfaces";
 
 export const useItems = (page: number) => {
   const [items, setItems] = useState<IItemGroup[]>([]);

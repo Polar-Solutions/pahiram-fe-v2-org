@@ -9,15 +9,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { IItem } from '@/lib/interfaces/get-specific-transaction-interface'; // Adjust path as needed
+import { Badge } from "@/components/ui/badge"; // Import your Badge component
 
 // In BorrowedItem.tsx
 interface BorrowedItemProps {
   items: IItem[];
   formatDateTime: (dateString: string) => string;
-  formatStatus: (status: string) => string; // Add this line
+  formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string }; // Update this line
 }
 
-export default function BorrowedItem({ items, formatDateTime, formatStatus }: BorrowedItemProps) {
+export default function BorrowedItem({ items, formatDateTime, formatBorrowStatus }: BorrowedItemProps) {
   return (
     <div className='w-3/5 '>
       <h1 className='text-xl font-bold'>Borrowing items</h1>
@@ -34,14 +35,19 @@ export default function BorrowedItem({ items, formatDateTime, formatStatus }: Bo
           </TableRow>
         </TableHeader>
         <TableBody>
-          {items.map((item) => (
-            <TableRow key={item.id}>
-              <TableCell className="font-medium">{item.model_name}</TableCell>
-              <TableCell>{item.quantity}</TableCell>
-              <TableCell>{`${formatDateTime(item.start_date)} - ${formatDateTime(item.due_date)}`}</TableCell>
-              <TableCell className="text-right">{formatStatus(item.borrowed_item_status)}</TableCell>
-            </TableRow>
-          ))}
+          {items.map((item) => {
+            const { formattedStatus, badgeClass } = formatBorrowStatus(item.borrowed_item_status);
+            return (
+              <TableRow key={item.id}>
+                <TableCell className="font-medium">{item.model_name}</TableCell>
+                <TableCell>{item.quantity}</TableCell>
+                <TableCell>{`${formatDateTime(item.start_date)} - ${formatDateTime(item.due_date)}`}</TableCell>
+                <TableCell className="text-start">
+                  <Badge className={badgeClass}>{formattedStatus}</Badge>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

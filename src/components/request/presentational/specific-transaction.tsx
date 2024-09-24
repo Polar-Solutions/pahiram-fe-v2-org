@@ -10,6 +10,7 @@ import { IItem } from '@/lib/interfaces/get-specific-transaction-interface';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowPurpose, formatBorrowStatus } from '@/helper/formatting-utilities';
 import { handleApiClientSideError } from '@/core/handle-api-client-side-error';
+import { Badge } from "@/components/ui/badge";
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
@@ -18,8 +19,10 @@ export default function SpecificTransaction() {
   const { data, isLoading } = useSpecificTransaction(transactionId);
   const transactionData = data?.data;
   const router = useRouter();
-
-  handleApiClientSideError(data);
+  
+  if (data) {
+    handleApiClientSideError(data);
+  } 
   
 
   if (isLoading) {
@@ -45,16 +48,28 @@ export default function SpecificTransaction() {
                 fillRule="evenodd"
                 clipRule="evenodd"
                 onClick={() => router.back()}
+                className='cursor-pointer'
               />
             </svg>
             <div className="ml-4">
               <h1 className="text-xl font-bold">{transactionData.transac_data.custom_transac_id}</h1>
-              <h2 className="text-sm font-bold">{transactionData.transac_data.department_acronym}</h2>
-              {/* Render status and formatted date */}
-              <p className="text-sm text-muted-foreground">
-                {formatBorrowStatus(transactionData.transac_data.transac_status)} on{' '}
-                {formatDateTimeToHumanFormat(transactionData.transac_data.updated_at)}
-              </p>
+              <div className="flex items-center justify-between">
+                <h2 className="text-sm font-bold mr-2">{transactionData.transac_data.department_acronym}</h2>
+                
+                {/* Render status and formatted date */}
+                <p className="text-sm text-muted-foreground flex items-center">
+                  {(() => {
+                    const { formattedStatus, badgeClass } = formatBorrowStatus(transactionData.transac_data.transac_status);
+                    return (
+                      <Badge className={badgeClass}>
+                        {formattedStatus}
+                      </Badge>
+                    );
+                  })()}
+                  <span className="ml-2">on {formatDateTimeToHumanFormat(transactionData.transac_data.updated_at)}</span>
+                </p>
+              </div>
+
             </div>
         </div>
       </div>
@@ -68,7 +83,7 @@ export default function SpecificTransaction() {
         <BorrowedItem 
           items={borrowedItems} // Ensure this is an array of IItem
           formatDateTime={formatDateTimeToHumanFormat} 
-          formatStatus={formatBorrowStatus} 
+          formatBorrowStatus={formatBorrowStatus} 
         />
       </div>
     </div>

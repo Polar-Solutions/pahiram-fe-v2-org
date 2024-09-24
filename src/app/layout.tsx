@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import ClientLayout from "./client-layout";
+import '@radix-ui/themes/styles.css';
+
 
 // Metadata configuration (server-side only)
 export const metadata: Metadata = {
@@ -35,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body>
         {/* Client-side layout */}
         <ClientLayout>{children}</ClientLayout>

@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import Image from "next/image";
 import { IItemGroup } from "@/lib/interfaces";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
@@ -14,23 +9,22 @@ import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useGetSpecificItemGroupData } from "@/core/data-access/items";
 import { useItemGroupStore } from "@/hooks/useItemGroupStore";
+import { specificItemGroupDataIsFetching } from "@/signals/shared-signals";
 
 interface IItemCardProps {
   item: IItemGroup;
 }
 
-// TODO: Remove scrollbar when opened
-
 export default function ItemCard({ props }: { props: IItemCardProps }) {
   const { item } = props;
-  const router = useRouter();
 
-  const { data, isSuccess, isLoading, refetch } = useGetSpecificItemGroupData(
-    item.item_group_id
-  );
+  const { refetch } = useGetSpecificItemGroupData(item.item_group_id);
   const { addItemGroup, itemGroupExists } = useItemGroupStore();
 
-  const handleClickItemGroupCard = async () => {
+  const handleClickItemGroupCard = async (e: React.MouseEvent) => {
+    e.preventDefault(); // Prevent default behavior
+    // Set specificItemGroupDataIsFetching to true to show loading state
+    specificItemGroupDataIsFetching.value = true;
     // Push to the URL
     const serializedItem = encodeURIComponent(
       JSON.stringify(item.item_group_id)
@@ -39,7 +33,7 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
       "item-group-id": serializedItem,
       "show-item-group-modal": 1,
     });
-    router.push(newUrl);
+    window.history.pushState({}, "", newUrl);
 
     // Trigger refetching of API
     try {
@@ -55,6 +49,9 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
       }
     } catch (error) {
       console.error("Error during refetch", error);
+      //     TODO: Use handling server error component @berbs
+    } finally {
+      specificItemGroupDataIsFetching.value = false;
     }
   };
 
@@ -64,9 +61,7 @@ export default function ItemCard({ props }: { props: IItemCardProps }) {
       className="w-full h-full flex flex-col cursor-pointer group"
     >
       <Card
-        onClick={() => {
-          handleClickItemGroupCard();
-        }}
+        onClick={handleClickItemGroupCard}
         className="w-full h-full flex flex-col cursor-pointer hover:bg-[hsl(var(--primary))] group"
       >
         <CardHeader className="p-0">

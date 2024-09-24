@@ -1,37 +1,33 @@
+"use-client"
+
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "../ui/button";
 import React from "react";
 
 interface IContentProps {
-  children?: React.ReactNode;
+    children?: React.ReactNode;
 }
 
 export default function Content({ children }: IContentProps) {
-  // Separating the first child from the rest
-  const childArray = React.Children.toArray(children);
-  const [firstChild, ...footerChildren] = childArray;
+    // Check if the last child is a footer
+    const childArray = React.Children.toArray(children);
+    const lastChild = childArray[childArray.length - 1];
+    const hasFooter = React.isValidElement(lastChild) && lastChild.type === 'footer';
 
-  const footerHeight = footerChildren.length > 0 ? 60 : 0;
+    // Separate content and footer
+    const contentChildren = hasFooter ? childArray.slice(0, -1) : childArray;
+    const footerChild = hasFooter ? lastChild : null;
 
-  return (
-    <Card className="rounded-lg border-none mt-6">
-      <CardContent
-        className={`px-8 py-8 ${footerChildren.length > 0 ? "pb-0" : ""}`}
-      >
-        <div
-          className="w-full flex flex-col md:flex-row gap-8 grid-cols-1"
-          style={{
-            minHeight: `calc(100vh - 56px - 64px - 20px - 24px - 56px - 48px - ${footerHeight}px)`, // subtract footer height if it exists
-          }}
-        >
-          {firstChild}
-        </div>
-      </CardContent>
+    return (
+        <Card className="rounded-lg border-none mt-6">
+            <CardContent className="px-8 py-8">
+                <div className="w-full" style={{ minHeight: hasFooter ? 'calc(100vh - 300px)' : 'auto' }}>
+                    {contentChildren}
+                </div>
+            </CardContent>
 
-      {/* Render the second child separately */}
-      {footerChildren.length > 0 && (
-        <CardFooter className="mt-auto pt-4">{footerChildren}</CardFooter>
-      )}
-    </Card>
-  );
+            {footerChild && (
+                <CardFooter className="mt-auto pt-4">{footerChild}</CardFooter>
+            )}
+        </Card>
+    );
 }
