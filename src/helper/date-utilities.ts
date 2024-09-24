@@ -57,4 +57,17 @@ function convertDatesToApiFormat(
   return obj;
 }
 
-export { convertDateForHumanConsumption, convertDatesToApiFormat };
+const formatDateTimeToHumanFormat = (dateString: string): string => {
+  const date = new Date(dateString);
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true // Enables AM/PM format
+  };
+  return date.toLocaleString(undefined, options);
+};
+
+export { convertDateForHumanConsumption, convertDatesToApiFormat, formatDateTimeToHumanFormat };

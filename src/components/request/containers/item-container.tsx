@@ -18,7 +18,7 @@ import { useTabsStore } from "@/hooks/request/useTabs";
 export default function ItemsContainer() {
     const {page, filterSearch} = getURLParams();
     const { requests, isFetchingRequests, totalPages } = useRequests(page);
-    const { activeTab } = useTabsStore();
+    const { activeTab, setActiveTab } = useTabsStore();
 
     const filteredRequests = useFilteredRequests({ requests });
 
@@ -26,10 +26,16 @@ export default function ItemsContainer() {
     const [gridColumns, setGridColumns] = useState(3);
     const containerRef = useRef<HTMLDivElement>(null);
 
-    const requestTabs = [
-        { value: 'Request', label: 'Request' },
-        { value: 'Transaction', label: 'Transaction' },
-    ];
+        
+    useEffect(() => {
+        if (activeTab === 'TRANSACTION') {
+        setActiveTab('TRANSACTION');
+        console.log('Active tab:', activeTab);
+        }
+        else{
+        setActiveTab('REQUEST');
+        }
+    }, [setActiveTab]);
 
     // Layout update for responsive design
     const updateLayout = useCallback(() => {

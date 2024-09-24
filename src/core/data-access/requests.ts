@@ -3,11 +3,15 @@
 import page from "@/app/(protected)/borrow/checkout/page";
 import { getBorrowListEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
 import { PahiramAxiosConfig } from "@/config/api/BackendAxiosConfig";
-import { IGetBorrowRequestApiResponse } from "@/lib/interfaces";
+import { IGetSpecificTransactionApiResponse } from "@/lib/interfaces/get-specific-transaction-interface";
+import { AxiosResponse } from "axios";
+import { getBorrowResourceEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
+import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
+import { useQuery } from "@tanstack/react-query";
 
 export const getBorrowRequestsPagination = async (
     page: number
-): Promise<IGetBorrowRequestApiResponse> => {
+): Promise<IGetSpecificTransactionApiResponse> => {
     try {
         const response = await PahiramAxiosConfig.get(
             getBorrowListEndpoint(page)
@@ -29,3 +33,29 @@ export const getBorrowRequestsPagination = async (
         }
     }
 }
+
+export  const getSpecificTransaction = async (transacId: string) => {
+    const request = async (): Promise<AxiosResponse<IGetSpecificTransactionApiResponse>> => {
+        return PahiramAxiosConfig.get<IGetSpecificTransactionApiResponse>(
+            getBorrowResourceEndpoint(transacId)
+        );
+    };
+
+    return await handleApiServerSideErrorResponse({
+        request
+    });
+};
+
+
+export const useSpecificTransaction = (transacId: string) => {
+    return useQuery({
+        queryKey: ["borrowRequest", transacId],
+        queryFn: async () => {
+            const { data } = await getSpecificTransaction(transacId);
+            return data;  // Ensure you're returning the actual data from the response
+        },
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        enabled: !!transacId,
+    });
+};
