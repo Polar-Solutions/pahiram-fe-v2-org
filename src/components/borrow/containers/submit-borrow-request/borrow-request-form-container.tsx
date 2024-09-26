@@ -54,7 +54,6 @@ export const BorrowRequestFormContainer = () => {
                 onSelectOption={field.onChange}
                 isLoading={true}
               />
-              {/* <Input {...field} /> */}
             </FormControl>
             <FormMessage />
           </FormItem>
@@ -74,20 +73,6 @@ export const BorrowRequestFormContainer = () => {
               options={PURPOSE_OPTIONS_CONSTANTS}
               placeholder="Select purpose"
             />
-            {/*<Select onValueChange={field.onChange} defaultValue={field.value}>*/}
-            {/*    <FormControl>*/}
-            {/*        <SelectTrigger>*/}
-            {/*            <SelectValue onReset={} placeholder="Select purpose"/>*/}
-            {/*        </SelectTrigger>*/}
-            {/*    </FormControl>*/}
-            {/*    <SelectContent>*/}
-            {/*        {Object.entries(PURPOSE_CONSTANTS).map(([key, {purpose}]) => (*/}
-            {/*            <SelectItem key={key} value={key}>*/}
-            {/*                {purpose}*/}
-            {/*            </SelectItem>*/}
-            {/*        ))}*/}
-            {/*    </SelectContent>*/}
-            {/*</Select>*/}
             <FormMessage />
           </FormItem>
         )}

@@ -7,6 +7,10 @@ import {
   IApiResponse,
   IHandleApiServerSideErrorResponse,
 } from "@/lib/interfaces";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface ISearchWithPopover {
   currentValue: string;
@@ -26,7 +30,6 @@ export const SearchWithPopover: React.FC<ISearchWithPopover> = ({
   onSelectOption,
   placeholder = "Type to search...",
 }) => {
-  // const [input, setInput] = useState("");
   const [searchResult, setSearchResult] = useState<IEndorserSearch[]>([]);
   const [isPopoverOpen, setIsPopoverOpen] = useState<boolean>(false);
 
@@ -34,18 +37,18 @@ export const SearchWithPopover: React.FC<ISearchWithPopover> = ({
     const { data: searchData } = await fetcher(input);
 
     if (searchData?.data) {
+      // Save the API search result to the useState
       setSearchResult(searchData.data);
-      console.log(searchData);
     }
   };
 
   const handleOpenChange = (open: boolean) => {
-    setIsPopoverOpen(open); // Only set open when needed (based on user interaction)
+    setIsPopoverOpen(open);
   };
 
   return (
     <Popover
-      open={isPopoverOpen} // Ensures it only opens with content or loading
+      open={isPopoverOpen}
       onOpenChange={handleOpenChange}
     >
       <PopoverTrigger>

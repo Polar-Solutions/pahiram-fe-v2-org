@@ -4,8 +4,15 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
+import {
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { PopoverContent } from "@/components/ui/popover";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 import { IEndorserSearch } from "@/lib/interfaces/search-endorser";
 import { cn } from "@/lib/utils";
 import { Check } from "lucide-react";
@@ -30,20 +37,20 @@ export const SearchResultPopover: React.FC<ISearchResultPopover> = ({
   return (
     <PopoverContent
       onOpenAutoFocus={(e) => e.preventDefault()}
-      className="w-[100%]"
+      className="w-[100%] max-h-72 overflow-y-auto"
       style={{ width: "var(--radix-popover-trigger-width)" }}
     >
-      <ul>
+      <ul className="rounded-md flex flex-col gap-2">
         {searchResult.map((option) => (
           <li
             key={option.apc_id}
-            className="cursor-pointer px-4 py-2 hover:bg-gray-100"
+            className=" rounded-md p-2 cursor-pointer group hover:bg-secondary"
             onClick={() => {
               onSelectOption(`${option.full_name} + ${option.apc_id}`);
               handleClosePopover();
             }}
           >
-            {option.full_name}
+            <p className="text-[0.875rem]">{option.full_name}</p>
           </li>
         ))}
       </ul>
