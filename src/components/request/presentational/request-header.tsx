@@ -10,6 +10,7 @@ export default function RequetsHeader() {
   // Handler function to change the active tab
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
+    console.log('Active tab:', tab);
   };
 
   const tabOptions = [

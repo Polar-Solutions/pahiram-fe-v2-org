@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 
 interface RequestStore {
     activeTab: string;
@@ -9,22 +10,28 @@ interface RequestStore {
     setFilterOffice: (office: string) => void;
 }
 
-export const useTabsStore = create<RequestStore>((set) => ({
-    activeTab: 'REQUEST',
-    selectedFilterTab: 'PENDING',
-    filterOffice: '',
+export const useTabsStore = create<RequestStore>()(
+    persist(
+        (set) => ({
+            activeTab: 'REQUEST',
+            selectedFilterTab: 'PENDING',
+            filterOffice: '',
 
-    setActiveTab: (tab) => {
-        const defaultFilter = tab === 'REQUEST' ? 'PENDING' : 'APPROVED';
-        set({
-            activeTab: tab,
-            selectedFilterTab: defaultFilter,
-        });
-    },
+            setActiveTab: (tab) => {
+                const defaultFilter = tab === 'REQUEST' ? 'PENDING' : 'APPROVED';
+                set({
+                    activeTab: tab,
+                    selectedFilterTab: defaultFilter,
+                });
+            },
 
-    // Function to manually set the filter tab
-    setSelectedFilterTab: (filter) => set({ selectedFilterTab: filter }),
+            setSelectedFilterTab: (filter) => set({ selectedFilterTab: filter }),
 
-    // Function to manually set the office filter
-    setFilterOffice: (office) => set({ filterOffice: office }),
-}));
+            setFilterOffice: (office) => set({ filterOffice: office }),
+        }),
+        {
+            name: 'tabs-store', // The name of the storage key
+            getStorage: () => localStorage, // Using localStorage to persist state
+        }
+    )
+);
