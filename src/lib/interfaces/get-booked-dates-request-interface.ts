@@ -1,27 +1,3 @@
-// {
-//     "status": true,
-//     "data": {
-//         "item_model": "Canon 200d",
-//         "active_items": 4,
-//         "dates": [
-//             {
-//                 "start": "2024-09-19T08:00",
-//                 "end": "2024-09-19T13:30",
-//                 "count": 4,
-//                 "title": "Item slot fully booked",
-//                 "color": "#f44336"
-//             },
-//             {
-//                 "start": "2025-11-29T15:00",
-//                 "end": "2025-11-30T16:35",
-//                 "count": 3,
-//                 "title": "Reserved quantity: 3"
-//             }
-//         ]
-//     },
-//     "method": "GET"
-// }
-
 // Interface for the individual date objects
 export interface IItemGroupDataForBookedDatesAPI {
   item_model: string;

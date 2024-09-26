@@ -3,7 +3,6 @@ import {Dialog, DialogContent, DialogTitle} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
-import {useRouter} from "next/navigation";
 import {IItem, IItemGroup} from "@/lib/interfaces";
 import {ItemModalForm} from "./item-modal-form";
 import {Badge} from "@/components/ui/badge";
