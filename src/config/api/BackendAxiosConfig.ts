@@ -32,7 +32,7 @@ PahiramAxiosConfig.interceptors.request.use(
 // APCIS Configuration
 const ApcisAxiosConfig = axios.create({
   baseURL: process.env.NEXT_PUBLIC_APCIS_URL,
-  timeout: 5000,
+  // timeout: 5000,
   headers: regularHeaders,
 });
 
@@ -49,4 +49,4 @@ ApcisAxiosConfig.interceptors.request.use(
   }
 );
 
-export { PahiramAxiosConfig };
+export { PahiramAxiosConfig, ApcisAxiosConfig };

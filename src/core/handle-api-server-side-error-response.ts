@@ -1,8 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import { extractStringValues } from "../helper/extract-string-values-from-object";
+import { extractStringValues } from "../helper/extract-string-values-from-nested-object";
+import {
+  IApiResponse,
+  IHandleApiServerSideErrorResponse,
+} from "@/lib/interfaces";
 
 // Define a generic interface for the response
-interface IHandleApiServerSideErrorResponse<T> {
+interface IHandleApiServerSideErrorResponseProps<T> {
   request: () => Promise<AxiosResponse<T>>; // Function that returns a promise of AxiosResponse with type T
   successMessage?: string; // Optional success message to be used when the operation succeeds
 }
@@ -10,11 +14,9 @@ interface IHandleApiServerSideErrorResponse<T> {
 export const handleApiServerSideErrorResponse = async <T>({
   request,
   successMessage = "Operation successful! 🎉",
-}: IHandleApiServerSideErrorResponse<T>): Promise<{
-  success?: string;
-  error?: string | string[];
-  data?: T;
-}> => {
+}: IHandleApiServerSideErrorResponseProps<T>): Promise<
+  IHandleApiServerSideErrorResponse<T>
+> => {
   try {
     // Perform the Axios request
     const response = await request();

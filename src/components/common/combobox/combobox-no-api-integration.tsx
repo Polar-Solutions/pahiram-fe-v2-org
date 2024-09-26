@@ -33,7 +33,7 @@ export function ComboboxWithNoApiIntegration({
           variant="outline"
           role="combobox"
           aria-expanded={open}
-          className="w-full min-w-[100px] justify-between"
+          className="w-full min-w-[100px] justify-between h-[40px]"
         >
           {selectedItem
             ? options.find((option) => option.value === selectedItem)?.label

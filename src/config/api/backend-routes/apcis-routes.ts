@@ -1,3 +1,3 @@
-export const searchUserByName = (name: string) => {
+export const apcisSearchUserByName = (name: string) => {
   return `/users/search/${name}`;
 };
