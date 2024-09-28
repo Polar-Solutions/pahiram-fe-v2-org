@@ -58,20 +58,20 @@ export const deleteAuthCookie = async (): Promise<boolean> => {
 /**
  * Function to get the Pahiram Token from the auth cookie.
  *
- * @return {Promise<IUser | null>} The user object from the auth cookie, or null if the cookie is not present.
+ * @return {Promise<string>} The user object from the auth cookie, or null if the cookie is not present.
  */
-export const getPahiramTokenFromAuthCookie = async (): Promise<IUser | null> => {
+export const getPahiramTokenFromAuthCookie = async (): Promise<string | null> => {
     const cookie = cookies().get(auth);
-    return cookie ? JSON.parse(cookie.value).pahiram_token : null;
+    return cookie ? JSON.parse(cookie.value).pahiram_token : "";
 }
 
 /**
  * Function to get the APCIS Token from the auth cookie.
  *
- * @return {Promise<IUser | null>} The user object from the auth cookie, or null if the cookie is not present.
+ * @return {Promise<string>} The user object from the auth cookie, or null if the cookie is not present.
  */
-export const getApcisTokenFromAuthCookie = async (): Promise<IUser | null> => {
-    const cookie = cookies().get(auth);
-    return cookie ? JSON.parse(cookie.value).apcis_token : null;
+export const getApcisTokenFromAuthCookie = async (): Promise<string> => {
+    const cookie = await cookies().get(auth);
+    return cookie ? await JSON.parse(cookie.value).apcis_token : "";
 }
 

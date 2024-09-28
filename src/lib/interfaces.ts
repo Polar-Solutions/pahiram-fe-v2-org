@@ -80,7 +80,7 @@ export interface IItem {
   status: string;
 }
 
-// This is much better for naming 
+// This is much better for naming
 export interface IItemGroup {
   item_group_id: string;
   image: string;
@@ -140,4 +140,18 @@ export interface IUser {
   role: string;
   acc_status: string;
   is_admin: boolean;
+}
+
+export interface IApiResponse<T = any> {
+  status?: boolean;
+  data?: T;
+  error?: string | string[];
+  method?: string;
+}
+
+// Define a generic interface for API responses
+export interface IHandleApiServerSideErrorResponse<T> {
+  success?: string;          // Optional success message
+  error?: string | string[]; // Optional error message(s)
+  data?: T;                 // Optional data of generic type T
 }

@@ -33,6 +33,7 @@ export default function CartItem({ item }: CartItemProps) {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-2 my-2">
                   <Button
+                    type="button"
                     onClick={() => decrementQuantity(item.item_group_id)}
                     variant="outline"
                     className="px-2 py-1"
@@ -43,6 +44,7 @@ export default function CartItem({ item }: CartItemProps) {
                     {getItemQuantityById(item.item_group_id)}
                   </span>
                   <Button
+                    type="button"
                     onClick={() => {
                       console.log("Increment clicked", item.item_group_id);
                       incrementQuantity(item.item_group_id);

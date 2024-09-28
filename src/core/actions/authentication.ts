@@ -1,7 +1,7 @@
 "use server";
 
 import { flattenValidationErrors } from "next-safe-action";
-import { LoginSchema } from "@/lib/form-schemas/form-schemas";
+import { LoginSchema } from "@/lib/form-schemas/login-schemas";
 import { actionClient } from "@/lib/safe-action";
 import { loginUserUseCase } from "@/core/use-cases/users";
 import { cookies } from "next/headers";
