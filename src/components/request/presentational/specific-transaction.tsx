@@ -1,16 +1,20 @@
 'use client';
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation'; 
-import { useSpecificTransaction } from '@/core/data-access/requests';
+import { useSpecificTransaction, patchCancelSpecificTransaction } from '@/core/data-access/requests';
 import BorrowedItem from '@/components/request/presentational/borrowed-item';
 import BorrowingDetail from '@/components/request/presentational/borrowing-detail';
+import SpecificTransactionSkeleton from '@/components/request/presentational/specific-transaction-skeleton';
 import { useTabsStore } from '@/hooks/request/useTabs';
 import { ITransacData } from '@/lib/interfaces/get-specific-transaction-interface';
 import { IItem } from '@/lib/interfaces/get-specific-transaction-interface';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
-import { formatBorrowPurpose, formatBorrowStatus } from '@/helper/formatting-utilities';
+import { formatBorrowPurpose, formatBorrowStatus, checkTransactionStatus } from '@/helper/formatting-utilities';
 import { handleApiClientSideError } from '@/core/handle-api-client-side-error';
 import { Badge } from "@/components/ui/badge";
+import {Button} from '@/components/ui/button';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
+import { toast } from "@/hooks/use-toast";
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
@@ -20,18 +24,55 @@ export default function SpecificTransaction() {
   const transactionData = data?.data;
   const router = useRouter();
   
+  
   if (data) {
     handleApiClientSideError(data);
   } 
-  
 
+   // Function to handle cancellation
+   const handleCancelRequest = async () => {
+    try {
+      const response = await patchCancelSpecificTransaction(transactionId);
+  
+      // Use 'in' operator to check if 'data' exists in response
+      if ('data' in response && response.data) {
+        toast({
+          title: "Success",
+          description: "Transaction cancelled successfully.",
+          variant: "success",
+        });
+        router.back();
+      } else {
+        throw new Error('Cancellation failed.');
+      }
+    } catch (error) {
+      
+      toast({
+        title: "Error",
+        description: "Failed to cancel transaction. Please try again later.",
+        variant: "destructive",
+      });
+    }
+
+  };
+  
+  
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <SpecificTransactionSkeleton />
+    )
   }
 
   if (!transactionData) {
-    return <div>No transaction found.</div>;
+    return (
+      <div>
+        <h1 className='text-sm text-muted-foreground flex items-center'>Transaction not found</h1>
+      </div>
+    );
   }
+
+   // Use checkTransactionStatus to get canCancel and canEdit
+   const { canCancel, canEdit } = checkTransactionStatus(transactionData.transac_data.transac_status);
 
   // Make sure borrowedItems is an array
   const borrowedItems: IItem[] = Array.isArray(transactionData.items) ? transactionData.items : []; 
@@ -73,6 +114,7 @@ export default function SpecificTransaction() {
             </div>
         </div>
       </div>
+
       {/* BorrowingDetail and BorrowedItem */}
       <div className="flex">
         <BorrowingDetail 
@@ -86,6 +128,35 @@ export default function SpecificTransaction() {
           formatBorrowStatus={formatBorrowStatus} 
         />
       </div>
+
+      {/* Actions */}
+      <div className='space-x-4 flex justify-end'>
+        {canCancel && (
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="destructive">Cancel Request</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+              <DialogHeader>
+                <DialogTitle className='mb-2'>Cancel Request</DialogTitle>
+                <DialogDescription>
+                    Are you sure you want to cancel this request? This is an irreversible action.
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="outline">Close</Button>
+                </DialogClose>
+                <Button onClick={handleCancelRequest} type='button'>Cancel Request</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        )}
+        {canEdit && (
+          <Button>Edit Request</Button>
+        )}
+      </div>
     </div>
+
   );
 }

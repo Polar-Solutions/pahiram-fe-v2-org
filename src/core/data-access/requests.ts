@@ -5,7 +5,7 @@ import { getBorrowListEndpoint } from "@/config/api/backend-routes/borrow-reques
 import { PahiramAxiosConfig } from "@/config/api/BackendAxiosConfig";
 import { IGetSpecificTransactionApiResponse } from "@/lib/interfaces/get-specific-transaction-interface";
 import { AxiosResponse } from "axios";
-import { getBorrowResourceEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
+import { getBorrowResourceEndpoint, cancelBorrowRequestEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
 import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
 import { useQuery } from "@tanstack/react-query";
 
@@ -59,3 +59,28 @@ export const useSpecificTransaction = (transacId: string) => {
         enabled: !!transacId,
     });
 };
+
+export const patchCancelSpecificTransaction = async (transacId: string) => {
+    const request = async (): Promise<AxiosResponse> => {
+        return PahiramAxiosConfig.patch(
+            cancelBorrowRequestEndpoint(transacId)
+        );
+    };
+
+    return await handleApiServerSideErrorResponse({
+        request
+    });
+}
+
+export const useCancelSpecificTransaction = (transacId: string) => {
+    return useQuery({
+        queryKey: ["cancelBorrowRequest", transacId],
+        queryFn: async () => {
+            const { data } = await patchCancelSpecificTransaction(transacId);
+            return data;  // Ensure you're returning the actual data from the response
+        },
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        enabled: !!transacId,
+    });
+}

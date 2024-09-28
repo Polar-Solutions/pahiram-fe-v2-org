@@ -28,7 +28,7 @@ export const SearchBar: React.FC<SearchBarProps> = ({ onSearchChange, placeholde
   
 
   return (
-    <div className="flex items-center gap-2 w-full sm:w-auto">
+    <div className="flex items-center gap-2 w-full md:w-auto">
       <Search className="h-5 w-5 text-muted-foreground" />
       <Input
         type="search"
