@@ -8,22 +8,22 @@ import { AxiosResponse } from "axios";
 import { getBorrowResourceEndpoint, cancelBorrowRequestEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
 import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
 import { useQuery } from "@tanstack/react-query";
+import { IGetBorrowRequestApiResponse } from "@/lib/interfaces";
 
 export const getBorrowRequestsPagination = async (
     page: number
-): Promise<IGetSpecificTransactionApiResponse> => {
+): Promise<IGetBorrowRequestApiResponse> => {  // Use the correct interface
     try {
-        const response = await PahiramAxiosConfig.get(
-            getBorrowListEndpoint(page)
-        );
-    
+        const response = await PahiramAxiosConfig.get(getBorrowListEndpoint(page));
+
         if (!response.status || response.status >= 400) {
-            const errorBody = await response.statusText;
+            const errorBody = response.statusText;
             throw new Error(
                 `HTTP error! status: ${response.status}, body: ${errorBody}`
             );
         }
-        return await response.data;
+        
+        return response.data;  // This should match IGetBorrowRequestApiResponse structure
     } catch (error) {
         console.error("Error fetching items:", error);
         if (error instanceof Error) {
@@ -33,6 +33,7 @@ export const getBorrowRequestsPagination = async (
         }
     }
 }
+
 
 export  const getSpecificTransaction = async (transacId: string) => {
     const request = async (): Promise<AxiosResponse<IGetSpecificTransactionApiResponse>> => {
