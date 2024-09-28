@@ -30,7 +30,8 @@ export default function BorrowedItem({ items, formatDateTime, formatBorrowStatus
           <TableRow>
             <TableHead className="w-[100px]">Name</TableHead>
             <TableHead>Quantity</TableHead>
-            <TableHead>Borrowing Period</TableHead>
+            <TableHead>Start Date</TableHead>
+            <TableHead>End Date</TableHead>
             <TableHead className="text-right">Status</TableHead>
           </TableRow>
         </TableHeader>
@@ -41,7 +42,8 @@ export default function BorrowedItem({ items, formatDateTime, formatBorrowStatus
               <TableRow key={item.id}>
                 <TableCell className="font-medium">{item.model_name}</TableCell>
                 <TableCell>{item.quantity}</TableCell>
-                <TableCell>{`${formatDateTime(item.start_date)} - ${formatDateTime(item.due_date)}`}</TableCell>
+                <TableCell>{`${formatDateTime(item.start_date)}`}</TableCell>
+                <TableCell>{`${formatDateTime(item.due_date)}`}</TableCell>
                 <TableCell className="text-start">
                   <Badge className={badgeClass}>{formattedStatus}</Badge>
                 </TableCell>
