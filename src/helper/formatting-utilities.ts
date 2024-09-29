@@ -47,3 +47,4 @@ const checkTransactionStatus = (status: string): { transacStatus: string, canCan
   
 
 export { formatBorrowPurpose, formatBorrowStatus, checkTransactionStatus };
+export { formatBorrowPurpose, formatBorrowStatus, checkTransactionStatus };
