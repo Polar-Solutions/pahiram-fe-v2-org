@@ -118,7 +118,7 @@ export default function SpecificTransaction() {
       {/* BorrowingDetail and BorrowedItem */}
       <div className="flex">
         <BorrowingDetail 
-          endorser={transactionData.transac_data.remarks_by_endorser || 'No Endorser'} 
+          endorser={transactionData.transac_data.endorsed_by?.full_name || 'No Endorser'}
           purpose={formatBorrowPurpose(transactionData.transac_data.purpose)} 
           specifyPurpose={transactionData.transac_data.user_defined_purpose || 'No specified purpose'} 
         />

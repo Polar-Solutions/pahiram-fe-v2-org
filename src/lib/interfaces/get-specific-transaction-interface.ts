@@ -12,6 +12,9 @@
   export interface ITransacData {
     id: string;
     custom_transac_id: string;
+    endorsed_by: {
+      full_name: string;
+    } | null;
     department_acronym: string;
     transac_status: string;
     purpose: string;

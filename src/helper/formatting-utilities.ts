@@ -29,7 +29,7 @@ const checkTransactionStatus = (status: string): { transacStatus: string, canCan
   const transacStatus = status;
 
   // Check if the transaction can be canceled
-  const canCancel = transacStatus === 'PENDING' || transacStatus === 'APPROVED';
+  const canCancel = transacStatus === 'PENDING_ENDORSER_APPROVAL' || transacStatus === 'PENDING_BORROWING_APPROVAL' || transacStatus === 'APPROVED';
 
   // Check if the transaction can be edited
   const isPendingBorrowingApproval = transacStatus === 'PENDING_BORROWING_APPROVAL';
