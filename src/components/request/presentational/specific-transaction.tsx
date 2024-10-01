@@ -1,12 +1,11 @@
 'use client';
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation'; 
-import { useSpecificTransaction, patchCancelSpecificTransaction } from '@/core/data-access/requests';
+import { useSpecificTransaction  } from '@/core/data-access/requests';
 import BorrowedItem from '@/components/request/presentational/borrowed-item';
 import BorrowingDetail from '@/components/request/presentational/borrowing-detail';
 import SpecificTransactionSkeleton from '@/components/request/presentational/specific-transaction-skeleton';
-import { useTabsStore } from '@/hooks/request/useTabs';
-import { ITransacData } from '@/lib/interfaces/get-specific-transaction-interface';
+import { cancelBorrowRequestAction } from '@/core/actions/cancel-borrow-request';
 import { IItem } from '@/lib/interfaces/get-specific-transaction-interface';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowPurpose, formatBorrowStatus, checkTransactionStatus } from '@/helper/formatting-utilities';
@@ -29,13 +28,14 @@ export default function SpecificTransaction() {
     handleApiClientSideError(data);
   } 
 
-   // Function to handle cancellation
-   const handleCancelRequest = async () => {
+  // Function to handle cancellation
+  const handleCancelRequest = async () => {
     try {
-      const response = await patchCancelSpecificTransaction(transactionId);
-  
+      // Directly pass transactionId as argument
+      const response = await cancelBorrowRequestAction({ transactionId });
+
       // Use 'in' operator to check if 'data' exists in response
-      if ('data' in response && response.data) {
+      if (response && 'data' in response && response.data) {
         toast({
           title: "Success",
           description: "Transaction cancelled successfully.",
@@ -46,15 +46,15 @@ export default function SpecificTransaction() {
         throw new Error('Cancellation failed.');
       }
     } catch (error) {
-      
       toast({
         title: "Error",
         description: "Failed to cancel transaction. Please try again later.",
         variant: "destructive",
       });
     }
-
   };
+
+
   
   
   if (isLoading) {
