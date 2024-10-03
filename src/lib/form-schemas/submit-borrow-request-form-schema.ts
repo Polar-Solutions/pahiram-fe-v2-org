@@ -21,7 +21,7 @@ export const ItemSchema = z.object({
   start_date: z
     .string()
     .refine((date) => !isNaN(Date.parse(date)), {
-      message: "Invalid return date format",
+      message: "Invalid start date format",
     })
     .refine((date) => new Date(date) > new Date(), {
       message: "Start date should not be in the past",

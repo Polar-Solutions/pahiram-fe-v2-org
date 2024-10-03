@@ -9,6 +9,7 @@ export type ICartItemsStoreState = {
   getCartItemById: (itemId: string) => ICartItem | undefined;
   getAllCartItems: () => ICartItem[];
   getItemQuantityById: (itemId: string) => number | null;
+  getAllQuantity: () => number;
   clearCart: () => void;
   isCartEmpty: () => boolean;
 };

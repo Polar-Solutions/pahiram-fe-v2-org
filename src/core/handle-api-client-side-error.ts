@@ -1,6 +1,6 @@
 "use client";
 
-import { toast } from "@/hooks/use-toast";
+import { toast } from "sonner"
 
 export interface IClientSideApiHandlerResponse {
   success?: string; // Optional success message
@@ -13,19 +13,19 @@ export const handleApiClientSideError = (
 ) => {
   // If data is undefined, return early
   if (!data) {
-    toast({
-      description: "No response from the server.",
-      variant: "destructive",
+    toast.error( "No response from the server.", {
+      position: "top-right",
+      action: {
+        label: "Report",
+        onClick: () => {},
+      }
     });
     return;
   }
 
   // If there's a success field, return early since it's not an error
   if (data.success && data.isSuccessToast) {
-    toast({
-      description: data.success,
-      variant: "success",
-    });
+    toast.success(data.success);
     return;
   }
 
@@ -36,9 +36,12 @@ export const handleApiClientSideError = (
   errorMessages
     .filter((error): error is string => Boolean(error)) // Filter out undefined
     .forEach((error: string) => {
-      toast({
-        description: error || "An unknown error occurred", // Fallback error message
-        variant: "destructive", // Use destructive variant for error display
+      toast.error(error || "An unknown error occurred", {
+        position: "top-right",
+        action: {
+          label: "Report",
+          onClick: () => {},
+        }
       });
     });
 };
