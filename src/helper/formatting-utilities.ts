@@ -24,15 +24,15 @@ const formatBorrowStatus = (status: string | null | undefined): { formattedStatu
   }
 
   // Determine the badge class based on the status
-  let badgeClass = 'bg-gray-200 text-gray-800 text-center'; // Default style for neutral statuses
+  let badgeClass = 'bg-gray-200 text-gray-800 text-center font-light'; 
 
   const warningStatuses = ["UNRETURNED", "CANCELLED", "DISAPPROVED"];
   if (warningStatuses.includes(status)) {
     badgeClass = 'bg-red-500 text-white'; // Style for critical or negative statuses
   } else if (pendingStatuses.includes(status)) {
-    badgeClass = 'bg-yellow-500 text-white'; // Style for pending statuses
+    badgeClass = 'bg-yellow-500 text-black font-light'; // Style for pending statuses
   } else if (status === "APPROVED") {
-    badgeClass = 'bg-green-500 text-white'; // Style for approved status
+    badgeClass = 'bg-green-500 text-black font-light'; // Style for approved status
   }
 
   return { formattedStatus, badgeClass };

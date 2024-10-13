@@ -6,7 +6,9 @@ export interface IBorrowedItemDetail {
 }
 
 export interface IItem {
+  item_group_id: string;
   model_name: string;
+  apc_id: string;
   quantity: number;
   start_date: string;
   due_date: string;

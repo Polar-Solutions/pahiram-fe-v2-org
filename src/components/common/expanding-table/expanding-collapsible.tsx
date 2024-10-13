@@ -6,20 +6,14 @@ import { Badge } from "@/components/ui/badge"; // Adjust path as needed
 // Define the props type to accept IBorrowedItemDetail[] instead of IItem[]
 interface ExpandingCollapsibleProps {
   items: IBorrowedItemDetail[]; // Still expect IBorrowedItemDetail[]
-  modelName: string;            // Add model name as prop
-  startDate: string;            // Add start date as prop
-  dueDate: string;              // Add due date as prop
-  formatDateTime: (dateString: string) => string;
+  apcId: string;                // Add apcId as prop
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
 }
 
 
 export default function ExpandingCollapsible({
   items,
-  modelName,
-  startDate,
-  dueDate,
-  formatDateTime,
+  apcId,
   formatBorrowStatus
 }: ExpandingCollapsibleProps) {
   return (
@@ -27,12 +21,8 @@ export default function ExpandingCollapsible({
       {items.map((item, index) => {
         const { formattedStatus, badgeClass } = formatBorrowStatus(item.borrowed_item_status);
         return (
-          <TableRow key={`${item.borrowed_item_id}-${index}`}>
-            <TableCell className="font-medium">{modelName}</TableCell>
-            {/* Each expanded row will show quantity = 1 */}
-            <TableCell>{1}</TableCell>
-            <TableCell>{`${formatDateTime(startDate)}`}</TableCell>
-            <TableCell>{`${formatDateTime(dueDate)}`}</TableCell>
+          <TableRow key={`${item.borrowed_item_id}-${index}`} className='flex justify-evenly'>
+            <TableCell className="font-medium">{item.apc_id}</TableCell>
             <TableCell className="text-start">
               <Badge className={badgeClass}>{formattedStatus}</Badge>
             </TableCell>
