@@ -29,12 +29,6 @@ export const BORROW_MENULIST = [
                 icon: Users,
                 submenus: [],
             },
-            {
-                href: "/borrow/view-penalties",
-                label: "Penalties",
-                icon: Users,
-                submenus: [],
-            },
         ],
     },
     {
@@ -43,6 +37,12 @@ export const BORROW_MENULIST = [
             {
                 href: "/borrow/manage-requests",
                 label: "Requests",
+                icon: Users,
+                submenus: [],
+            },
+            {
+                href: "/borrow/manage-penalties",
+                label: "Penalties",
                 icon: Users,
                 submenus: [],
             },
