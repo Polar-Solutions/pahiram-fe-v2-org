@@ -59,6 +59,20 @@ export default function ApproverSpecificReqTrans({transacId}: { transacId: strin
             <p className="text-sm">
                 Total Borrowing Period: September 11, 2024 to September 19, 2024
             </p>
+            <Card>
+                <CardHeader>
+                    <CardTitle>Transaction Status History</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Progress value={33} className="w-full"/>
+                    <div className="flex justify-between mt-2 text-sm">
+                        <span>Submitted</span>
+                        <span>Approved</span>
+                        <span>Borrowed</span>
+                        <span>Returned</span>
+                    </div>
+                </CardContent>
+            </Card>
             <div className="grid gap-4 md:grid-cols-2">
                 <Card>
                     <CardHeader>
@@ -119,20 +133,7 @@ export default function ApproverSpecificReqTrans({transacId}: { transacId: strin
                     </CardContent>
                 </Card>
             </div>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Transaction Status History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Progress value={33} className="w-full"/>
-                    <div className="flex justify-between mt-2 text-sm">
-                        <span>Submitted</span>
-                        <span>Approved</span>
-                        <span>Borrowed</span>
-                        <span>Returned</span>
-                    </div>
-                </CardContent>
-            </Card>
+
         </div>
 
     );
