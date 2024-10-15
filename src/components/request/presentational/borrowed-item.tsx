@@ -1,58 +1,35 @@
 import React from 'react';
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { IItem } from '@/lib/interfaces/get-specific-transaction-interface'; // Adjust path as needed
-import { Badge } from "@/components/ui/badge"; // Import your Badge component
+import ExpandTable from '@/components/common/expanding-table/expanding-table';
+import { useEditRequest } from '@/hooks/request/useEditRequest';
 
-// In BorrowedItem.tsx
 interface BorrowedItemProps {
   items: IItem[];
   formatDateTime: (dateString: string) => string;
-  formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string }; // Update this line
+  formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
 }
 
 export default function BorrowedItem({ items, formatDateTime, formatBorrowStatus }: BorrowedItemProps) {
+  const { isEditing, setEditedDetails } = useEditRequest(); // Zustand state for managing edit
+
+  // Handle dropdown selection
+  const handleDropdownChange = (value: string, field: string, index: number) => {
+    setEditedDetails((prevDetails: any) => ({
+      ...prevDetails,
+      [index]: {
+        ...prevDetails[index],
+        [field]: value,
+      },
+    }));
+  };
+
   return (
-    <div className='w-3/5 '>
-      <h1 className='text-xl font-bold'>Borrowing items</h1>
-      <Table>
-        <TableCaption className="w-full text-right">
-          You may now claim items from respective departments.
-        </TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead>Quantity</TableHead>
-            <TableHead>Start Date</TableHead>
-            <TableHead>End Date</TableHead>
-            <TableHead className="text-right">Status</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {items.map((item) => {
-            const { formattedStatus, badgeClass } = formatBorrowStatus(item.borrowed_item_status);
-            return (
-              <TableRow key={item.id}>
-                <TableCell className="font-medium">{item.model_name}</TableCell>
-                <TableCell>{item.quantity}</TableCell>
-                <TableCell>{`${formatDateTime(item.start_date)}`}</TableCell>
-                <TableCell>{`${formatDateTime(item.due_date)}`}</TableCell>
-                <TableCell className="text-start">
-                  <Badge className={badgeClass}>{formattedStatus}</Badge>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-        </TableBody>
-      </Table>
-    </div>
+    <ExpandTable
+      items={items}
+      formatDateTime={formatDateTime}
+      formatBorrowStatus={formatBorrowStatus}
+      handleDropdownChange={handleDropdownChange} 
+      isEditing={isEditing} 
+    />
   );
 }
-

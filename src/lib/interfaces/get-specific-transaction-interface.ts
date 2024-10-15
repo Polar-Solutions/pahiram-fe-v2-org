@@ -1,12 +1,20 @@
 // Interface for item details
- export interface IItem {
-    id: string;
-    model_name: string;
-    quantity: number;
-    start_date: string;
-    due_date: string;
-    borrowed_item_status: string;
-  }
+export interface IBorrowedItemDetail {
+  borrowed_item_id: string;
+  borrowed_item_status: string;
+  apc_id: string;
+}
+
+export interface IItem {
+  item_group_id: string;
+  model_name: string;
+  apc_id: string;
+  quantity: number;
+  start_date: string;
+  due_date: string;
+  details: IBorrowedItemDetail[]; // Array of borrowed item details
+}
+
   
   // Interface for transaction data
   export interface ITransacData {

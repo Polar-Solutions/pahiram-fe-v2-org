@@ -9,6 +9,8 @@ import { getBorrowResourceEndpoint, cancelBorrowRequestEndpoint } from "@/config
 import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
 import { useQuery } from "@tanstack/react-query";
 import { IGetBorrowRequestApiResponse } from "@/lib/interfaces";
+import { IGetTransactionRequestApiResponse } from "@/lib/interfaces/get-office-transaction-interface";
+import { getOfficeTransactionListEndpoint } from "@/config/api/backend-routes/office-transaction-request";
 
 export const getBorrowRequestsPagination = async (
     page: number
@@ -84,4 +86,28 @@ export const useCancelSpecificTransaction = (transacId: string) => {
         refetchOnWindowFocus: false,
         enabled: !!transacId,
     });
+}
+
+export const getTransactionRequestPagination = async (  
+    page: number
+): Promise<IGetTransactionRequestApiResponse> => {  // Use the correct interface
+    try {
+        const response = await PahiramAxiosConfig.get(getOfficeTransactionListEndpoint(page));
+
+        if (!response.status || response.status >= 400) {
+            const errorBody = response.statusText;
+            throw new Error(
+                `HTTP error! status: ${response.status}, body: ${errorBody}`
+            );
+        }
+        
+        return response.data;  // This should match IGetBorrowRequestApiResponse structure
+    } catch (error) {
+        console.error("Error fetching items:", error);
+        if (error instanceof Error) {
+            throw new Error(`Failed to fetch items: ${error.message}`);
+        } else {
+            throw new Error("Failed to fetch items: Unknown error");
+        }
+    }
 }
