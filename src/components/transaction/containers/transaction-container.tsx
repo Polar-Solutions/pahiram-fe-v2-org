@@ -7,6 +7,8 @@ import { useTransaction } from '@/hooks/transaction/useTransaction';
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
 import { motion } from "framer-motion";
 import TransactionList from "../presentational/transaction-list";
+import TabsSearchComponent from "@/components/transaction/presentational/tabs-search-component";
+import { useFilteredRequests } from "@/hooks/request/useFilteredRequests";
 
 export default function TransactionContainer() {
   const { page, filterSearch, showItemGroupModal } = getURLParams();
@@ -60,6 +62,9 @@ export default function TransactionContainer() {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
     >
+
+      <TabsSearchComponent/>
+
       <TransactionList endorsements={officeTransaction} />
       <div className="mt-4">
         <TransactionPagination
