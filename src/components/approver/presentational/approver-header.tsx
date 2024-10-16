@@ -14,8 +14,8 @@ export default function ApproverHeader() {
 
     const tabOptions = [
         {value: 'PENDING', label: 'Pending'},
-        {value: 'APPROVED', label: 'Approved'},
-        {value: 'DECLINE', label: 'Declined'}
+        {value: 'ACTIVE', label: 'Active'},
+        {value: 'COMPLETED', label: 'Completed'}
     ];
 
     return (
