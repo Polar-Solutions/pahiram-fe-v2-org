@@ -18,7 +18,24 @@ export const useTabsStore = create<RequestStore>()(
             filterOffice: '',
 
             setActiveTab: (tab) => {
-                const defaultFilter = tab === 'REQUEST' ? 'PENDING' : 'APPROVED';
+                let defaultFilter = '';
+                
+                // Setting default filter based on active tab
+                if (tab === 'REQUEST') {
+                    defaultFilter = 'PENDING';
+                } else if (tab === 'APPROVED') {
+                    defaultFilter = 'APPROVAL';
+                }
+                else if (tab === 'PENDING') {
+                    defaultFilter = 'RELEASE'
+                }
+                else if (tab === 'ACTIVE') {
+                    defaultFilter = 'ON_GOING'
+                } 
+                else if (tab === 'COMPLETED') {
+                    defaultFilter = 'RETURNED';
+                }
+
                 set({
                     activeTab: tab,
                     selectedFilterTab: defaultFilter,
