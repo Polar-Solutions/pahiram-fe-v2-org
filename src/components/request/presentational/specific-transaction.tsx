@@ -14,6 +14,7 @@ import { Badge } from "@/components/ui/badge";
 import {Button} from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
 import { toast } from "@/hooks/use-toast";
+import { useEditRequest } from '@/hooks/request/useEditRequest';
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
@@ -22,7 +23,8 @@ export default function SpecificTransaction() {
   const { data, isLoading } = useSpecificTransaction(transactionId);
   const transactionData = data?.data;
   const router = useRouter();
-  
+  const { isEditing, setIsEditing, setTransactionData, setEditedDetails, editedDetails, resetEditedDetails } = useEditRequest();
+
   
   if (data) {
     handleApiClientSideError(data);
@@ -54,9 +56,27 @@ export default function SpecificTransaction() {
     }
   };
 
+  const handleEditRequest = () => {
+    setIsEditing(true);
+    setEditedDetails({
+      endorser: transactionData?.transac_data.endorsed_by?.full_name || '',
+      purpose: transactionData?.transac_data.purpose,
+      specifyPurpose: transactionData?.transac_data.user_defined_purpose || '',
+    });
+  };
 
-  
-  
+  const handleSaveChanges = () => {
+    // Here you would have logic to persist the changes (e.g., sending a request to the server).
+    setIsEditing(false);
+    // You can implement the logic to save the `editedDetails` in the backend
+  };
+
+  // Handle Discard Changes
+  const handleDiscardChanges = () => {
+    resetEditedDetails();  // Reset edited details to the original values
+    setIsEditing(false);   // Exit the editing mode
+  };
+
   if (isLoading) {
     return (
       <SpecificTransactionSkeleton />
@@ -118,9 +138,9 @@ export default function SpecificTransaction() {
       {/* BorrowingDetail and BorrowedItem */}
       <div className="flex">
         <BorrowingDetail 
-          endorser={transactionData.transac_data.endorsed_by?.full_name || 'No Endorser'}
-          purpose={formatBorrowPurpose(transactionData.transac_data.purpose)} 
-          specifyPurpose={transactionData.transac_data.user_defined_purpose || 'No specified purpose'} 
+          endorser={isEditing ? editedDetails.endorser : transactionData.transac_data.endorsed_by?.full_name || 'No Endorser'}
+          purpose={isEditing ? editedDetails.purpose : formatBorrowPurpose(transactionData.transac_data.purpose)} 
+          specifyPurpose={isEditing ? editedDetails.specifyPurpose : transactionData.transac_data.user_defined_purpose || 'No specified purpose'} 
         />
         <BorrowedItem 
           items={borrowedItems} // Ensure this is an array of IItem
@@ -129,31 +149,50 @@ export default function SpecificTransaction() {
         />
       </div>
 
-      {/* Actions */}
       <div className='space-x-4 flex justify-end'>
-        {canCancel && (
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="destructive">Cancel Request</Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px]">
-              <DialogHeader>
-                <DialogTitle className='mb-2'>Cancel Request</DialogTitle>
-                <DialogDescription>
-                    Are you sure you want to cancel this request? This is an irreversible action.
-                </DialogDescription>
-              </DialogHeader>
-              <DialogFooter>
-                <DialogClose asChild>
-                  <Button variant="outline">Close</Button>
-                </DialogClose>
-                <Button onClick={handleCancelRequest} type='button'>Cancel Request</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
-        )}
-        {canEdit && (
-          <Button>Edit Request</Button>
+        {isEditing ? (
+          <>
+            {/* Discard Changes button */}
+            <Button variant="outline" onClick={handleDiscardChanges}>
+              Discard Changes
+            </Button>
+            
+            {/* Save Changes button */}
+            <Button variant="default" onClick={handleSaveChanges}>
+              Save Changes
+            </Button>
+          </>
+        ) : (
+          <>
+            {canCancel && (
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="destructive">Cancel Request</Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle className='mb-2'>Cancel Request</DialogTitle>
+                    <DialogDescription>
+                      Are you sure you want to cancel this request? This is an irreversible action.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Close</Button>
+                    </DialogClose>
+                    <Button onClick={handleCancelRequest} type='button'>Cancel Request</Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            )}
+            
+            {/* Edit Request button */}
+            {canEdit && (
+              <Button onClick={handleEditRequest}>
+                Edit Request
+              </Button>
+            )}
+          </>
         )}
       </div>
     </div>

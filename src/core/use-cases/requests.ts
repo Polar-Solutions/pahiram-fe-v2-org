@@ -1,4 +1,4 @@
-import { getBorrowRequestsPagination } from "@/core/data-access/requests";
+import { getBorrowRequestsPagination, getTransactionRequestPagination } from "@/core/data-access/requests";
 
 export const getBorrowRequestsPaginationUseCase = async (page: number) => {
   const { data } = await getBorrowRequestsPagination(page);
@@ -9,3 +9,14 @@ export const getBorrowRequestsPaginationUseCase = async (page: number) => {
     },
   };
 }
+
+export const getTransctionRequestPaginationUseCase = async (page: number) => {
+  const { data } = await getTransactionRequestPagination(page);
+  return { 
+    data: { 
+      endorsements: data?.endorsements,
+      last_page: data?.last_page,
+    }
+  }
+}
+
