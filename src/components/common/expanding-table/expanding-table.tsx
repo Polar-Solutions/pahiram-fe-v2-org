@@ -10,8 +10,7 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SuperRefineItemSchema } from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import { z } from "zod";
-import { getItemsPaginationUseCase } from "@/core/use-cases/items";
-import { IItemGroup } from '@/lib/interfaces';
+import { Badge } from "@/components/ui/badge";
 import { useDropdownStore } from '@/hooks/request/useDropdownStore'; // Adjust the path as needed
 
 interface ExpandTableProps {
@@ -20,24 +19,23 @@ interface ExpandTableProps {
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
   handleDropdownChange: (value: string, field: string, index: number) => void;
   isEditing: boolean;
+  modelNames: string[]; // Include modelNames in props
 }
 
-export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing }: ExpandTableProps) {
+export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing, modelNames }: ExpandTableProps) {
   const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
-  const [modelNames, setModelNames] = useState<string[]>([]);
+  const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore(); // Access the Zustand store
 
   const form = useForm<z.infer<typeof SuperRefineItemSchema>>({
     resolver: zodResolver(SuperRefineItemSchema),
     mode: "onChange",
     defaultValues: {
-      item_group_id: items[0].item_group_id,
+      item_group_id: items[0]?.item_group_id || '',
       quantity: 1,
       start_date: "",
       return_date: "",
     },
   });
-
-  const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore(); // Access the store
 
   const { control, formState: { errors } } = form;
 
@@ -45,23 +43,9 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
 
-  // Fetch model names on component mount
-  useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        const { data } = await getItemsPaginationUseCase(1); // Fetch page 1
-        const models = data.items.map((item: IItemGroup) => item.model_name);
-        setModelNames(models);
-      } catch (error) {
-        console.error("Error fetching model names:", error);
-      }
-    };
-    fetchModels();
-  }, []);
-
   return (
     <FormProvider {...form}>
-      <div className='w-3/5 ml-4'>
+      <div className='w-full ml-4'>
         <h1 className='text-xl font-bold mb-4'>Borrowing items</h1>
         <Table>
           <TableCaption className="w-full text-right">
@@ -165,7 +149,6 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                         <TableCell>
                           {formatDateTime(item.start_date)}
                         </TableCell>
-
                         <TableCell>
                           {formatDateTime(item.due_date)}
                         </TableCell>
@@ -185,13 +168,24 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                     <TableRow>
                       <TableCell colSpan={6}>
                         <ExpandingCollapsible
-                          apcId={item.apc_id}
-                          items={item.details}
-                          formatBorrowStatus={formatBorrowStatus}
+                          items={item.details} // Pass the details for the specific item
+                          renderRow={(detail, index) => {
+                            // Define how each row in the collapsed table should be rendered
+                            const { formattedStatus, badgeClass } = formatBorrowStatus(detail.borrowed_item_status);
+                            return (
+                              <>
+                                <TableCell className="font-medium">{detail.apc_id}</TableCell>
+                                <TableCell className="text-start">
+                                  <Badge className={badgeClass}>{formattedStatus}</Badge>
+                                </TableCell>
+                              </>
+                            );
+                          }}
                         />
                       </TableCell>
                     </TableRow>
                   )}
+
                 </React.Fragment>
               );
             })}

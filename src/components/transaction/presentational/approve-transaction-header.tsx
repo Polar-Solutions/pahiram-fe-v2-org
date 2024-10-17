@@ -22,7 +22,6 @@ export default function ApproverReqTransCardHeader({
   submissionDate,
   transactionId,
   isSpecific = false,
-  id,
 }: ApproverReqTransCardHeaderProps) {
   const router = useRouter();
 

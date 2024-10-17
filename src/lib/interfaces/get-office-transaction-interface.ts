@@ -1,7 +1,7 @@
 export interface IGetTransactionRequestApiResponse {
     status: boolean;
     data: {
-      endorsements: ITransactionRequest[];
+      transactions: ITransactionRequest[];
       current_page: number;
       last_page: number;
       next_page_url: string;

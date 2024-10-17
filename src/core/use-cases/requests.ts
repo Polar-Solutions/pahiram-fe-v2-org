@@ -14,7 +14,7 @@ export const getTransctionRequestPaginationUseCase = async (page: number) => {
   const { data } = await getTransactionRequestPagination(page);
   return { 
     data: { 
-      endorsements: data?.endorsements,
+      transactions: data?.transactions,
       last_page: data?.last_page,
     }
   }
