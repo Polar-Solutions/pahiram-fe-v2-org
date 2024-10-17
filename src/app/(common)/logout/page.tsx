@@ -9,9 +9,12 @@ import {LayoutDashboard} from "lucide-react";
 import {Heading} from "@radix-ui/themes";
 import {LoadingComponent} from "@/components/common/loading-component";
 import {useEffect, useState} from "react";
+import {useCartStore} from "@/hooks/borrow/useCartStore";
+import {ICartItemsStoreState} from "@/lib/interfaces/zustand-store-states";
 // TODO: Add loading page before going to logout page
 
 export default function LogoutPage() {
+    const clearCart = useCartStore((state: unknown) => (state as ICartItemsStoreState).clearCart);
     const [isRedirecting, setIsRedirecting] = useState(false);
     const [lastPath, setLastPath] = useState("/");
     const {executeAsync} = useAction(logoutUserAction);
@@ -34,6 +37,7 @@ export default function LogoutPage() {
             .then((result) => {
                 if (result) {
                     clearUserStore();
+                    clearCart();
                 }
             })
             .finally(() => {
