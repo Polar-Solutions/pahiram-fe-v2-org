@@ -8,7 +8,6 @@ interface BorrowedItemProps {
   items: IItem[];
   formatDateTime: (dateString: string) => string;
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
-  formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
 }
 
 export default function BorrowedItem({ items, formatDateTime, formatBorrowStatus }: BorrowedItemProps) {
