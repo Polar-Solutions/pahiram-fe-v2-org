@@ -65,7 +65,7 @@ export default function TransactionContainer() {
 
       <TabsSearchComponent/>
 
-      <TransactionList endorsements={officeTransaction} />
+      <TransactionList transactions={officeTransaction} />
       <div className="mt-4">
         <TransactionPagination
           currentPage={page}

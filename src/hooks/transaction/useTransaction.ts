@@ -20,8 +20,8 @@ export const useTransaction = (page: number) => {
                 const response = await getTransctionRequestPaginationUseCase(page);
                 const officeTransactionPaginationData = response?.data;
     
-                setOfficeTransaction(officeTransactionPaginationData?.endorsements);
-                cachedRequests.current[page] = officeTransactionPaginationData?.endorsements; // Cache requests per page
+                setOfficeTransaction(officeTransactionPaginationData?.transactions);
+                cachedRequests.current[page] = officeTransactionPaginationData?.transactions; // Cache requests per page
                 setTotalPages(officeTransactionPaginationData?.last_page);
             } catch (error) {
                 console.error("Error fetching requests:", error);

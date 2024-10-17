@@ -12,17 +12,14 @@ import { ITransactionRequest } from '@/lib/interfaces/get-office-transaction-int
 import ApproverReqTransCardHeader from "@/components/transaction/presentational/approve-transaction-header";
 import { useRouter } from "next/navigation";
 interface TransactionCardProps {
-  endorsement: ITransactionRequest;
+  transaction: ITransactionRequest;
 }
 
-export default function TransactionCard({ endorsement }: TransactionCardProps) {
-  const [isExpanded, setIsExpanded] = useState(false);
+export default function TransactionCard({ transaction }: TransactionCardProps) {
   const [isExpandedItems, setIsExpandedItems] = useState(false);
-  const fullText = endorsement.user_defined_purpose || "N/A";
-  const truncatedText = fullText.slice(0, 100);
+  const fullText = transaction.user_defined_purpose || "N/A";
   const router = useRouter();
-
-  const { items, borrower, created_at, custom_transac_id } = endorsement;
+  const { items, borrower, created_at, custom_transac_id } = transaction;
 
   // Number of rows to show when collapsed
   const visibleRowsCount = 3;
@@ -32,23 +29,28 @@ export default function TransactionCard({ endorsement }: TransactionCardProps) {
     whileHover={{y: -5}}
     className="w-full h-full flex flex-col cursor-pointer group"
 >
-    <Card
+      <Card
         className="w-full my-2"
         onClick={() => {
-          router.push(`/office/lending-offices/specific-transaction/${endorsement.id}`);
+          const query = new URLSearchParams({
+            transactions: JSON.stringify(transaction),
+            items: JSON.stringify(items), // Still need to stringify arrays
+          }).toString();
+          router.push(`/office/lending-offices/specific-transaction/${transaction.id}?${query}`);
         }}
-    >
+      >
+
         <CardHeader className="flex flex-col space-y-0 pb-2">
         <ApproverReqTransCardHeader
             borrowerName={borrower}
-            borrowerId={endorsement.apc_id}
+            borrowerId={transaction.apc_id}
             submissionDate={new Date(created_at).toLocaleDateString('en-US', {
               year: 'numeric',
               month: 'long',
               day: 'numeric',
             })}
             transactionId={custom_transac_id}
-            id={endorsement.id}
+            id={transaction.id}
           />
         </CardHeader>
 
@@ -63,8 +65,8 @@ export default function TransactionCard({ endorsement }: TransactionCardProps) {
                 <div className="flex items-center mb-1">
                     <h3 className="font-semibold mr-2">Purpose</h3> {/* Added margin-right for spacing */}
                     <Badge variant='outline'>
-                        {endorsement.purpose
-                            ? endorsement.purpose
+                        {transaction.purpose
+                            ? transaction.purpose
                                 .toLowerCase() // Convert to lowercase
                                 .replace(/_/g, ' ') // Replace underscores with spaces
                                 .replace(/\b\w/g, char => char.toUpperCase()) // Capitalize first letter of each word

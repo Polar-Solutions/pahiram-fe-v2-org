@@ -43,17 +43,17 @@ export default function TabsSearchComponent() {
     
       const filterValues = activeTab === 'PENDING'
       ? [
-          { value: 'RELEASE', label: 'Release' },
-          { value: 'APPROVAL', label: 'Approval' },
+          { value: 'FOR_APPROVAL', label: 'For Approval' },
+          { value: 'FOR_RELEASE', label: 'For Release' },
         ]
       : activeTab === 'ACTIVE'
       ? [
           { value: 'ON_GOING', label: 'On Going' },
-          { value: 'FOR_RETURN', label: 'For Return' },
+          { value: 'PAST_DUE', label: 'Past Due' },
         ]
       : [
-          { value: 'RETURNED', label: 'Returned' },
-          { value: 'CLOSED', label: 'Closed' },
+        { value: 'RETURNED', label: 'Returned' },
+        { value: 'CLOSED', label: 'Closed' },
         ];
     
 

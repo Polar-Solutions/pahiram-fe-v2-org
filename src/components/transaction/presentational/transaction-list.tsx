@@ -1,15 +1,16 @@
 import TransactionCard from '@/components/transaction/presentational/transaction-card';
 import { ITransactionRequest } from '@/lib/interfaces/get-office-transaction-interface';
 import { useSearch } from '@/hooks/borrow/useSearch';
+import TransactionListSkeleton from '@/components/transaction/presentational/transaction-card-skeleton';
 
 interface TransactionListProps {
-    endorsements: ITransactionRequest[];
+    transactions: ITransactionRequest[];
 }
 
-export default function TransactionList({ endorsements }: TransactionListProps) {
+export default function TransactionList({ transactions }: TransactionListProps) {
     const { searchQuery } = useSearch();
 
-    const filteredEndorsements = endorsements
+    const filteredTransactions = transactions
         .filter((transaction) => {
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -25,18 +26,18 @@ export default function TransactionList({ endorsements }: TransactionListProps) 
                 : dateComparison;
         });
 
-    if (!filteredEndorsements.length) {
+    if (!filteredTransactions.length) {
         return (
             <div className='text-center text-muted-foreground col-span-full'>
-                No results found
+                <TransactionListSkeleton />
             </div>
         );
     }
 
     return (
         <>
-            {filteredEndorsements.map((endorsement) => (
-                <TransactionCard key={endorsement.id} endorsement={endorsement} /> 
+            {filteredTransactions.map((transactions) => (
+                <TransactionCard key={transactions.id} transaction={transactions} /> 
             ))}
         </>
     );
