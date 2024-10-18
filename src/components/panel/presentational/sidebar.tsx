@@ -4,10 +4,10 @@ import Link from "next/link";
 import {PanelsTopLeft} from "lucide-react";
 
 import {cn} from "@/lib/utils";
-import {useStore} from "@/hooks/useStore";
+import {useStore} from "@/hooks/stores/useStore";
 import {Button} from "@/components/ui/button";
 import {Menu} from "@/components/panel/presentational/menu";
-import {useSidebarToggle} from "@/hooks/useSidebarToggle";
+import {useSidebarToggle} from "@/hooks/stores/useSidebarToggle";
 import {SidebarToggle} from "@/components/panel/presentational/sidebar-toggle";
 import {siteConfig} from "@/config/siteConfig"
 import {useFirstMenuItem} from "@/lib/menu-list";

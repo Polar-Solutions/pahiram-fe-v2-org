@@ -1,12 +1,16 @@
 "use server";
 
-import { flattenValidationErrors } from "next-safe-action";
-import { LoginSchema } from "@/lib/form-schemas/login-schemas";
-import { actionClient } from "@/lib/safe-action";
-import { loginUserUseCase } from "@/core/use-cases/users";
-import { cookies } from "next/headers";
-import { loginUser } from "@/core/data-access/users";
-import { setAuthCookie } from "@/core/data-access/cookies";
+import {flattenValidationErrors} from "next-safe-action";
+import {LoginSchema} from "@/lib/form-schemas/login-schemas";
+import {actionClient} from "@/lib/safe-action";
+import {loginUserUseCase} from "@/core/use-cases/users";
+import {cookies} from "next/headers";
+import {ILoginApiResponse} from "@/lib/interfaces";
+import {AxiosResponse} from "axios";
+import {loginRoute} from "@/config/api/backend-routes/auth-routes";
+import {PahiramAxiosConfig} from "@/config/api/BackendAxiosConfig";
+import {handleApiServerSideErrorResponse} from "@/core/handle-api-server-side-error-response";
+import {setAuthCookie} from "@/core/data-access/cookies";
 
 // TODO: Implement zsa
 /**
@@ -28,47 +32,48 @@ export const loginUserAction = actionClient
         async ({
                    parsedInput: {email, password, remember},
                }) => {
-            try {
-                const response = await loginUser({email, password, remember_me: remember});
+            const request = async (): Promise<
+                AxiosResponse<ILoginApiResponse>> => {
+                let requestBody: { email: string; password: string; remember_me: boolean | undefined } = {
+                    email,
+                    password,
+                    remember_me: remember
+                };
 
-                // Handle the successful response here
-                const isSetSuccessful = await setAuthCookie(response);
+                return PahiramAxiosConfig.post<ILoginApiResponse>(
+                    loginRoute,
+                    requestBody
+                );
+            };
 
-                if (!isSetSuccessful) {
-                    return {
-                        success: false,
-                        message: "There was an error on our end. Please try again later."
-                    }
-                }
-
-                return {
-                    success: true,
-                    data: response.data,
-                    message: "Login successful! 🎉"
-                }
-
-            } catch (error: any) {
-                return {
-                    success: false,
-                    message: error?.message
+            // Handle the response
+            const response = await handleApiServerSideErrorResponse({
+                request,
+                successMessage: "Logged in successfully! 🎉",
+            });
+            if (response?.data?.status) {
+                const isSetSuccessfully = await setAuthCookie(response?.data);
+                if (!isSetSuccessfully) {
+                    throw new Error("Failed to set auth cookie");
                 }
             }
 
+            return response;
         }
     );
 
 export const logoutUserAction = actionClient.action(async () => {
-  return new Promise((resolve, reject) => {
-    try {
-      const cookiesToDelete = cookies().getAll();
-      cookiesToDelete.forEach((cookie) => {
-        cookies().delete(cookie.name);
-      });
-      setTimeout(() => {
-        resolve(!cookies().has("auth"));
-      }, 100);
-    } catch (error) {
-      reject(error);
-    }
-  });
+    return new Promise((resolve, reject) => {
+        try {
+            const cookiesToDelete = cookies().getAll();
+            cookiesToDelete.forEach((cookie) => {
+                cookies().delete(cookie.name);
+            });
+            setTimeout(() => {
+                resolve(!cookies().has("auth"));
+            }, 100);
+        } catch (error) {
+            reject(error);
+        }
+    });
 });

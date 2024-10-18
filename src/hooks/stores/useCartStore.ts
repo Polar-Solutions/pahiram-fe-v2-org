@@ -152,7 +152,17 @@ export const useCartStore = create<ICartItemsStoreState>()(
       isCartEmpty: (): boolean => {
         const { cartItems } = get();
         return cartItems.length === 0;
-      }
+      },
+
+        /**
+         * Gets the total quantity of all items in the cart.
+         *
+         * @returns {number} - The total quantity of all items in the cart.
+         */
+        getAllQuantity: (): number => {
+            const { cartItems } = get();
+            return cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
+        }
     }),
 
     {

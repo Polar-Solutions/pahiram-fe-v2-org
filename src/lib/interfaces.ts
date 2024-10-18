@@ -115,11 +115,13 @@ export interface ILoginInput {
 
 export interface ILoginApiResponse {
   status: boolean;
-  mesage?: string;
+  message?: string;
+  errors?: any;
   data: {
     user: IUser;
     pahiram_token: string;
     apcis_token: string;
+    expires_at: string;
   };
   method: string;
 }
@@ -136,9 +138,9 @@ export interface IUser {
   first_name: string;
   last_name: string;
   email: string;
-  department: string | null;
   role: string;
   acc_status: string;
+  department: string | null;
   is_admin: boolean;
 }
 
@@ -154,4 +156,11 @@ export interface IHandleApiServerSideErrorResponse<T> {
   success?: string;          // Optional success message
   error?: string | string[]; // Optional error message(s)
   data?: T;                 // Optional data of generic type T
+}
+
+export interface IApproveEndorsementApiResponse {
+  status: boolean;
+  message?: string;
+  errors?: any;
+  method: string;
 }

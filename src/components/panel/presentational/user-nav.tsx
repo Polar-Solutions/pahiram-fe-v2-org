@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 // import {useUser} from "@/hooks/use-user";
-import {UserState, useUserStore} from "@/hooks/useUser";
+import {UserState, useUserStore} from "@/hooks/stores/useUser";
 import {usePathname, useRouter} from "next/navigation";
 import {useEffect} from "react";
 

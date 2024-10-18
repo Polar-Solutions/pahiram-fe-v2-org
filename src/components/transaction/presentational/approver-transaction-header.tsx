@@ -57,8 +57,30 @@ export default function ApproverReqTransCardHeader({
         <ActionButton
           approveText="Approve"
           declineText="Decline"
-          onApprove={() => console.log('Approve')}
-          onDecline={() => console.log('Decline')}
+          onApprove={async () => {
+            return new Promise((resolve, reject) => {
+              try {
+                // Simulate an asynchronous operation (like an API call)
+                setTimeout(() => {
+                  console.log("Approval process completed.");
+                }, 1000); // Simulate a delay of 1 second
+              } catch (error) {
+                reject("Approval failed");
+              }
+            });
+          }}
+          onDecline={async () => {
+            return new Promise((resolve, reject) => {
+              try {
+                // Simulate an asynchronous operation (like an API call)
+                setTimeout(() => {
+                  console.log("Approval process completed.");
+                }, 1000); // Simulate a delay of 1 second
+              } catch (error) {
+                reject("Approval failed");
+              }
+            });
+          }}
         />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
