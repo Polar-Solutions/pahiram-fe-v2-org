@@ -14,11 +14,11 @@ export const getBorrowRequestsPaginationUseCase = async (page: number) => {
   };
 }
 
-export const getTransctionRequestPaginationUseCase = async (page: number) => {
+export const getTransactionRequestPaginationUseCase = async (page: number) => {
   const { data } = await getTransactionRequestPagination(page);
   return { 
     data: { 
-      endorsements: data?.transactions,
+      transactions: data?.transactions,
       last_page: data?.last_page,
     }
   }

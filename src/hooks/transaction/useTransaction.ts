@@ -1,37 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import {getTransctionRequestPaginationUseCase }from "@/core/use-cases/requests"
+import {getTransactionRequestPaginationUseCase }from "@/core/use-cases/requests"
 import { ITransactionRequest } from "@/lib/interfaces/get-office-transaction-interface";
+import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
 
 export const useTransaction = (page: number) => {
     const [officeTransaction, setOfficeTransaction] = useState<ITransactionRequest[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [isFetchingOfficeTransaction, setIsFetchingOfficeTransaction] = useState(false);
     
-    // Use a ref to store cached requests per page
-    const cachedRequests = useRef<{ [page: number]: ITransactionRequest[] }>({});
+    const {addRequestsByPage, getRequestsByPage} = useTransactionStore();
     
     useEffect(() => {
         async function loadRequests(page: number) {
-        if (cachedRequests.current[page]) {
-            setOfficeTransaction(cachedRequests.current[page]);
-        } else {
-            try {
-                setIsFetchingOfficeTransaction(true);
-                const response = await getTransctionRequestPaginationUseCase(page);
-                const officeTransactionPaginationData = response?.data;
-    
-                setOfficeTransaction(officeTransactionPaginationData?.transactions);
-                cachedRequests.current[page] = officeTransactionPaginationData?.transactions; // Cache requests per page
-                setTotalPages(officeTransactionPaginationData?.last_page);
-            } catch (error) {
-                console.error("Error fetching requests:", error);
-                // Handle error (e.g., show error message to user)
-            } finally {
-            setIsFetchingOfficeTransaction(false);
+            const existingPage = getRequestsByPage("transaction", page);
+            if (existingPage) {
+                setOfficeTransaction(existingPage);
+            } else {
+                try {
+                    setIsFetchingOfficeTransaction(true);
+                    const response = await getTransactionRequestPaginationUseCase(page);
+                    const officeTransactionData = response?.data;
+
+                    setOfficeTransaction(officeTransactionData?.transactions);
+                    addRequestsByPage("transaction", page, officeTransactionData?.transactions);
+                    setTotalPages(officeTransactionData?.last_page);
+                } catch (error) {
+                    console.error("Error fetching requests:", error);
+                    // Handle error (e.g., show error message to user)
+                } finally {
+                    setIsFetchingOfficeTransaction(false);
+                }
             }
         }
-        }
-    
+
         loadRequests(page);
     }, [page]);
     

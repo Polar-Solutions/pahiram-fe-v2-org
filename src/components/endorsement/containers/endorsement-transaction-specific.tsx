@@ -33,7 +33,6 @@ const EndorsementTransactionSpecific = ({
 
             {/* Badges Section */}
             <div className="flex items-center space-x-2">
-                <Badge variant="secondary">DEPARTMENT</Badge>
                 <Badge variant="secondary">{endorsement?.items.length} items</Badge>
             </div>
 
