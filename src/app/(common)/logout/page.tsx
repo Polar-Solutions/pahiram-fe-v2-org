@@ -1,7 +1,7 @@
 "use client";
 import {useAction} from "next-safe-action/hooks";
 import {logoutUserAction} from "@/core/actions/authentication";
-import {UserState, useUserStore} from "@/hooks/useUser";
+import {UserState, useUserStore} from "@/hooks/stores/useUser";
 import {useRouter} from "next/navigation";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -9,18 +9,16 @@ import {LayoutDashboard} from "lucide-react";
 import {Heading} from "@radix-ui/themes";
 import {LoadingComponent} from "@/components/common/loading-component";
 import {useEffect, useState} from "react";
-import {useCartStore} from "@/hooks/borrow/useCartStore";
+import {useCartStore} from "@/hooks/stores/useCartStore";
 import {ICartItemsStoreState} from "@/lib/interfaces/zustand-store-states";
 // TODO: Add loading page before going to logout page
 
 export default function LogoutPage() {
-    const clearCart = useCartStore((state: unknown) => (state as ICartItemsStoreState).clearCart);
+    const { clearCart } = useCartStore();
     const [isRedirecting, setIsRedirecting] = useState(false);
     const [lastPath, setLastPath] = useState("/");
     const {executeAsync} = useAction(logoutUserAction);
-    const clearUserStore = useUserStore(
-        (state: unknown) => (state as UserState).handleSignout
-    );
+    const { handleSignout } = useUserStore();
     const router = useRouter();
 
     useEffect(() => {
@@ -31,12 +29,12 @@ export default function LogoutPage() {
     }, []);
 
 
-    const handleSignout = () => {
+    const handleLogout = () => {
         setIsRedirecting(true);
         executeAsync()
             .then((result) => {
                 if (result) {
-                    clearUserStore();
+                    handleSignout();
                     clearCart();
                 }
             })
@@ -73,7 +71,7 @@ export default function LogoutPage() {
                     </CardContent>
                     <CardFooter className="flex flex-col gap-3">
                         <Button className="w-full" onClick={
-                            handleSignout}>
+                            handleLogout}>
                             Logout
                         </Button>
                         <Button variant="outline" className="w-full" onClick={redirectBack}>

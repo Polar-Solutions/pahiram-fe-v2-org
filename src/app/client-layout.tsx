@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/providers/themeProvider";
 import "../styles/globals.css";
 
@@ -19,7 +19,7 @@ export default function ClientLayout({
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
         {children}
       </ThemeProvider>
-      <Toaster />
+        <Toaster expand={true} />
     </QueryClientProvider>
   );
 }

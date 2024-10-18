@@ -2,6 +2,12 @@ export const getBorrowListEndpoint = (page: number) => {
   return `/user/borrow-request?page=${page}`;
 };
 
+export const getEndorsementResourceEndpoint = (resourceId: string) => {
+  const endpoint = `/borrow-transaction/endorsed/${resourceId}`;
+  return endpoint;
+};
+
+
 
 export const getBorrowResourceEndpoint = (resourceId: string) => {
   const endpoint = `/user/borrow-request/${resourceId}`;
@@ -21,6 +27,11 @@ export const patchBorrowRequestEndpoint = (resourceId: string) => {
 
 export const cancelBorrowRequestEndpoint = (resourceId: string) => {
   const endpoint = `/user/borrow-request/${resourceId}/cancel`;
+  return endpoint;
+};
+
+export const approveEndorsementEndpoint = (resourceId: string | undefined) => {
+  const endpoint = `/endorsement/${resourceId}/approval`;
   return endpoint;
 };
 

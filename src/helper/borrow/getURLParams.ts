@@ -23,6 +23,8 @@ export const getURLParams = () => {
   const showItemGroupModal =
     Boolean(searchParams.get("show-item-group-modal")) || undefined;
   const inCirculation = searchParams.get("in_circulation") || 0;
+  const showBorrowingListSheet =     Boolean(searchParams.get("show-borrowing-list-sheet")) || undefined;
+
   return {
     sortBy,
     filterCategory,
@@ -33,5 +35,6 @@ export const getURLParams = () => {
     itemGroupId,
     showItemGroupModal,
     inCirculation,
+    showBorrowingListSheet,
   };
 };

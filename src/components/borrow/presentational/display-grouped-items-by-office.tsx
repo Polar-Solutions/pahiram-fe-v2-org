@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useCartStore } from "@/hooks/borrow/useCartStore";
+import { useCartStore } from "@/hooks/stores/useCartStore";
 import { groupItemsByDepartment } from "@/helper/group-items-by-office";
 import CartItem from "../cart-item";
 

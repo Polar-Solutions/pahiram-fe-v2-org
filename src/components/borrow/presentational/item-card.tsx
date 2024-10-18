@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import { useGetSpecificItemGroupData } from "@/core/data-access/items";
-import { useItemGroupStore } from "@/hooks/useItemGroupStore";
+import { useItemGroupStore } from "@/hooks/stores/useItemGroupStore";
 import { specificItemGroupDataIsFetching } from "@/signals/shared-signals";
 
 interface IItemCardProps {
