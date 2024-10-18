@@ -17,7 +17,7 @@ import { useBookedDates } from "@/core/data-access/items";
 import { ICalendarModal } from "@/lib/interfaces/get-booked-dates-request-interface";
 import { Badge } from "@/components/ui/badge";
 import { handleApiClientSideError } from "@/core/handle-api-client-side-error";
-import { useItemGroupStore } from "@/hooks/useItemGroupStore";
+import { useItemGroupStore } from "@/hooks/stores/useItemGroupStore";
 import { CustomBorrowDateRangeModal } from "./custom-borrow-date-range-modal";
 import { addAdditionalInfoFieldsForBorrowCalendar } from "@/helper/borrow-calendar-additional-info-fields";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";

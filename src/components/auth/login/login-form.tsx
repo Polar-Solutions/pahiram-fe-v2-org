@@ -8,7 +8,7 @@ import {useForm} from "react-hook-form";
 import {zodResolver} from "@hookform/resolvers/zod";
 
 import {Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
-import {useUserStore} from "@/hooks/useUser";
+import {useUserStore} from "@/hooks/stores/useUser";
 
 import type {TLoginFormValues} from "@/lib/form-schemas/login-schemas";
 import {LoginSchema} from "@/lib/form-schemas/login-schemas";
@@ -18,6 +18,7 @@ import {useAction} from "next-safe-action/hooks";
 import {FormError} from "@/components/common/form-error";
 import {FormSuccess} from "@/components/common/form-success";
 import {SubmitButton} from "@/components/common/submit-button";
+import {handleApiClientSideError, IClientSideApiHandlerResponse} from "@/core/handle-api-client-side-error";
 
 export default function LoginForm() {
 
@@ -40,31 +41,26 @@ export default function LoginForm() {
     const {setUserData} = useUserStore();
 
 
-    function onSubmit() {
+    async function onSubmit() {
+        const res = await executeAsync(form.getValues());
+        const responseData: IClientSideApiHandlerResponse = {
+            success: res?.data?.success,
+            error: res?.data?.error,
+            isSuccessToast: true,
+        };
+        console.log("responsedata", responseData);
 
-        executeAsync(form.getValues())
-            .then((result) => {
-                const data = result?.data;
-                const message = data?.message;
-                const userData = data?.data?.user;
-                const success = data?.success;
+        handleApiClientSideError(responseData);
 
-                if (!success && message) {
-                    setError(message);
-                    return;
-                }
+        console.log("res", res)
 
-                if (userData) {
-                    setSuccess(message);
-                    setError("");
-                    setUserData(userData);
-                }
-            })
-            .finally(() => {
-                router.replace("/auth/login");
-            })
+        if (res?.data?.success) {
+            router.replace("/auth/login");
+            setUserData(res?.data?.data?.data?.user);
+            form.reset(form.getValues());
+        }
 
-        form.reset(form.getValues());
+
     }
 
 
@@ -121,11 +117,11 @@ export default function LoginForm() {
                     <div className="space-y-2">
                         {/*Maps the error if its an array then displays the form error*/}
                         {Array.isArray(error) && error.map((e: string, index: number) => (
-                            <FormError message={e} key={index} />
+                            <FormError message={e} key={index}/>
                         ))}
                         {/*Renders the form error if the error has value and is a string*/}
-                        {typeof error === "string" && <FormError message={error} />}
-                        <FormSuccess message={success} />
+                        {typeof error === "string" && <FormError message={error}/>}
+                        <FormSuccess message={success}/>
                     </div>
                 ) : null}
 

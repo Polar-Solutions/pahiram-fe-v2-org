@@ -1,7 +1,7 @@
 export interface IGetTransactionRequestApiResponse {
     status: boolean;
     data: {
-      endorsements: ITransactionRequest[];
+      transactions: ITransactionRequest[];
       current_page: number;
       last_page: number;
       next_page_url: string;
@@ -17,13 +17,16 @@ export interface IGetTransactionRequestApiResponse {
   export interface ITransactionRequest {
     id: string;
     borrower: string;
+    endorsed_by: {
+      apc_id: string,
+      full_name: string
+    },
     apc_id: string;
     custom_transac_id: string;
     status: string;
     purpose: string;
     user_defined_purpose: string;
     created_at: string;
-    updated_at: string;
     items: IItemTransaction[];
   }
   

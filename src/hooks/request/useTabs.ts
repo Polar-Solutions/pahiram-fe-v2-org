@@ -24,10 +24,10 @@ export const useTabsStore = create<RequestStore>()(
                 if (tab === 'REQUEST') {
                     defaultFilter = 'PENDING';
                 } else if (tab === 'APPROVED') {
-                    defaultFilter = 'APPROVAL';
+                    defaultFilter = 'FOR_APPROVAL';
                 }
                 else if (tab === 'PENDING') {
-                    defaultFilter = 'RELEASE'
+                    defaultFilter = 'FOR_RELEASE'
                 }
                 else if (tab === 'ACTIVE') {
                     defaultFilter = 'ON_GOING'

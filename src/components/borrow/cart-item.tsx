@@ -4,7 +4,7 @@ import Image from "next/image";
 import Placeholder from "../../../public/image-placeholder.png";
 import { Button } from "../ui/button";
 import { IItemGroup } from "@/lib/interfaces";
-import { useCartStore } from "@/hooks/borrow/useCartStore";
+import { useCartStore } from "@/hooks/stores/useCartStore";
 
 interface CartItemProps {
   item: IItemGroup;

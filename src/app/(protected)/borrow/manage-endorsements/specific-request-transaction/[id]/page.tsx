@@ -1,16 +1,23 @@
 import {ContentLayout} from "@/components/panel/containers/content-layout";
 import Content from "@/components/common/content";
-import ApproverHeader from "@/components/approver/presentational/approver-header";
-import ApproverSpecificReqTrans
-    from "@/components/approver/presentational/approver-specific-req-trans";
+import EndorsementTransactionSpecific from "@/components/endorsement/containers/endorsement-transaction-specific";
+import DynamicBreadcrumbsComponent from "@/components/common/dynamic-breadcrumbs-component";
+import React from "react";
 
 export default function Page({params}: { params: { id: string } }) {
 
     return (
         <ContentLayout title="Specific Transaction">
-            <ApproverHeader/>
+            <DynamicBreadcrumbsComponent
+                activePage={params.id}
+                items={[{
+                    name: "Manage Endorsements",
+                    url: "/borrow/manage-endorsements",
+                }
+                ]}
+            />
             <Content>
-                <ApproverSpecificReqTrans transacId={params.id}/>
+                <EndorsementTransactionSpecific transactionId={params.id}/>
             </Content>
         </ContentLayout>
     );

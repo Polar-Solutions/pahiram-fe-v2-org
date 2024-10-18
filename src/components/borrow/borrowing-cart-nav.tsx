@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/sheet";
 import {ChevronRight, ClipboardCheck, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button";
-import {useCartStore} from "@/hooks/borrow/useCartStore";
+import {useCartStore} from "@/hooks/stores/useCartStore";
 import {useRouter} from "next/navigation";
 import {DisplayGroupedItemsByOffice} from "./presentational/display-grouped-items-by-office";
 import {ConfirmationDialog} from "../common/confirmation-dialog";

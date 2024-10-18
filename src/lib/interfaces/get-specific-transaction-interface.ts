@@ -19,6 +19,7 @@ export interface IItem {
   // Interface for transaction data
   export interface ITransacData {
     id: string;
+    borrower: string,
     custom_transac_id: string;
     endorsed_by: {
       full_name: string;
@@ -35,7 +36,7 @@ export interface IItem {
   }
   
   // Interface for the main data object containing transaction and item details
-  interface IGetSpecificTransactionApiResponseDataValue {
+  interface   IGetSpecificTransactionApiResponseDataValue {
     transac_data: ITransacData;
     items: IItem;
   }
@@ -47,6 +48,13 @@ export interface IItem {
     error?: any;
     method: string;
   }
+
+export interface IGetSpecificEndorsementApiResponse {
+  status: boolean;
+  data?: IGetSpecificTransactionApiResponseDataValue;
+  error?: any;
+  method: string;
+}
 
   export interface ISpecificTransaction {
     transacId: string;

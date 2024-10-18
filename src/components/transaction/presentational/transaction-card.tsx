@@ -9,7 +9,7 @@ import { Card,CardHeader, CardContent, CardDescription, CardTitle, CardFooter} f
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button";
 import { ITransactionRequest } from '@/lib/interfaces/get-office-transaction-interface';
-import ApproverReqTransCardHeader from "@/components/transaction/presentational/approve-transaction-header";
+import ApproverReqTransCardHeader from "@/components/transaction/presentational/approver-transaction-header";
 import { useRouter } from "next/navigation";
 interface TransactionCardProps {
   endorsement: ITransactionRequest;

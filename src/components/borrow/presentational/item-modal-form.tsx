@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CalendarModal } from "../calendar-component/calendar-modal";
-import { useCartStore } from "@/hooks/borrow/useCartStore";
+import { useCartStore } from "@/hooks/stores/useCartStore";
 import { ICartItem, IItemGroup } from "@/lib/interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {

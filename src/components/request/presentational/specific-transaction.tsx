@@ -13,8 +13,8 @@ import { handleApiClientSideError } from '@/core/handle-api-client-side-error';
 import { Badge } from "@/components/ui/badge";
 import {Button} from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
-import { toast } from "@/hooks/use-toast";
 import { useEditRequest } from '@/hooks/request/useEditRequest';
+import {toast} from "sonner";
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
@@ -38,20 +38,22 @@ export default function SpecificTransaction() {
 
       // Use 'in' operator to check if 'data' exists in response
       if (response && 'data' in response && response.data) {
-        toast({
-          title: "Success",
+        toast.success( "Success 🥳🎉", {
+          position: "top-right",
           description: "Transaction cancelled successfully.",
-          variant: "success",
         });
         router.back();
       } else {
         throw new Error('Cancellation failed.');
       }
     } catch (error) {
-      toast({
-        title: "Error",
+      toast.error( "Error 😭", {
+        position: "top-right",
         description: "Failed to cancel transaction. Please try again later.",
-        variant: "destructive",
+        action: {
+          label: "Report",
+          onClick: () => {},
+        }
       });
     }
   };

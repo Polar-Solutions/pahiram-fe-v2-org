@@ -1,7 +1,7 @@
 "use client";
 import {useAction} from "next-safe-action/hooks";
 import {logoutUserAction} from "@/core/actions/authentication";
-import {UserState, useUserStore} from "@/hooks/useUser";
+import {UserState, useUserStore} from "@/hooks/stores/useUser";
 import {useRouter} from "next/navigation";
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
@@ -9,7 +9,7 @@ import {LayoutDashboard} from "lucide-react";
 import {Heading} from "@radix-ui/themes";
 import {LoadingComponent} from "@/components/common/loading-component";
 import {useEffect, useState} from "react";
-import {useCartStore} from "@/hooks/borrow/useCartStore";
+import {useCartStore} from "@/hooks/stores/useCartStore";
 import {ICartItemsStoreState} from "@/lib/interfaces/zustand-store-states";
 // TODO: Add loading page before going to logout page
 

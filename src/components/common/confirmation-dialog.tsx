@@ -21,7 +21,7 @@ interface ConfirmationDialog {
   footerBtns: {
     cancel: string;
     action: string;
-    actionFn: () => void;
+    actionFn: () => Promise<void>;
   };
 }
 
@@ -44,9 +44,9 @@ export const ConfirmationDialog: React.FC<ConfirmationDialog> = ({
         <AlertDialogFooter>
           <AlertDialogCancel>{cancel}</AlertDialogCancel>
           <AlertDialogAction
-            onClick={(e) => {
+            onClick={async(e) => {
               e.stopPropagation(); // Prevent trigger click events
-              actionFn(); // Perform the action
+              await actionFn(); // Perform the action
             }}
           >
             {action}
