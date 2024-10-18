@@ -6,7 +6,7 @@ import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {IItem, IItemGroup} from "@/lib/interfaces";
 import {ItemModalForm} from "./item-modal-form";
 import {Badge} from "@/components/ui/badge";
-import {useItemGroupStore} from "@/hooks/useItemGroupStore";
+import {useItemGroupStore} from "@/hooks/stores/useItemGroupStore";
 import ItemModalSkeleton from "@/components/borrow/presentational/item-modal-skeleton";
 import {specificItemGroupDataIsFetching} from "@/signals/shared-signals";
 

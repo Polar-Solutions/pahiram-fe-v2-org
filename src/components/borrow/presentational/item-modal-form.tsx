@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import React from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
 import { CalendarModal } from "../calendar-component/calendar-modal";
-import { useCartStore } from "@/hooks/borrow/useCartStore";
+import { useCartStore } from "@/hooks/stores/useCartStore";
 import { ICartItem, IItemGroup } from "@/lib/interfaces";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/form";
 import { SuperRefineItemSchema } from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import { z } from "zod";
+import { toast } from "sonner"
+import {updateURLParams} from "@/helper/borrow/updateURLParams";
 
 interface ItemModalFormProps {
   handleCloseItemModal: () => void;
@@ -51,6 +53,13 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
     handleCloseItemModal();
   };
 
+  const handleShowBorrowingListSheet = () => {
+    const newUrl = updateURLParams({
+      "show-borrowing-list-sheet": 1,
+    });
+    window.history.pushState({}, "", newUrl);
+  }
+
   const onSubmit: SubmitHandler<z.infer<typeof SuperRefineItemSchema>> = (
     data
   ) => {
@@ -62,6 +71,14 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
     };
 
     addCartItem(formData);
+    toast.success(`Yay! ${item.model_name} added to your list 🎉`, {
+      description: "Click here to view your list 👉",
+      position: "top-center",
+      action: {
+        label: "View list",
+        onClick: () => handleShowBorrowingListSheet(),
+      }
+    });
     handleCloseModalAndResetForm();
   };
 
@@ -122,7 +139,7 @@ export const ItemModalForm: React.FC<ItemModalFormProps> = ({
           </Button>
 
           <Button className="text-black" type="submit">
-            Add to borrowing cart
+            Add to borrowing list
           </Button>
         </div>
       </form>

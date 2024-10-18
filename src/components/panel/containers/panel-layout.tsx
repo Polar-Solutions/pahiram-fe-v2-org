@@ -1,10 +1,10 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useStore } from "@/hooks/useStore";
+import { useStore } from "@/hooks/stores/useStore";
 import { Footer } from "@/components/panel/presentational/footer";
 import { Sidebar } from "@/components/panel/presentational/sidebar";
-import { useSidebarToggle } from "@/hooks/useSidebarToggle";
+import { useSidebarToggle } from "@/hooks/stores/useSidebarToggle";
 
 export default function PanelLayout({
   children

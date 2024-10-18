@@ -22,7 +22,7 @@ export default function TransactionTabsHeader() {
     return (
         <div className="flex items-center justify-between">
           <DynamicBreadcrumbsComponent
-            activePage="Manage Transaction"
+            activePage="Manage Endorsements"
           />
           <FilterTabs
             values={tabOptions}
