@@ -33,7 +33,7 @@ export default function ActionButton({
                 footerBtns={{
                     cancel: "Cancel",
                     action: approveText,
-                    actionFn: onApprove
+                    actionFnAsync: onApprove
                 }}
             >
                 <Button>
@@ -56,7 +56,7 @@ export default function ActionButton({
                 footerBtns={{
                     cancel: "Cancel",
                     action: declineText,
-                    actionFn: onDecline
+                    actionFnAsync: onDecline
                 }}
             >
                 <Button variant="outline" >
