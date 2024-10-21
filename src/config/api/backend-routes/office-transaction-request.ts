@@ -3,6 +3,11 @@ export const getOfficeTransactionListEndpoint = (page: number) => {
 };
 
 export const approveTransactionEndpoint = (resourceId: string | undefined) => {
-    const endpoint = `/office/transaction/${resourceId}/borrow-approval`;
+    const endpoint = `/office/borrow-transaction/${resourceId}/borrow-approval`;
+    return endpoint;
+};
+
+export const specificTransactionEndpoint = (resourceId: string | undefined) => {
+    const endpoint = `/office/borrow-transaction/${resourceId}`;
     return endpoint;
 };

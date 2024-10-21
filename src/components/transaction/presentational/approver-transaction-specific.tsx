@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useState} from 'react';
 import ApproverReqTransCardHeader from '@/components/transaction/presentational/approver-transaction-header';
 import OfficerApprovalButtonGroup from './transaction-approval-button-group';
 import {Badge} from "@/components/ui/badge";
@@ -11,14 +11,23 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowStatus, formatBorrowPurpose } from '@/helper/formatting-utilities';
 import { useEditRequest } from '@/hooks/request/useEditRequest';
+import { getOfficeTransactionAction } from '@/core/actions/get-specific-transaction';
+import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
+import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import { IItem } from '@/lib/interfaces';
 
 export default function ApproverSpecificReqTrans({ transactionId}: {transactionId: string}) {
   const {getRequestById} = useTransactionStore();
   console.log("IDD", transactionId)
   const searchParams = useSearchParams();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const transaction = getRequestById("transaction", transactionId);
-  const items = JSON.parse(searchParams.get('items') || '[]');
+
+  const { data } = useSpecificOfficeTransaction(transaction?.id || '');
+  const itemsTransaction = data?.data?.items  || []; 
+  // Accessing the start dates
+  const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
 
   const { isEditing, setEditedDetails } = useEditRequest();
 
@@ -47,7 +56,7 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
           transactionId={transaction?.custom_transac_id}
           id={transaction?.id}
       >
-          <OfficerApprovalButtonGroup transactionId={transaction?.id}/>
+          <OfficerApprovalButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
       </ApproverReqTransCardHeader>
 
       {/* Badges Section */}
@@ -58,7 +67,7 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
       {/* Transaction Period */}
       <p className="text-sm text-muted-foreground">{transaction?.custom_transac_id}</p>
       <p className="text-sm">
-          Total Borrowing Period: September 11, 2024 to September 19, 2024
+          Total Borrowing Period: {} to September 19, 2024
       </p>
 
       {/* Transaction Progress Component */}
@@ -78,6 +87,8 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
               handleDropdownChange={handleDropdownChange}
               isEditing={isEditing}
               modelNames={[]} // Add model names if necessary
+              selectedIds={selectedIds} // Pass selectedIds if needed
+              setSelectedIds={setSelectedIds} // Pass setSelectedIds if needed
             />
       </div>
   </div>

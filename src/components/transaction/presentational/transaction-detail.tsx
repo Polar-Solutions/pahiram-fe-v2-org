@@ -16,7 +16,14 @@ const TransactionDetails: React.FC<BorrowingDetailsProps> = ({ transaction }) =>
             <CardContent className="space-y-4">
                 <div>
                     <label className="text-sm font-medium">Endorser</label>
-                    <Input value={transaction?.endorsed_by.full_name} readOnly />
+                    <Input 
+                        value={
+                            transaction?.endorsed_by
+                            ? transaction.endorsed_by.full_name 
+                            : "No Endorser" 
+                        } 
+                        readOnly 
+                    />
                 </div>
                 <div>
                     <label className="text-sm font-medium">Purpose</label>

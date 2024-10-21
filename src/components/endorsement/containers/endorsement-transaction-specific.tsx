@@ -28,7 +28,7 @@ const EndorsementTransactionSpecific = ({
                 transactionId={endorsement?.custom_transac_id}
                 id={endorsement?.id}
             >
-                <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
+                <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.status}/>
             </EndorserReqTransCardHeader>
 
             {/* Badges Section */}

@@ -10,6 +10,7 @@ import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-inter
 import {useRouter} from "next/navigation";
 import ApproverReqTransCardHeader from "@/components/transaction/presentational/approver-transaction-header";
 import OfficerApprovalButtonGroup from "@/components/transaction/presentational/transaction-approval-button-group";
+import OfficeApprovalAllButton from "@/components/transaction/presentational/transaction-approval-all-button";
 
 interface TransactionCardProps {
     transaction: ITransactionRequest;
@@ -55,7 +56,7 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
-                            <OfficerApprovalButtonGroup transactionId={transaction.id}/>
+                            <OfficeApprovalAllButton transactionId={transaction.id} transactionStatus={transaction.status}/>
                         </div>
                     </ApproverReqTransCardHeader>
                 </CardHeader>

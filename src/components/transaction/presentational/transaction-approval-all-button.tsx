@@ -5,31 +5,13 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Button} from "@/components/ui/button";
 import {MoreHorizontal} from "lucide-react";
 import React from "react";
-import { handleTransactionApproval, handleTransactionItemApproval } from "@/components/transaction/handle-transaction-approval";
+import { handleTransactionApproval } from "@/components/transaction/handle-transaction-approval";
 import {useAction} from "next-safe-action/hooks";
 import { approveTransactionAction } from "@/core/actions/approve-transaction";
 
-export default function OfficerApprovalButtonGroup({transactionId, transactionStatus, selectedIds, setSelectedIds}: { transactionId: string | undefined, transactionStatus: string | undefined;  selectedIds: string[]; // New prop type
-    setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;  }) {
+export default function OfficerApprovalAllButton({transactionId, transactionStatus}: { transactionId: string | undefined, transactionStatus: string | undefined }) {
 
     const {executeAsync, isExecuting} = useAction(approveTransactionAction);
-
-    const handleApprove = async () => {
-        for (const id of selectedIds) {
-            await handleTransactionItemApproval(transactionId, executeAsync, id, true);
-        }
-        setSelectedIds([]); // Clear selected IDs after approval
-    };
-    
-    const handleDecline = async () => {
-        for (const id of selectedIds) {
-            await handleTransactionItemApproval(transactionId, executeAsync, id, false);
-        }
-        setSelectedIds([]); // Clear selected IDs after decline
-    };
-    
-
-    
 
     return (
         <div className="flex items-center space-x-2">
@@ -38,8 +20,8 @@ export default function OfficerApprovalButtonGroup({transactionId, transactionSt
                 <ActionButton
                     approveText="Approve"
                     declineText="Decline"
-                    onApprove={handleApprove}
-                    onDecline={handleDecline}
+                    onApprove={() => handleTransactionApproval(transactionId, executeAsync, true)}
+                    onDecline={() => handleTransactionApproval(transactionId, executeAsync, false)}
                     modalTitleApprove="Approve Transaction"
                     modalTitleDecline="Decline Transaction"
                     modalDescApprove="Are you sure you want to approve this transaction?"

@@ -3,7 +3,7 @@ import React, {useCallback, useEffect, useRef, useState} from "react";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {motion} from "framer-motion";
-import TabsSearchComponent from "@/components/transaction/presentational/tabs-search-component";
+import TabsSearchComponent from "@/components/endorsement/presentational/tabs-search-component";
 import EndorsementList from "@/components/endorsement/presentational/endorsement-list";
 import TransactionPagination from "@/components/transaction/presentational/transaction.pagination";
 import {useEndorsements} from "@/hooks/endorsement/useEndorsements";

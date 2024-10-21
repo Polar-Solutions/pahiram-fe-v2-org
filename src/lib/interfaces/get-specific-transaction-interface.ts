@@ -60,3 +60,24 @@ export interface IGetSpecificEndorsementApiResponse {
     transacId: string;
   }
   
+  export interface IOfficeTransacData {
+      id: string;
+      borrower: string,
+      custom_transac_id: string;
+      endorsed_by: {
+        full_name: string;
+      } | null;
+      status: string;
+      purpose: string;
+      user_defined_purpose: string | null;
+      created_at: string;
+  }
+  export interface IOfficeSpecificTransaction {
+    item_group_id: string;
+    id: string;
+    model_name: string;
+    quantity: number;
+    start_date: string;
+    due_date: string;
+    borrowed_item_status: string;
+  }

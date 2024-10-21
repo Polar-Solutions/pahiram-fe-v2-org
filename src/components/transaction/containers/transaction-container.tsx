@@ -8,11 +8,14 @@ import TabsSearchComponent from "@/components/transaction/presentational/tabs-se
 import TransactionList from "../presentational/transaction-list";
 import { useFilteredRequests } from "@/hooks/request/useFilteredRequests";
 import { useTransaction } from '@/hooks/transaction/useTransaction';
+import TransactionCardSkeleton from "@/components/transaction/presentational/transaction-card-skeleton";
+import {  useFilteredTransactions } from "@/hooks/transaction/useFilteredTransaction";
 
 export default function TransactionContainer() {
   const { page, filterSearch, showItemGroupModal } = getURLParams();
-  const { officeTransaction, isFetchingOfficeTransaction, totalPages } = useTransaction(page);
+  const { officeTransaction, isFetchingOfficeTransaction, totalPages } = useTransaction(page, true); 
 
+  const filteredTransactions = useFilteredTransactions({ transac_data: officeTransaction });
   const [showFilters, setShowFilters] = useState(true);
   const [gridColumns, setGridColumns] = useState(3);
   const [renderKey, setRenderKey] = useState(0); // Initialize renderKey here
@@ -64,7 +67,24 @@ export default function TransactionContainer() {
 
       <TabsSearchComponent/>
 
-      <TransactionList transactions={officeTransaction} />
+      <div
+        className={`grid gap-1 ${
+        gridColumns === 1
+            ? "grid-cols-1"
+            : ""
+        }`}
+      >
+        {isFetchingOfficeTransaction ? (
+          <TransactionCardSkeleton/>
+        ) : filteredTransactions && filteredTransactions.length > 0 ? (
+          <TransactionList transactions={officeTransaction} />
+        ) : (
+          <p className="text-center text-muted-foreground col-span-full">
+            No results found {filterSearch ? `for ${filterSearch}` : null}
+          </p>
+        )}
+
+      </div>
       <div className="mt-4">
         <TransactionPagination
           currentPage={page}
