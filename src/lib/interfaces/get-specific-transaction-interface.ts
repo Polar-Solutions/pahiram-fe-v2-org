@@ -80,4 +80,12 @@ export interface IGetSpecificEndorsementApiResponse {
     start_date: string;
     due_date: string;
     borrowed_item_status: string;
+    image: string;
+    group_category_id: string;
+    group_category: string;
+    department: string;
+    in_circulation: number;
+    availability: string;
+    description: string;
+    status: string;
   }

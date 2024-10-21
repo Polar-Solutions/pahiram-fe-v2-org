@@ -68,9 +68,9 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
           </TableCaption>
           <TableHeader>
             <TableRow>
-              {items.some(item => item.borrowed_item_status !== 'APPROVED') && (
+
                 <TableHead className="w-[50px]"></TableHead>
-              )}
+              
               <TableHead className="w-[100px]">Name</TableHead>
               <TableHead>Quantity</TableHead>
               {isEditing ? (
@@ -92,14 +92,17 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
               return (
                 <React.Fragment key={index}>
                   <TableRow className="cursor-pointer" onClick={() => handleRowToggle(index)}>
-                    {item.borrowed_item_status !== 'APPROVED' && (
-                      <TableCell>
+                    <TableCell>
+                      {item.borrowed_item_status !== 'APPROVED' ? (
                         <Checkbox 
                           checked={selectedIds.includes(item.id)} // Set checked state
                           onCheckedChange={() => handleCheckboxChange(item.id)} // Handle checkbox change
                         />
-                      </TableCell>
-                    )}
+                      ) : (
+                        '' // Blank content for approved status
+                      )}
+                    </TableCell>
+
                     <TableCell className="font-medium">
                       {isEditing ? (
                         <DropdownMenu onOpenChange={() => toggleDropdownState(index)}>
