@@ -1,22 +1,31 @@
 import TransactionCard from '@/components/transaction/presentational/transaction-card';
 import { ITransactionRequest } from '@/lib/interfaces/get-office-transaction-interface';
 import { useSearch } from '@/hooks/borrow/useSearch';
+import TransactionListSkeleton from '@/components/transaction/presentational/transaction-card-skeleton';
+import { useTabsStore } from '@/hooks/request/useTabs';
 
 interface TransactionListProps {
-    endorsements: ITransactionRequest[];
+    transactions: ITransactionRequest[];
 }
 
-export default function TransactionList({ endorsements }: TransactionListProps) {
+export default function TransactionList({ transactions }: TransactionListProps) {
     const { searchQuery } = useSearch();
+    const { activeTab } = useTabsStore();
 
-    const filteredEndorsements = endorsements
+    const filteredTransactions = transactions
         .filter((transaction) => {
+            // Filter based on activeTab (status)
+            const matchesStatus = activeTab === 'ALL' 
+                ? true 
+                : transaction.status === activeTab;
+
+            // Filter based on search query
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  (transaction.borrower && transaction.borrower.toLowerCase().includes(searchQuery.toLowerCase()))
+                  (transaction.status && transaction.status.toLowerCase().includes(searchQuery.toLowerCase()))
                 : true;
 
-            return matchesSearch;
+            return matchesStatus && matchesSearch;
         })
         .sort((a, b) => {
             const dateComparison = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
@@ -25,7 +34,7 @@ export default function TransactionList({ endorsements }: TransactionListProps) 
                 : dateComparison;
         });
 
-    if (!filteredEndorsements.length) {
+    if (!filteredTransactions.length) {
         return (
             <div className='text-center text-muted-foreground col-span-full'>
                 No results found
@@ -35,8 +44,8 @@ export default function TransactionList({ endorsements }: TransactionListProps) 
 
     return (
         <>
-            {filteredEndorsements.map((endorsement) => (
-                <TransactionCard key={endorsement.id} endorsement={endorsement} /> 
+            {filteredTransactions.map((transaction) => (
+                <TransactionCard key={transaction.id} transaction={transaction} /> 
             ))}
         </>
     );

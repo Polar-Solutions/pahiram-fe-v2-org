@@ -2,15 +2,6 @@
 
 import React, { useCallback } from 'react';
 import FilterTabs from "@/components/request/presentational/filter-tabs-component";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
-import { Button } from '@/components/ui/button';
-import { ChevronDownIcon } from "@radix-ui/react-icons";  
 import { SearchBar } from '@/components/common/search-bar/search-bar';
 import MobileFilterAndSearchComponent from "@/components/borrow/presentational/mobile-filter-and-search-component";
 import { useSearch } from '@/hooks/borrow/useSearch';
@@ -40,7 +31,7 @@ export default function TabsSearchComponent() {
     
       const tabOptions = [
         { value: 'ALL', label: 'All' },
-        { value: 'PENDING_BORROWING_APPROVAL', label: 'Pending' },
+        { value: 'PENDING_ENDORSER_APPROVAL', label: 'Pending' },
         { value: 'ON_GOING', label: 'Active' },
         { value: 'TRANSACTION_COMPLETE', label: 'Completed'}
       ];

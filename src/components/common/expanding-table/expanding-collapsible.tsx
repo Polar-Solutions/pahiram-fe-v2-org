@@ -1,35 +1,29 @@
 import React from 'react';
-import { TableCell, TableRow } from "@/components/ui/table"; // Adjust path as needed
-import { IItem, IBorrowedItemDetail } from '@/lib/interfaces/get-specific-transaction-interface'; // Adjust path as needed
-import { Badge } from "@/components/ui/badge"; // Adjust path as needed
+import {TableRow } from "@/components/ui/table"; // Adjust path as needed
 
-// Define the props type to accept IBorrowedItemDetail[] instead of IItem[]
-interface ExpandingCollapsibleProps {
-  items: IBorrowedItemDetail[]; // Still expect IBorrowedItemDetail[]
-  apcId: string;                // Add apcId as prop
-  formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
+interface ExpandingCollapsibleProps<T> {
+  items: T[]; // Generic array of items
+  renderRow: (item: T, index: number) => React.ReactNode; // Function to render each row
+  emptyMessage?: string; // Optional empty state message
 }
 
-
-export default function ExpandingCollapsible({
+export default function ExpandingCollapsible<T>({
   items,
-  apcId,
-  formatBorrowStatus
-}: ExpandingCollapsibleProps) {
+  renderRow,
+  emptyMessage = "No items to display"
+}: ExpandingCollapsibleProps<T>) {
+  // Check if items is a valid array
+  if (!Array.isArray(items) || items.length === 0) {
+    return <p>{emptyMessage}</p>;
+  }
+
   return (
     <>
-      {items.map((item, index) => {
-        const { formattedStatus, badgeClass } = formatBorrowStatus(item.borrowed_item_status);
-        return (
-          <TableRow key={`${item.borrowed_item_id}-${index}`} className='flex justify-evenly'>
-            <TableCell className="font-medium">{item.apc_id}</TableCell>
-            <TableCell className="text-start">
-              <Badge className={badgeClass}>{formattedStatus}</Badge>
-            </TableCell>
-          </TableRow>
-        );
-      })}
+      {items.map((item, index) => (
+        <TableRow key={index} className="flex justify-evenly">
+          {renderRow(item, index)}
+        </TableRow>
+      ))}
     </>
   );
 }
-

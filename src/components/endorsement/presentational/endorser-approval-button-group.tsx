@@ -9,12 +9,13 @@ import {handleEndorsementApproval} from "@/components/endorsement/handle-endorse
 import {useAction} from "next-safe-action/hooks";
 import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
 
-export default function EndorserApprovalButtonGroup({endorsementId}: { endorsementId: string | undefined }) {
+export default function EndorserApprovalButtonGroup({endorsementId, endorsementStatus}: { endorsementId: string | undefined, endorsementStatus: string | undefined }) {
 
     const {executeAsync, isExecuting} = useAction(approveEndorsementAction);
 
     return (
         <div className="flex items-center space-x-2">
+            {endorsementStatus === "PENDING_ENDORSER_APPROVAL" && (
             <ActionButton
                 approveText="Approve"
                 declineText="Decline"
@@ -25,6 +26,7 @@ export default function EndorserApprovalButtonGroup({endorsementId}: { endorseme
                 modalDescApprove="Are you sure you want to approve this endorsement?"
                 modalDescDecline="Are you sure you want to decline this endorsement?"
             />
+            )}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                     <Button variant="ghost" className="h-8 w-8 p-0">

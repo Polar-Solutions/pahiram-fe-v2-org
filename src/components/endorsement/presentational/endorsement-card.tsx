@@ -55,7 +55,7 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
-                            <EndorserApprovalButtonGroup endorsementId={endorsement.id}/>
+                            <EndorserApprovalButtonGroup endorsementId={endorsement.id} endorsementStatus={endorsement.status}/>
                         </div>
                     </EndorserReqTransCardHeader>
                 </CardHeader>

@@ -28,12 +28,11 @@ const EndorsementTransactionSpecific = ({
                 transactionId={endorsement?.custom_transac_id}
                 id={endorsement?.id}
             >
-                <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
+                <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.status}/>
             </EndorserReqTransCardHeader>
 
             {/* Badges Section */}
             <div className="flex items-center space-x-2">
-                <Badge variant="secondary">DEPARTMENT</Badge>
                 <Badge variant="secondary">{endorsement?.items.length} items</Badge>
             </div>
 

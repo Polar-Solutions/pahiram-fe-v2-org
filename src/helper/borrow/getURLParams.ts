@@ -8,6 +8,7 @@ export const getURLParams = () => {
   const filterOffice = searchParams.get("office") || "";
   const filterSearch = searchParams.get("q") || "";
   const filterStatus = searchParams.get("status") || "";
+  const filterTransactionStatus = searchParams.get("status") || "";
   const page = Number(searchParams.get("page")) || 1;
   const itemGroupId: IItemGroup["item_group_id"] | undefined = (() => {
     try {
@@ -31,6 +32,7 @@ export const getURLParams = () => {
     filterOffice,
     filterSearch,
     filterStatus,
+    filterTransactionStatus,
     page,
     itemGroupId,
     showItemGroupModal,

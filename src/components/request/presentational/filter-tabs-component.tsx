@@ -3,7 +3,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useTabsStore } from '@/hooks/request/useTabs';
 
 interface TabOption {
-  values: { value: string; label: string }[];  // Array of objects with value and label
+  values: { value: string | string; label: string }[];  // Array of objects with value and label
   onTabChange: (value: string) => void;  // Callback for tab change
 }
 

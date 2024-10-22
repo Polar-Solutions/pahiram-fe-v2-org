@@ -16,7 +16,7 @@ const BorrowingDetails: React.FC<BorrowingDetailsProps> = ({ endorsement }) => {
             <CardContent className="space-y-4">
                 <div>
                     <label className="text-sm font-medium">Endorser</label>
-                    <Input value="Mrs. Endorser Senpai" readOnly />
+                    <Input value={endorsement?.endorsed_by.full_name} readOnly />
                 </div>
                 <div>
                     <label className="text-sm font-medium">Purpose</label>
