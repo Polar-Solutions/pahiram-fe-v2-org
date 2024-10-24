@@ -10,7 +10,7 @@ import {Button} from "@/components/ui/button";
 import {submitBorrowRequestAction} from "@/core/actions/submit-borrow-request-action";
 import {useCartStore} from "@/hooks/stores/useCartStore";
 import {useAction} from "next-safe-action/hooks";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import React from "react";
 import {Form} from "@/components/ui/form";
 import {BorrowRequestSchema, TBorrowRequestFormValues,} from "@/lib/form-schemas/submit-borrow-request-form-schema";

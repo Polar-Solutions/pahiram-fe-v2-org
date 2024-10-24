@@ -66,6 +66,7 @@ export default function EndorsementContainer() {
             <TabsSearchComponent/>
 
             <EndorsementList endorsements={endorsementTransactions}/>
+
             <div className="mt-4">
                 <TransactionPagination
                     currentPage={page}

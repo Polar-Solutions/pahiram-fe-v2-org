@@ -1,11 +1,10 @@
-import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
 import {handleApiClientSideError, IClientSideApiHandlerResponse} from "@/core/handle-api-client-side-error";
-import {TBorrowRequestFormValues} from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import {TApproveEndorsementSchema} from "@/lib/form-schemas/approve-endorsement-schema";
 
 export const handleEndorsementApproval = async (
     transactionId: string | undefined,
     executeAsync: (values: TApproveEndorsementSchema) => Promise<any>,
+    removeRequest: (grouping: "endorsement" | "transaction", transactionId: string | undefined) => void,
     isApproved: boolean
 ) => {
 
@@ -20,5 +19,10 @@ export const handleEndorsementApproval = async (
     };
 
     handleApiClientSideError(responseData);
+
+    if (responseData.success) {
+        removeRequest("endorsement", transactionId);
+        window.history.back();
+    }
 
 }

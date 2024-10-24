@@ -7,6 +7,7 @@ import TransactionProgress from "@/components/endorsement/presentational/transac
 import BorrowingDetails from "@/components/endorsement/presentational/borrowing-details";
 import BorrowedItemsTable from "@/components/endorsement/presentational/borrowing-items-table";
 import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
+import {REQUEST_TRANSACTION_STATUSES} from "@/CONSTANTS/REQUEST_TRANSACTION_STATUSES_CONSTANTS";
 
 const EndorsementTransactionSpecific = ({
                                             transactionId
@@ -28,7 +29,9 @@ const EndorsementTransactionSpecific = ({
                 transactionId={endorsement?.custom_transac_id}
                 id={endorsement?.id}
             >
-                <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
+                {endorsement?.status === REQUEST_TRANSACTION_STATUSES.PENDING_ENDORSER_APPROVAL &&
+                    <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
+                }
             </EndorserReqTransCardHeader>
 
             {/* Badges Section */}

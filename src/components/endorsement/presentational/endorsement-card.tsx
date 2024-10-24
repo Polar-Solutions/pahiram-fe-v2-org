@@ -7,9 +7,11 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
+
 import EndorserReqTransCardHeader from "@/components/endorsement/presentational/endorsement-transaction-header";
 import EndorserApprovalButtonGroup from "@/components/endorsement/presentational/endorser-approval-button-group";
+import {REQUEST_TRANSACTION_STATUSES} from "@/CONSTANTS/REQUEST_TRANSACTION_STATUSES_CONSTANTS";
 
 interface TransactionCardProps {
     endorsement: ITransactionRequest;
@@ -29,7 +31,7 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
     const visibleRowsCount = 3;
 
     const handleClickEndorsementCard = () => {
-        router.push(`/borrow/manage-endorsements/specific-request-transaction/${endorsement.custom_transac_id}`);
+        router.push(`/borrow/manage-endorsements/${endorsement.custom_transac_id}`);
     }
 
     return (
@@ -54,9 +56,11 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
                         id={endorsement.id}
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
+                        {endorsement.status === REQUEST_TRANSACTION_STATUSES.PENDING_ENDORSER_APPROVAL &&
                         <div onClick={(e) => e.stopPropagation()}>
                             <EndorserApprovalButtonGroup endorsementId={endorsement.id}/>
                         </div>
+                        }
                     </EndorserReqTransCardHeader>
                 </CardHeader>
 

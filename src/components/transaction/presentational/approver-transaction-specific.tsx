@@ -1,6 +1,6 @@
 'use client';
 import React from 'react';
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 
 import {ArrowLeft, Mail} from "lucide-react"
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"

@@ -12,7 +12,7 @@ import RequestPagination from "@/components/request/presentational/request-pagin
 import RequestList from "@/components/request/presentational/request-list";
 import { getURLParams } from "@/helper/borrow/getURLParams";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";
-import { useRouter } from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import { useTabsStore } from "@/hooks/request/useTabs";
 
 export default function ItemsContainer() {

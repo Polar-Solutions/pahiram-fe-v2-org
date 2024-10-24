@@ -13,7 +13,7 @@ import {useUserStore} from "@/hooks/stores/useUser";
 import type {TLoginFormValues} from "@/lib/form-schemas/login-schemas";
 import {LoginSchema} from "@/lib/form-schemas/login-schemas";
 import {loginUserAction} from "@/core/actions/authentication";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {useAction} from "next-safe-action/hooks";
 import {FormError} from "@/components/common/form-error";
 import {FormSuccess} from "@/components/common/form-success";

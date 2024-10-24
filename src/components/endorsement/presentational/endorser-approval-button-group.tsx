@@ -8,18 +8,21 @@ import React from "react";
 import {handleEndorsementApproval} from "@/components/endorsement/handle-endorsement-approval";
 import {useAction} from "next-safe-action/hooks";
 import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
+import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
 
 export default function EndorserApprovalButtonGroup({endorsementId}: { endorsementId: string | undefined }) {
 
     const {executeAsync, isExecuting} = useAction(approveEndorsementAction);
+
+    const {removeRequest} = useTransactionStore();
 
     return (
         <div className="flex items-center space-x-2">
             <ActionButton
                 approveText="Approve"
                 declineText="Decline"
-                onApprove={() => handleEndorsementApproval(endorsementId, executeAsync, true)}
-                onDecline={() => handleEndorsementApproval(endorsementId, executeAsync, false)}
+                onApprove={() => handleEndorsementApproval(endorsementId, executeAsync, removeRequest, true)}
+                onDecline={() => handleEndorsementApproval(endorsementId, executeAsync, removeRequest, false)}
                 modalTitleApprove="Approve Endorsement"
                 modalTitleDecline="Decline Endorsement"
                 modalDescApprove="Are you sure you want to approve this endorsement?"
