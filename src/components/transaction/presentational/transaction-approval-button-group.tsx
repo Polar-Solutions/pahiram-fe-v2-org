@@ -29,10 +29,10 @@ export default function OfficerApprovalButtonGroup({transactionId, transactionSt
     };
     
 
-    
+    const isDisabled = selectedIds.length === 0;
 
     return (
-        <div className="flex items-center space-x-2">
+        <div className={`flex items-center space-x-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}>
             {/* Show buttons only if transactionStatus is PENDING_BORROWING_APPROVAL */}
             {transactionStatus === "PENDING_BORROWING_APPROVAL" && (
                 <ActionButton

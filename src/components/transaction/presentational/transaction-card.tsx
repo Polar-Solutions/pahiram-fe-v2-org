@@ -9,7 +9,7 @@ import {Button} from "@/components/ui/button";
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
 import {useRouter} from "next/navigation";
 import ApproverReqTransCardHeader from "@/components/transaction/presentational/approver-transaction-header";
-import OfficerApprovalButtonGroup from "@/components/transaction/presentational/transaction-approval-button-group";
+import OfficerReleaseAllButton from "@/components/transaction/presentational/transaction-release-all-button";
 import OfficeApprovalAllButton from "@/components/transaction/presentational/transaction-approval-all-button";
 
 interface TransactionCardProps {
@@ -23,8 +23,16 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
     const truncatedText = fullText.slice(0, 100);
     const router = useRouter();
 
+    
     const {items, borrower, created_at, custom_transac_id} = transaction;
 
+    // Convert start_date and due_date strings to Date objects and extract the dates
+    const startDates = items.map(item => new Date(item.start_date));
+    const dueDates = items.map(item => new Date(item.due_date));
+    
+    // Find the earliest start date and the latest due date
+    const earliestStartDate = new Date(Math.min(...startDates.map(date => date.getTime())));
+    const latestDueDate = new Date(Math.max(...dueDates.map(date => date.getTime())));
 
     // Number of rows to show when collapsed
     const visibleRowsCount = 3;
@@ -56,17 +64,20 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
-                            <OfficeApprovalAllButton transactionId={transaction.id} transactionStatus={transaction.status}/>
+                        {transaction.status === 'PENDING_BORROWING_APPROVAL' ? (
+                                <OfficeApprovalAllButton transactionId={transaction.id} transactionStatus={transaction.status} />
+                            ) : transaction.status === 'APPROVED' ? (
+                                <OfficerReleaseAllButton transactionId={transaction.id} transactionStatus={transaction.status} />
+                            ) : null
+                        }
                         </div>
                     </ApproverReqTransCardHeader>
                 </CardHeader>
 
                 <CardContent>
-                    {items.slice(0, isExpandedItems ? items.length : visibleRowsCount).map((item, index) => (
-                        <div className="flex items-center gap-2 mb-4" key={index}>
-                            <Badge variant="secondary">{item.quantity} item</Badge>
+                        <div className="flex items-center gap-2 mb-4">
+                            <Badge variant="secondary">{items.length} item</Badge>
                         </div>
-                    ))}
                     <div className="flex flex-col lg:flex-row gap-8">
                         <div className="w-full lg:w-1/2">
                             <div className="flex items-center mb-1">
@@ -130,29 +141,30 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                     <div className="flex items-center text-sm text-muted-foreground">
                         <Clock className="mr-2 h-4 w-4"/>
                         <p className='text-muted-foreground max-w-lg'>
-                            {items.slice(0, isExpandedItems ? items.length : visibleRowsCount).map((item, index) => (
-                                <div key={index}>
-                                    Total Borrowing Period:
-                                    {new Date(item.start_date).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: true
-                                    }) + " "}
-                                    to
-                                    {" "}
-                                    {new Date(item.due_date).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: true
-                                    })}
-                                </div>
-                            ))}
+                        <div>
+                            Total Borrowing Period:
+                            {" "}
+                            {earliestStartDate.toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                hour12: true
+                            })} 
+                            {" "}
+                            to 
+                            {" "}
+                            {latestDueDate.toLocaleString('en-US', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: 'numeric',
+                                minute: 'numeric',
+                                hour12: true
+                            })}
+                        </div>
+                                
                         </p>
                     </div>
                 </CardFooter>

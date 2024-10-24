@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useParams, useRouter } from 'next/navigation'; 
 import { useSpecificTransaction  } from '@/core/data-access/requests';
 import BorrowedItem from '@/components/request/presentational/borrowed-item';
@@ -15,16 +15,23 @@ import {Button} from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
 import { useEditRequest } from '@/hooks/request/useEditRequest';
 import {toast} from "sonner";
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
   const transactionId = Array.isArray(transacId) ? transacId[0] : transacId;
-
+  const { setApcId} = useTransactionData();
   const { data, isLoading } = useSpecificTransaction(transactionId);
   const transactionData = data?.data;
   const router = useRouter();
   const { isEditing, setIsEditing, setTransactionData, setEditedDetails, editedDetails, resetEditedDetails } = useEditRequest();
 
+
+  useEffect(() => {
+    if (Array.isArray(transactionData?.items) && transactionData.items[0]?.apc_item_id) {
+      setApcId(transactionData.items[0].apc_item_id);
+    }
+  }, [transactionData?.items, setApcId]);
   
   if (data) {
     handleApiClientSideError(data);

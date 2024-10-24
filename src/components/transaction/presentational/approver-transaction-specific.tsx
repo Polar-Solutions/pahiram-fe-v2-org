@@ -1,5 +1,5 @@
 'use client';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import ApproverReqTransCardHeader from '@/components/transaction/presentational/approver-transaction-header';
 import OfficerApprovalButtonGroup from './transaction-approval-button-group';
 import {Badge} from "@/components/ui/badge";
@@ -11,20 +11,27 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowStatus, formatBorrowPurpose } from '@/helper/formatting-utilities';
 import { useEditRequest } from '@/hooks/request/useEditRequest';
-import { getOfficeTransactionAction } from '@/core/actions/get-specific-transaction';
 import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
 import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
-import { IItem } from '@/lib/interfaces';
+import OfficerReleasedButtonGroup from '@/components/transaction/presentational/transaction-release-button-group';
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 
 export default function ApproverSpecificReqTrans({ transactionId}: {transactionId: string}) {
   const {getRequestById} = useTransactionStore();
-  console.log("IDD", transactionId)
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { setApcId} = useTransactionData();
 
   const transaction = getRequestById("transaction", transactionId);
 
   const { data } = useSpecificOfficeTransaction(transaction?.id || '');
+
+  useEffect(() => {
+    if (transaction?.apc_id) {
+      setApcId(transaction.apc_id);
+    }
+  }, [transaction?.apc_id, setApcId]);
+  
   const itemsTransaction = data?.data?.items  || []; 
   // Accessing the start dates
   const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
@@ -42,7 +49,8 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
     }));
   };
 
-
+  const hasApprovedItems = items.some((item) => item.borrowed_item_status === 'APPROVED');
+  const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedItems;
   return (
     <div className="container mx-auto p-4 space-y-4">
       {/* Header Component */}
@@ -56,16 +64,25 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
           transactionId={transaction?.custom_transac_id}
           id={transaction?.id}
       >
-          <OfficerApprovalButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
+      {transaction?.status === 'PENDING_BORROWING_APPROVAL' ? (
+          <OfficerApprovalButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+        ) : transaction?.status === 'APPROVED' || shouldShowReleaseButton ? (
+          <OfficerReleasedButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+        ) : null}
+
+
       </ApproverReqTransCardHeader>
 
       {/* Badges Section */}
       <div className="flex items-center space-x-2">
-          <Badge variant="secondary">{transaction?.items.length} items</Badge>
+        <Badge variant="secondary">
+          {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
+        </Badge>
       </div>
 
+
+
       {/* Transaction Period */}
-      <p className="text-sm text-muted-foreground">{transaction?.custom_transac_id}</p>
       <p className="text-sm">
           Total Borrowing Period: {} to September 19, 2024
       </p>
