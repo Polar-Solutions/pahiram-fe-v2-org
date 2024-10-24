@@ -2,6 +2,12 @@ import { useEffect, useState } from "react";
 import { getTransactionRequestPaginationUseCase } from "@/core/use-cases/requests";
 import { ITransactionRequest } from "@/lib/interfaces/get-office-transaction-interface";
 import { useTransactionStore } from "@/hooks/stores/useTransactionStore";
+import { create } from 'zustand';
+
+interface ITransactionData {
+    apcId: string;
+    setApcId: (passApcId: string) => void;
+  }
 
 export const useTransaction = (page: number, forceRefetch = false) => {
     const [officeTransaction, setOfficeTransaction] = useState<ITransactionRequest[]>([]);
@@ -42,3 +48,8 @@ export const useTransaction = (page: number, forceRefetch = false) => {
         totalPages,
     };
 };
+
+export const useTransactionData = create<ITransactionData>((set) => ({
+    apcId: "", // Initial state
+    setApcId: (passApcId) => set({ apcId: passApcId}), // Function to update the apcId
+  }));  

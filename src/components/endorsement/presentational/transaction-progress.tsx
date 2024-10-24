@@ -20,7 +20,7 @@ const TransactionProgress: React.FC<TransactionProgressProps> = ({ transactionSt
     );
 
     // Calculate the percentage progress
-    const progressValue = ((progressIndex + 1) / (REQUEST_TRANSACTION_PROGRESS.length + 1)) * 100;
+    const progressValue = ((progressIndex + 2) / (REQUEST_TRANSACTION_PROGRESS.length + 1)) * 100;
 
     return (
         <Card>

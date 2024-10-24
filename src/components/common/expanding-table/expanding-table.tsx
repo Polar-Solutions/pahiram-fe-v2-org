@@ -13,8 +13,9 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { useDropdownStore } from '@/hooks/request/useDropdownStore'; // Adjust the path as needed
 import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 interface ExpandTableProps {
   items: IOfficeSpecificTransaction[];
   formatDateTime: (dateString: string) => string;
@@ -29,6 +30,7 @@ interface ExpandTableProps {
 export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing, modelNames, selectedIds, setSelectedIds }: ExpandTableProps) {
   const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
   const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore();
+  const { apcId} = useTransactionData();
 
   const form = useForm<z.infer<typeof SuperRefineItemSchema>>({
     resolver: zodResolver(SuperRefineItemSchema),
@@ -93,14 +95,15 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                 <React.Fragment key={index}>
                   <TableRow className="cursor-pointer" onClick={() => handleRowToggle(index)}>
                     <TableCell>
-                      {item.borrowed_item_status !== 'APPROVED' ? (
-                        <Checkbox 
-                          checked={selectedIds.includes(item.id)} // Set checked state
-                          onCheckedChange={() => handleCheckboxChange(item.id)} // Handle checkbox change
-                        />
-                      ) : (
-                        '' // Blank content for approved status
-                      )}
+                    {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' ? (
+                      <Checkbox 
+                        checked={selectedIds.includes(item.id)} // Set checked state
+                        onCheckedChange={() => handleCheckboxChange(item.id)} // Handle checkbox change
+                      />
+                    ) : (
+                      '' // Blank content for other statuses
+                    )}
+
                     </TableCell>
 
                     <TableCell className="font-medium">
@@ -186,13 +189,14 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                   {isRowOpen && (
                     <TableRow>
                       <TableCell colSpan={6}>
+
                         <ExpandingCollapsible
                           items={[item]} // Pass the item itself as an array since we don't have details
                           renderRow={(detail, detailIndex) => {
                             const { formattedStatus, badgeClass } = formatBorrowStatus(detail.borrowed_item_status);
                             return (
                               <>
-                                <TableCell className="font-medium">{detail.model_name}</TableCell>
+                                <TableCell className="font-medium">{apcId || 'No APC ID'}</TableCell>
                                 <TableCell className="text-start">
                                   <Badge className={badgeClass}>{formattedStatus}</Badge>
                                 </TableCell>

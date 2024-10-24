@@ -12,6 +12,7 @@ export interface IItem {
   quantity: number;
   start_date: string;
   due_date: string;
+  apc_item_id: string;
   details: IBorrowedItemDetail[]; // Array of borrowed item details
 }
 
@@ -88,4 +89,5 @@ export interface IGetSpecificEndorsementApiResponse {
     availability: string;
     description: string;
     status: string;
+    apc_item_id: string;
   }

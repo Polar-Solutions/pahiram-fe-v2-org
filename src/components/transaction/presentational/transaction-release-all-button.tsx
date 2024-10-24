@@ -5,27 +5,27 @@ import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger
 import {Button} from "@/components/ui/button";
 import {MoreHorizontal} from "lucide-react";
 import React from "react";
-import { handleTransactionApproval } from "@/components/transaction/handle-transaction-approval";
+import { handleTransactionRelease } from "@/components/transaction/handle-transaction-approval";
 import {useAction} from "next-safe-action/hooks";
-import { approveTransactionAction } from "@/core/actions/approve-transaction";
+import { releaseTransactionAction } from "@/core/actions/release-transaction";
 
-export default function OfficerApprovalAllButton({transactionId, transactionStatus}: { transactionId: string | undefined, transactionStatus: string | undefined }) {
+export default function OfficerReleaseAllButton({transactionId, transactionStatus}: { transactionId: string | undefined, transactionStatus: string | undefined }) {
 
-    const {executeAsync, isExecuting} = useAction(approveTransactionAction);
+    const {executeAsync, isExecuting} = useAction(releaseTransactionAction);
 
     return (
         <div className="flex items-center space-x-2">
             {/* Show buttons only if transactionStatus is PENDING_BORROWING_APPROVAL */}
-            {transactionStatus === "PENDING_BORROWING_APPROVAL" && (
+            {transactionStatus === "APPROVED" || transactionStatus === "ON_GOING" && (
                 <ActionButton
-                    approveText="Approve all"
-                    declineText="Decline all"
-                    onApprove={() => handleTransactionApproval(transactionId, executeAsync, true)}
-                    onDecline={() => handleTransactionApproval(transactionId, executeAsync, false)}
-                    modalTitleApprove="Approve Transaction"
-                    modalTitleDecline="Decline Transaction"
-                    modalDescApprove="Are you sure you want to approve this transaction?"
-                    modalDescDecline="Are you sure you want to decline this transaction?"
+                    approveText="Release all"
+                    declineText="Withold all"
+                    onApprove={() => handleTransactionRelease(transactionId, executeAsync, true)}
+                    onDecline={() => handleTransactionRelease(transactionId, executeAsync, false)}
+                    modalTitleApprove="Release Transaction"
+                    modalTitleDecline="Withold Transaction"
+                    modalDescApprove="Are you sure you want to release this transaction?"
+                    modalDescDecline="Are you sure you want to withold this transaction?"
                 />
             )}
             <DropdownMenu>
