@@ -11,7 +11,7 @@ import {useRouter} from "next/navigation";
 import ApproverReqTransCardHeader from "@/components/transaction/presentational/approver-transaction-header";
 import OfficerReleaseAllButton from "@/components/transaction/presentational/transaction-release-all-button";
 import OfficeApprovalAllButton from "@/components/transaction/presentational/transaction-approval-all-button";
-
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 interface TransactionCardProps {
     transaction: ITransactionRequest;
 }
@@ -75,12 +75,23 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                 </CardHeader>
 
                 <CardContent>
-                        <div className="flex items-center gap-2 mb-4">
-                            <Badge variant="secondary">{items.length} item</Badge>
-                        </div>
+                    <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">
+                        {transaction.status
+                            .toLowerCase()         // Convert to lowercase
+                            .split('_')            // Split by underscore
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+                            .join(' ')
+                        }   
+                    </Badge>
+
+                        <Badge variant="secondary">
+                        {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
+                        </Badge>
+                    </div>
                     <div className="flex flex-col lg:flex-row gap-8">
                         <div className="w-full lg:w-1/2">
-                            <div className="flex items-center mb-1">
+                            <div className="flex items-center mb-2 mt-4">
                                 <h3 className="font-semibold mr-2">Purpose</h3> {/* Added margin-right for spacing */}
                                 <Badge variant='outline'>
                                     {transaction.purpose

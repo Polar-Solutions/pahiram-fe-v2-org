@@ -49,6 +49,14 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
     }));
   };
 
+  // Convert start_date and due_date strings to Date objects and extract the dates
+  const startDates = items.map(item => new Date(item.start_date));
+  const dueDates = items.map(item => new Date(item.due_date));
+  
+  // Find the earliest start date and the latest due date
+  const earliestStartDate = new Date(Math.min(...startDates.map(date => date.getTime())));
+  const latestDueDate = new Date(Math.max(...dueDates.map(date => date.getTime())));
+  
   const hasApprovedItems = items.some((item) => item.borrowed_item_status === 'APPROVED');
   const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedItems;
   return (
@@ -75,17 +83,48 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
 
       {/* Badges Section */}
       <div className="flex items-center space-x-2">
+      <Badge variant="secondary">
+          {transaction?.status
+            .toLowerCase()         // Convert to lowercase
+            .split('_')            // Split by underscore
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+            .join(' ')
+          }   
+      </Badge>
+
         <Badge variant="secondary">
           {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
         </Badge>
       </div>
 
 
+      <div>
+        <p className='text-sm'>
+          Total Borrowing Period:
+          {" "}
+          {earliestStartDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+          })} 
+          {" "}
+          to 
+          {" "}
+          {latestDueDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+          })}
+        </p>
 
-      {/* Transaction Period */}
-      <p className="text-sm">
-          Total Borrowing Period: {} to September 19, 2024
-      </p>
+      </div>
+
 
       {/* Transaction Progress Component */}
       <TransactionProgress  
