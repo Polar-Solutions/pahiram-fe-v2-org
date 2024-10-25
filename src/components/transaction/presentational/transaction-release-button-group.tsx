@@ -22,32 +22,30 @@ export default function OfficerReleasedButtonGroup({
 }) {
   const { executeAsync, isExecuting } = useAction(releaseTransactionAction);
 
-  const handleApprove = async () => {
-    for (const id of selectedIds) {
-      await handleTransactionItemReleased(transactionId, executeAsync, id, true);
-    }
-    setSelectedIds([]); // Clear selected IDs after approval
-  };
+  const handleRelease = async (isReleased: boolean) => {
+    // Create an array of item approval statuses
+    const releasedItems = selectedIds.map(id => ({
+      borrowedItemId: id,
+      isReleased,
+    }));
 
-  const handleDecline = async () => {
-    for (const id of selectedIds) {
-      await handleTransactionItemReleased(transactionId, executeAsync, id, false);
-    }
-    setSelectedIds([]); // Clear selected IDs after decline
-  };
+    await handleTransactionItemReleased(transactionId, executeAsync, releasedItems);
+    setSelectedIds([]); // Clear selected IDs after approval or decline
+  }
 
   const isDisabled = selectedIds.length === 0; // Check if no items are selected
  
   return (
     <div className={`flex items-center space-x-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}>
       {/* Show buttons only if transactionStatus is APPROVED */}
-      {transactionStatus === "APPROVED" || transactionStatus === "ON_GOING" && (
+      {transactionStatus === "APPROVED" || (
         <>
           <ActionButton
             approveText="Release"
             declineText="Withhold"
-            onApprove={handleApprove}
-            onDecline={handleDecline}
+            onApprove={() => handleRelease(true)} // Pass true for approval
+            onDecline={() => handleRelease(false)} // Pass false for decline
+            loading={isExecuting}
             modalTitleApprove="Release Transaction"
             modalTitleDecline="Withhold Transaction"
             modalDescApprove="Are you sure you want to release this transaction?"

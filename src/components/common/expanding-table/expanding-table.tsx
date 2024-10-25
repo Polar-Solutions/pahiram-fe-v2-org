@@ -13,7 +13,6 @@ import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
 import { useDropdownStore } from '@/hooks/request/useDropdownStore'; // Adjust the path as needed
 import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
-import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTransactionData } from '@/hooks/transaction/useTransaction';
 interface ExpandTableProps {
@@ -97,12 +96,11 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                     <TableCell>
                     {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' ? (
                       <Checkbox 
-                        checked={selectedIds.includes(item.id)} // Set checked state
-                        onCheckedChange={() => handleCheckboxChange(item.id)} // Handle checkbox change
+                        checked={selectedIds.includes(item.id)} 
+                        onCheckedChange={() => handleCheckboxChange(item.id)}
                       />
-                    ) : (
-                      '' // Blank content for other statuses
-                    )}
+                    ) : ''}
+                      
 
                     </TableCell>
 

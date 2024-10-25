@@ -22,6 +22,7 @@ export default function OfficerReleaseAllButton({transactionId, transactionStatu
                     declineText="Withold all"
                     onApprove={() => handleTransactionRelease(transactionId, executeAsync, true)}
                     onDecline={() => handleTransactionRelease(transactionId, executeAsync, false)}
+                    loading={isExecuting}
                     modalTitleApprove="Release Transaction"
                     modalTitleDecline="Withold Transaction"
                     modalDescApprove="Are you sure you want to release this transaction?"

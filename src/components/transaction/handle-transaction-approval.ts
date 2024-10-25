@@ -26,13 +26,13 @@ export const handleTransactionApproval = async (
 export const handleTransactionItemApproval = async (
     transactionId: string | undefined,
     executeAsync: (values: TApproveTransactionSchema) => Promise<any>,
-    borrowedItemId: string,
-    isApproved: boolean,
+    approvalItems: Array<{ borrowedItemId: string; isApproved: boolean }> // Expecting an array of approval items
 ) => {
-
-    // Directly pass transaction
     console.log("THIS IS THE ID ", transactionId);
-    const res = await executeAsync({transactionId, items: [{borrowedItemId, isApproved}]});
+    console.log("THIS ARE THE ITEMS ", approvalItems); // Log the items to see what's being passed
+
+    // Pass the transaction ID along with an array of items for approval
+    const res = await executeAsync({ transactionId, items: approvalItems });
 
     const responseData: IClientSideApiHandlerResponse = {
         success: res?.data?.success,
@@ -41,7 +41,8 @@ export const handleTransactionItemApproval = async (
     };
 
     handleApiClientSideError(responseData);
-}
+};
+
 
 export const handleTransactionRelease = async (
     transactionId: string | undefined,
@@ -66,13 +67,14 @@ export const handleTransactionRelease = async (
 export const handleTransactionItemReleased = async (
     transactionId: string | undefined,
     executeAsync: (values: TReleaseTransactionSchema) => Promise<any>,
-    borrowedItemId: string,
-    isReleased: boolean,
+    releasedItems: Array<{ borrowedItemId: string; isReleased: boolean }> // Expecting an array of released items
 ) => {
 
     // Directly pass transaction
     console.log("THIS IS THE ID ", transactionId);
-    const res = await executeAsync({transactionId, items: [{borrowedItemId, isReleased}]});
+    console.log("THIS ARE THE ITEMS ", releasedItems); // Log the items to see what's being passed
+
+    const res = await executeAsync({ transactionId, items: releasedItems });
 
     const responseData: IClientSideApiHandlerResponse = {
         success: res?.data?.success,

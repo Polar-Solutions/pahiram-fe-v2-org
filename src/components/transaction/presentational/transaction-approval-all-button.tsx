@@ -22,6 +22,7 @@ export default function OfficerApprovalAllButton({transactionId, transactionStat
                     declineText="Decline all"
                     onApprove={() => handleTransactionApproval(transactionId, executeAsync, true)}
                     onDecline={() => handleTransactionApproval(transactionId, executeAsync, false)}
+                    loading={isExecuting}
                     modalTitleApprove="Approve Transaction"
                     modalTitleDecline="Decline Transaction"
                     modalDescApprove="Are you sure you want to approve this transaction?"
