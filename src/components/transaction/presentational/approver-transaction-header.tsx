@@ -10,7 +10,7 @@ import {Button} from "@/components/ui/button";
 interface OfficerReqTransCardHeaderProps {
   borrowerName: string | undefined;
   borrowerId: string | undefined;
-  submissionDate: string | undefined;
+  submissionDate: string | undefined | null;
   transactionId: string | undefined;
   withBackArrow?: boolean;
   id: string | undefined;

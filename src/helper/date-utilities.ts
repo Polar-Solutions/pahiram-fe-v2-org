@@ -57,7 +57,7 @@ function convertDatesToApiFormat(
   return obj;
 }
 
-const formatDateTimeToHumanFormat = (dateString: string | undefined): string | null => {
+const formatDateTimeToHumanFormat = (dateString: string | undefined | null): string | null => {
   if(!dateString){
     return null
   }
