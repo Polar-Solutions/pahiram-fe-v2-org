@@ -38,7 +38,8 @@ export default function LogoutPage() {
                 if (result) {
                     handleSignout();
                     clearCart();
-                    clearAllRequests()
+                    clearAllRequests("endorsement")
+                    clearAllRequests("transaction")
                 }
             })
             .finally(() => {

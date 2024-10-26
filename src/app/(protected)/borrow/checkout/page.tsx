@@ -22,68 +22,70 @@ import {handleSubmitForm} from "./on-submit-borrow-request";
 import {extractFormValidationErrorsAndTriggerToast} from "@/helper/extract-form-validation-errors-and-trigger-toast";
 
 export default function Page() {
-  const { executeAsync, isExecuting } = useAction(submitBorrowRequestAction);
+    const router = useRouter();
+    const {cartItems} = useCartStore();
+    const {executeAsync, isExecuting} = useAction(submitBorrowRequestAction);
 
-  const { getAllCartItems, clearCart, isCartEmpty } = useCartStore();
-  const allCartItems = getAllCartItems();
-  const cartItems = prepareCartItemsForBorrowSubmission(allCartItems);
+    const {getAllCartItems, clearCart, isCartEmpty} = useCartStore();
+    const allCartItems = getAllCartItems();
+    const carItemsInSubmission = prepareCartItemsForBorrowSubmission(allCartItems);
 
-  const form = useForm<TBorrowRequestFormValues>({
-    resolver: zodResolver(BorrowRequestSchema),
-    defaultValues: {
-      endorsed_by: "",
-      purpose: "",
-      user_defined_purpose: "",
-      items: cartItems,
-    },
-    mode: "onChange",
-  });
+    const form = useForm<TBorrowRequestFormValues>({
+        resolver: zodResolver(BorrowRequestSchema),
+        defaultValues: {
+            endorsed_by: "",
+            purpose: "",
+            user_defined_purpose: "",
+            items: carItemsInSubmission,
+        },
+        mode: "onChange",
+    });
 
-  const onSubmit = async () => {
-    await handleSubmitForm(form, executeAsync, clearCart);
-  };
+    const onSubmit = async () => {
+        await handleSubmitForm(form, executeAsync, clearCart);
+        router.push("/borrow/manage-requests");
+    };
 
-  const router = useRouter();
-  const addMoreItemsAction = () => {
-    router.push("/borrow/borrow-items");
-  };
+    const addMoreItemsAction = () => {
+        router.push("/borrow/borrow-items");
+    };
 
-  return (
-    <ContentLayout title="Borrow Items">
-      <DynamicBreadcrumbsComponent
-        activePage="Submit Borrowing Request"
-        items={["Explore Items"]}
-      />
-      <Content>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit, (errors) => {
-              extractFormValidationErrorsAndTriggerToast(errors);
-            })}
-            className="space-y-6"
-          >
-            <SubmitBorrowRequestContainer />
+    return (
+        <ContentLayout title="Borrow Items">
+            <DynamicBreadcrumbsComponent
+                activePage="Submit Borrowing Request"
+                items={[{name: "Explore Items", url: "/borrow/borrow-items"}]}
+            />
+            <Content>
+                <Form {...form}>
+                    <form
+                        onSubmit={form.handleSubmit(onSubmit, (errors) => {
+                            extractFormValidationErrorsAndTriggerToast(errors);
+                        })}
+                        className="space-y-6"
+                    >
+                        <SubmitBorrowRequestContainer/>
 
-            {/* Footer items */}
-            <div className="flex flex-row justify-end w-full gap-4">
-              <Button
-                variant="outline"
-                type="button"
-                onClick={addMoreItemsAction}
-              >
-                Add more items
-              </Button>
-              <SubmitButton
-                disabled={isCartEmpty() || isExecuting}
-                isLoading={isExecuting}
-                label="Submit request"
-                isLoadingLabel="Submitting"
-                type="submit"
-              />
-            </div>
-          </form>
-        </Form>
-      </Content>
-    </ContentLayout>
-  );
+                        {/* Footer items */}
+                        <div className="flex flex-row justify-end w-full gap-4">
+                            <Button
+                                variant="outline"
+                                type="button"
+                                onClick={addMoreItemsAction}
+                            >
+                                Add more items
+                            </Button>
+                            <SubmitButton
+                                disabled={isCartEmpty() || isExecuting}
+                                isLoading={isExecuting}
+                                label="Submit request"
+                                isLoadingLabel="Submitting"
+                                type="submit"
+                            />
+                        </div>
+                    </form>
+                </Form>
+            </Content>
+        </ContentLayout>
+    );
 }

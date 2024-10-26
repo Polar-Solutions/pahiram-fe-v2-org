@@ -21,7 +21,7 @@ export default function RequestCard({props}: { props: BorrowRequestCardProps }) 
         >
             <Card
                 onClick={() => {
-                    router.push(`/borrow/specific-transaction/${borrow_request.id}`);
+                    router.push(`/borrow/manage-requests/${borrow_request.id}`);
                 }}
                 className="w-full flex flex-row cursor-pointer hover:bg-[hsl(var(--primary))] group"
             >

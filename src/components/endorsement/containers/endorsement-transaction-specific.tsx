@@ -7,16 +7,24 @@ import TransactionProgress from "@/components/endorsement/presentational/transac
 import BorrowingDetails from "@/components/endorsement/presentational/borrowing-details";
 import BorrowedItemsTable from "@/components/endorsement/presentational/borrowing-items-table";
 import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
-import {REQUEST_TRANSACTION_STATUSES} from "@/CONSTANTS/REQUEST_TRANSACTION_STATUSES_CONSTANTS";
+import {formatBorrowStatus} from "@/helper/formatting-utilities";
+import {useEndorsements} from "@/hooks/endorsement/useEndorsements";
+import {getURLParams} from "@/helper/borrow/getURLParams";
 
 const EndorsementTransactionSpecific = ({
                                             transactionId
                                         }:
                                             { transactionId: string }
 ) => {
+    const {page} = getURLParams();
+    // WARNING!!! This is a temporary fix to get the endorsement transactions from the API
+    const {endorsementTransactions} = useEndorsements(page);
+
     const {getRequestById} = useTransactionStore();
 
     const endorsement = getRequestById("endorsement", transactionId);
+
+    const {formattedStatus, badgeClass} = formatBorrowStatus(endorsement?.status);
 
     return (
         <div className="container mx-auto p-4 space-y-4">
@@ -30,15 +38,13 @@ const EndorsementTransactionSpecific = ({
                 id={endorsement?.id}
             >
                 <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.status}/>
-                {endorsement?.status === REQUEST_TRANSACTION_STATUSES.PENDING_ENDORSER_APPROVAL &&
-                    <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
-                }
             </EndorserReqTransCardHeader>
 
             {/* Badges Section */}
             <div className="flex items-center space-x-2">
                 <Badge variant="secondary">DEPARTMENT</Badge>
                 <Badge variant="secondary">{endorsement?.items.length} items</Badge>
+                <Badge className={badgeClass}>{formattedStatus}</Badge>
             </div>
 
             {/* Transaction Period */}

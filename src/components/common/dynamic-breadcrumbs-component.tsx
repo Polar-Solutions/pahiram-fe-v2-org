@@ -9,8 +9,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {useRouter} from "next/navigation";
-
+import {useRouter} from 'nextjs-toploader/app';
 interface IBreadcrumbItem {
     name: string;
     url: string;

@@ -57,7 +57,10 @@ function convertDatesToApiFormat(
   return obj;
 }
 
-const formatDateTimeToHumanFormat = (dateString: string): string => {
+const formatDateTimeToHumanFormat = (dateString: string | undefined): string | null => {
+  if(!dateString){
+    return null
+  }
   const date = new Date(dateString);
   const options: Intl.DateTimeFormatOptions = {
     year: 'numeric',
