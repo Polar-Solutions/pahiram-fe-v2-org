@@ -8,24 +8,34 @@ import React from "react";
 import {handleEndorsementApproval} from "@/components/endorsement/handle-endorsement-approval";
 import {useAction} from "next-safe-action/hooks";
 import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
+import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
+import {Spinner} from "@/components/common/spinner"
 
-export default function EndorserApprovalButtonGroup({endorsementId, endorsementStatus}: { endorsementId: string | undefined, endorsementStatus: string | undefined }) {
+export default function EndorserApprovalButtonGroup({endorsementId, endorsementStatus}: {
+    endorsementId: string | undefined,
+    endorsementStatus: string | undefined
+}) {
 
     const {executeAsync, isExecuting} = useAction(approveEndorsementAction);
+
+    const {clearAllRequests} = useTransactionStore();
 
     return (
         <div className="flex items-center space-x-2">
             {endorsementStatus === "PENDING_ENDORSER_APPROVAL" && (
-            <ActionButton
-                approveText="Approve"
-                declineText="Decline"
-                onApprove={() => handleEndorsementApproval(endorsementId, executeAsync, true)}
-                onDecline={() => handleEndorsementApproval(endorsementId, executeAsync, false)}
-                modalTitleApprove="Approve Endorsement"
-                modalTitleDecline="Decline Endorsement"
-                modalDescApprove="Are you sure you want to approve this endorsement?"
-                modalDescDecline="Are you sure you want to decline this endorsement?"
-            />
+                <>
+                    {isExecuting && <Spinner className="mr-2 h-4 w-4 animate-spin"/>}
+                    <ActionButton
+                        approveText="Approve"
+                        declineText="Decline"
+                        onApprove={() => handleEndorsementApproval(endorsementId, executeAsync, () => clearAllRequests("endorsement"), true)}
+                        onDecline={() => handleEndorsementApproval(endorsementId, executeAsync, () => clearAllRequests("endorsement"), false)}
+                        modalTitleApprove="Approve Endorsement"
+                        modalTitleDecline="Decline Endorsement"
+                        modalDescApprove="Are you sure you want to approve this endorsement?"
+                        modalDescDecline="Are you sure you want to decline this endorsement?"
+                    />
+                </>
             )}
             <DropdownMenu>
                 <DropdownMenuTrigger asChild>

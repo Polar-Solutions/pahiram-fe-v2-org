@@ -205,7 +205,7 @@ export const useSpecificOfficeTransaction = (transacId: string) => {
         queryKey: ["officeTransaction", transacId],
         queryFn: async () => {
             const { data } = await getSpecificOfficeTransaction(transacId);
-            return data;  
+            return data;
         },
         staleTime: 60000,
         refetchOnWindowFocus: false,

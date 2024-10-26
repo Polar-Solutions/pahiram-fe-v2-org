@@ -1,9 +1,10 @@
 import {ArrowLeft, Mail} from "lucide-react";
 import React from "react";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
+import {formatDateTimeToHumanFormat} from "@/helper/date-utilities";
 
 interface EndorserReqTransCardHeaderProps {
     borrowerName: string | undefined;
@@ -25,6 +26,8 @@ export default function EndorserReqTransCardHeader({
                                                        children
                                                    }: EndorserReqTransCardHeaderProps) {
     const router = useRouter();
+
+    const formattedSubmissionDate = formatDateTimeToHumanFormat(submissionDate)
 
     return (
         <div className="flex items-center justify-between">
@@ -51,7 +54,7 @@ export default function EndorserReqTransCardHeader({
                         {/*TODO: Make the mail onClick*/}
                         <Mail className="h-4 w-4 ml-2 text-blue-500"/>
                     </div>
-                    <p className="text-sm text-muted-foreground">Submitted {submissionDate}</p>
+                    <p className="text-sm text-muted-foreground">Submitted {formattedSubmissionDate}</p>
                     <p className="text-sm text-muted-foreground">{transactionId}</p>
                 </div>
             </div>

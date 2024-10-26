@@ -7,9 +7,11 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
+
 import EndorserReqTransCardHeader from "@/components/endorsement/presentational/endorsement-transaction-header";
 import EndorserApprovalButtonGroup from "@/components/endorsement/presentational/endorser-approval-button-group";
+import {formatBorrowStatus} from "@/helper/formatting-utilities";
 
 interface TransactionCardProps {
     endorsement: ITransactionRequest;
@@ -22,14 +24,15 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
     const truncatedText = fullText.slice(0, 100);
     const router = useRouter();
 
-    const {items, borrower, created_at, custom_transac_id} = endorsement;
+    const {items, borrower, created_at, custom_transac_id, status} = endorsement;
 
+    const {formattedStatus, badgeClass} = formatBorrowStatus(status)
 
     // Number of rows to show when collapsed
     const visibleRowsCount = 3;
 
     const handleClickEndorsementCard = () => {
-        router.push(`/borrow/manage-endorsements/specific-request-transaction/${endorsement.custom_transac_id}`);
+        router.push(`/borrow/manage-endorsements/${endorsement.custom_transac_id}`);
     }
 
     return (
@@ -55,17 +58,18 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
-                            <EndorserApprovalButtonGroup endorsementId={endorsement.id} endorsementStatus={endorsement.status}/>
+                            <EndorserApprovalButtonGroup endorsementId={endorsement.id}
+                                                         endorsementStatus={endorsement.status}/>
                         </div>
                     </EndorserReqTransCardHeader>
                 </CardHeader>
 
                 <CardContent>
-                    {items.slice(0, isExpandedItems ? items.length : visibleRowsCount).map((item, index) => (
-                        <div className="flex items-center gap-2 mb-4" key={index}>
-                            <Badge variant="secondary">{item.quantity} item</Badge>
-                        </div>
-                    ))}
+                    <div className="flex items-center gap-2 mb-4">
+                        <Badge className="font-normal" variant="secondary">{items.length} item</Badge>
+                        <Badge className={badgeClass}>{formattedStatus}</Badge>
+
+                    </div>
                     <div className="flex flex-col lg:flex-row gap-8">
                         <div className="w-full lg:w-1/2">
                             <div className="flex items-center mb-1">
@@ -127,31 +131,29 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
                 </CardContent>
                 <CardFooter>
                     <div className="flex items-center text-sm text-muted-foreground">
-                        <Clock className="mr-2 h-4 w-4"/>
+                        {/*<Clock className="mr-2 h-4 w-4"/>*/}
                         <p className='text-muted-foreground max-w-lg'>
-                            {items.slice(0, isExpandedItems ? items.length : visibleRowsCount).map((item, index) => (
-                                <div key={index}>
-                                    Total Borrowing Period:
-                                    {new Date(item.start_date).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: true
-                                    }) + " "}
-                                    to
-                                    {" "}
-                                    {new Date(item.due_date).toLocaleString('en-US', {
-                                        year: 'numeric',
-                                        month: 'long',
-                                        day: 'numeric',
-                                        hour: 'numeric',
-                                        minute: 'numeric',
-                                        hour12: true
-                                    })}
-                                </div>
-                            ))}
+                            {/*<div >*/}
+                            {/*    Total Borrowing Period:*/}
+                            {/*    {new Date(item.start_date).toLocaleString('en-US', {*/}
+                            {/*        year: 'numeric',*/}
+                            {/*        month: 'long',*/}
+                            {/*        day: 'numeric',*/}
+                            {/*        hour: 'numeric',*/}
+                            {/*        minute: 'numeric',*/}
+                            {/*        hour12: true*/}
+                            {/*    }) + " "}*/}
+                            {/*    to*/}
+                            {/*    {" "}*/}
+                            {/*    {new Date(item.due_date).toLocaleString('en-US', {*/}
+                            {/*        year: 'numeric',*/}
+                            {/*        month: 'long',*/}
+                            {/*        day: 'numeric',*/}
+                            {/*        hour: 'numeric',*/}
+                            {/*        minute: 'numeric',*/}
+                            {/*        hour12: true*/}
+                            {/*    })}*/}
+                            {/*</div>*/}
                         </p>
                     </div>
                 </CardFooter>

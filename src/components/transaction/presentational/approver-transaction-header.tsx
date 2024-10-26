@@ -3,15 +3,14 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import ActionButton from "@/components/common/action-button/button";
 import {ArrowLeft, Mail} from "lucide-react";
 import React from "react";
-import {useRouter} from "next/navigation";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {useRouter} from 'nextjs-toploader/app';import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
 import {Badge} from "@/components/ui/badge";
 import {Button} from "@/components/ui/button";
 
 interface OfficerReqTransCardHeaderProps {
   borrowerName: string | undefined;
   borrowerId: string | undefined;
-  submissionDate: string | undefined;
+  submissionDate: string | undefined | null;
   transactionId: string | undefined;
   withBackArrow?: boolean;
   id: string | undefined;

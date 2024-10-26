@@ -11,7 +11,7 @@ import {LENDING_OFFICES, OFFICES_CONSTANTS} from "@/CONSTANTS/OFFICES_CONSTANTS"
 import {Check, Search} from "lucide-react";
 import {Input} from "@/components/ui/input";
 import {ChevronDownIcon} from "@radix-ui/react-icons";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {DynamicFilterCombobox} from "@/components/common/dynamic-filter-combobox";
