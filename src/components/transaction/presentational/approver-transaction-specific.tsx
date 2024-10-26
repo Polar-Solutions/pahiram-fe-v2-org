@@ -11,7 +11,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowStatus, formatBorrowPurpose } from '@/helper/formatting-utilities';
 import { useEditRequest } from '@/hooks/request/useEditRequest';
-import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
+import {useSpecificOfficeTransaction, useSpecificTransactionItems} from '@/core/data-access/requests';
 import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
 import OfficerReleasedButtonGroup from '@/components/transaction/presentational/transaction-release-button-group';
 import { useTransactionData } from '@/hooks/transaction/useTransaction';
@@ -24,7 +24,7 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
 
   const transaction = getRequestById("transaction", transactionId);
 
-  const { data } = useSpecificOfficeTransaction(transaction?.id || '');
+  const { data } = useSpecificTransactionItems(transaction?.id || '');
 
   useEffect(() => {
     if (transaction?.apc_id) {
@@ -32,7 +32,7 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
     }
   }, [transaction?.apc_id, setApcId]);
   
-  const itemsTransaction = data?.data?.items  || []; 
+  const itemsTransaction = data  || [];
   // Accessing the start dates
   const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
 
