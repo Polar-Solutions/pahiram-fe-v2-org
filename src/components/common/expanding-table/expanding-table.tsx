@@ -10,34 +10,36 @@ import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SuperRefineItemSchema } from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import { z } from "zod";
-import { getItemsPaginationUseCase } from "@/core/use-cases/items";
-import { IItemGroup } from '@/lib/interfaces';
+import { Badge } from "@/components/ui/badge";
 import { useDropdownStore } from '@/hooks/request/useDropdownStore'; // Adjust the path as needed
-
+import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import { Checkbox } from "@/components/ui/checkbox";
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 interface ExpandTableProps {
-  items: IItem[];
+  items: IOfficeSpecificTransaction[];
   formatDateTime: (dateString: string) => string;
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
   handleDropdownChange: (value: string, field: string, index: number) => void;
   isEditing: boolean;
+  modelNames: string[];
+  selectedIds: string[]; // New prop
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; // New prop
 }
 
-export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing }: ExpandTableProps) {
+export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing, modelNames, selectedIds, setSelectedIds }: ExpandTableProps) {
   const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
-  const [modelNames, setModelNames] = useState<string[]>([]);
+  const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore();
+  const { apcId} = useTransactionData();
 
   const form = useForm<z.infer<typeof SuperRefineItemSchema>>({
     resolver: zodResolver(SuperRefineItemSchema),
     mode: "onChange",
     defaultValues: {
-      item_group_id: items[0].item_group_id,
       quantity: 1,
       start_date: "",
       return_date: "",
     },
   });
-
-  const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore(); // Access the store
 
   const { control, formState: { errors } } = form;
 
@@ -45,23 +47,21 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
     setOpenRowIndex(openRowIndex === index ? null : index);
   };
 
-  // Fetch model names on component mount
-  useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        const { data } = await getItemsPaginationUseCase(1); // Fetch page 1
-        const models = data.items.map((item: IItemGroup) => item.model_name);
-        setModelNames(models);
-      } catch (error) {
-        console.error("Error fetching model names:", error);
+  // Handle checkbox change
+  const handleCheckboxChange = (itemId: string) => {
+    setSelectedIds(prevIds => {
+      if (prevIds.includes(itemId)) {
+        return prevIds.filter(id => id !== itemId); // Uncheck
+      } else {
+        return [...prevIds, itemId]; // Check
       }
-    };
-    fetchModels();
-  }, []);
+    });
+  };
+
 
   return (
     <FormProvider {...form}>
-      <div className='w-3/5 ml-4'>
+      <div className='w-full ml-4'>
         <h1 className='text-xl font-bold mb-4'>Borrowing items</h1>
         <Table>
           <TableCaption className="w-full text-right">
@@ -69,6 +69,9 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
           </TableCaption>
           <TableHeader>
             <TableRow>
+
+                <TableHead className="w-[50px]"></TableHead>
+              
               <TableHead className="w-[100px]">Name</TableHead>
               <TableHead>Quantity</TableHead>
               {isEditing ? (
@@ -89,10 +92,18 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
 
               return (
                 <React.Fragment key={index}>
-                  <TableRow
-                    className="cursor-pointer"
-                    onClick={() => handleRowToggle(index)}
-                  >
+                  <TableRow className="cursor-pointer" onClick={() => handleRowToggle(index)}>
+                    <TableCell>
+                    {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' ? (
+                      <Checkbox 
+                        checked={selectedIds.includes(item.id)} 
+                        onCheckedChange={() => handleCheckboxChange(item.id)}
+                      />
+                    ) : ''}
+                      
+
+                    </TableCell>
+
                     <TableCell className="font-medium">
                       {isEditing ? (
                         <DropdownMenu onOpenChange={() => toggleDropdownState(index)}>
@@ -139,13 +150,10 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                           <DropdownMenuContent>
                             <DropdownMenuLabel>Select Quantity</DropdownMenuLabel>
                             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((qty) => (
-                              <DropdownMenuItem
-                                key={qty}
-                                onSelect={() => {
-                                  setQuantity(index, qty); // Update quantity in Zustand
-                                  handleDropdownChange(qty.toString(), "quantity", index);
-                                }}
-                              >
+                              <DropdownMenuItem key={qty} onSelect={() => {
+                                setQuantity(index, qty); // Update quantity in Zustand
+                                handleDropdownChange(qty.toString(), "quantity", index);
+                              }}>
                                 {qty}
                               </DropdownMenuItem>
                             ))}
@@ -162,13 +170,8 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                       </TableCell>
                     ) : (
                       <>
-                        <TableCell>
-                          {formatDateTime(item.start_date)}
-                        </TableCell>
-
-                        <TableCell>
-                          {formatDateTime(item.due_date)}
-                        </TableCell>
+                        <TableCell>{formatDateTime(item.start_date)}</TableCell>
+                        <TableCell>{formatDateTime(item.due_date)}</TableCell>
                       </>
                     )}
 
@@ -184,10 +187,22 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                   {isRowOpen && (
                     <TableRow>
                       <TableCell colSpan={6}>
+
                         <ExpandingCollapsible
-                          apcId={item.apc_id}
-                          items={item.details}
-                          formatBorrowStatus={formatBorrowStatus}
+                          items={[item]} // Pass the item itself as an array since we don't have details
+                          renderRow={(detail, detailIndex) => {
+                            const { formattedStatus, badgeClass } = formatBorrowStatus(detail.borrowed_item_status);
+                            return (
+                              <>
+                                <TableCell className="font-medium">{apcId || 'No APC ID'}</TableCell>
+                                <TableCell className="text-start">
+                                  <Badge className={badgeClass}>{formattedStatus}</Badge>
+                                </TableCell>
+                                {/* Add additional fields here if necessary */}
+                              </>
+                            );
+                          }}
+                          emptyMessage="No details available for this item."
                         />
                       </TableCell>
                     </TableRow>

@@ -10,7 +10,7 @@ import {useAction} from "next-safe-action/hooks";
 import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
 import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
 
-export default function EndorserApprovalButtonGroup({endorsementId}: { endorsementId: string | undefined }) {
+export default function EndorserApprovalButtonGroup({endorsementId, endorsementStatus}: { endorsementId: string | undefined, endorsementStatus: string | undefined }) {
 
     const {executeAsync, isExecuting} = useAction(approveEndorsementAction);
 
@@ -18,6 +18,7 @@ export default function EndorserApprovalButtonGroup({endorsementId}: { endorseme
 
     return (
         <div className="flex items-center space-x-2">
+            {endorsementStatus === "PENDING_ENDORSER_APPROVAL" && (
             <ActionButton
                 approveText="Approve"
                 declineText="Decline"

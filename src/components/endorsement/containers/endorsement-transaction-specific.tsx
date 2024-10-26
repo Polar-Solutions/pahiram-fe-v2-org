@@ -29,6 +29,7 @@ const EndorsementTransactionSpecific = ({
                 transactionId={endorsement?.custom_transac_id}
                 id={endorsement?.id}
             >
+                <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.status}/>
                 {endorsement?.status === REQUEST_TRANSACTION_STATUSES.PENDING_ENDORSER_APPROVAL &&
                     <EndorserApprovalButtonGroup endorsementId={endorsement?.id}/>
                 }

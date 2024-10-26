@@ -9,7 +9,7 @@ import {
     BreadcrumbPage,
     BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import {useRouter} from 'nextjs-toploader/app';
+import {useRouter} from "next/navigation";
 
 interface IBreadcrumbItem {
     name: string;
@@ -38,8 +38,7 @@ export default function DynamicBreadcrumbsComponent({
                     <React.Fragment key={item.name}>
                         {/* Use a unique combination for key */}
                         <BreadcrumbItem>
-                            <BreadcrumbLink className="cursor-pointer"
-                                            onClick={() => handleBreadcrumbClick(item.url)}>{item.name}</BreadcrumbLink>
+                            <BreadcrumbLink className="cursor-pointer" onClick={() => handleBreadcrumbClick(item.url)}>{item.name}</BreadcrumbLink>
                         </BreadcrumbItem>
                         <BreadcrumbSeparator/>
                     </React.Fragment>

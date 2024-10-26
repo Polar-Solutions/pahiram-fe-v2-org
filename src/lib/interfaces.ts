@@ -138,9 +138,9 @@ export interface IUser {
   first_name: string;
   last_name: string;
   email: string;
+  department: string | null;
   role: string;
   acc_status: string;
-  department: string | null;
   is_admin: boolean;
 }
 
@@ -157,6 +157,22 @@ export interface IHandleApiServerSideErrorResponse<T> {
   error?: string | string[]; // Optional error message(s)
   data?: T;                 // Optional data of generic type T
 }
+
+export interface IApproveEndorsementApiResponse {
+  status: boolean;
+  message?: string;
+  errors?: any;
+  method: string;
+}
+
+export interface IApproveTransactionApiResponse {
+  status: boolean;
+  message?: string;
+  errors?: any;
+  method: string;
+}
+
+
 
 export interface IApproveEndorsementApiResponse {
   status: boolean;

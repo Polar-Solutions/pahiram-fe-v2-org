@@ -26,10 +26,10 @@ const formatBorrowStatus = (status: string | null | undefined): { formattedStatu
   // Determine the badge class based on the status
   let badgeClass = 'bg-gray-200 text-gray-800 text-center font-light'; 
 
-  const warningStatuses = ["UNRETURNED", "CANCELLED", "DISAPPROVED"];
+  const warningStatuses = ["UNRETURNED", "CANCELLED", "DISAPPROVED", "DAMAGED_BUT_REPAIRABLE", "LOST", "UNRETURNED", "UNREPAIRABLE"];
   if (warningStatuses.includes(status)) {
     badgeClass = 'bg-red-500 text-white'; // Style for critical or negative statuses
-  } else if (pendingStatuses.includes(status)) {
+  } else if (pendingStatuses.includes(status) || status === "IN_POSSESSION" || status === "UNRELEASED") {
     badgeClass = 'bg-yellow-500 text-black font-light'; // Style for pending statuses
   } else if (status === "APPROVED") {
     badgeClass = 'bg-green-500 text-black font-light'; // Style for approved status

@@ -1,6 +1,7 @@
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
 import {useSearch} from '@/hooks/borrow/useSearch';
 import EndorsementCard from "@/components/endorsement/presentational/endorsement-card";
+import { useTabsStore } from '@/hooks/request/useTabs';
 
 interface TransactionListProps {
     endorsements: ITransactionRequest[];
@@ -8,15 +9,20 @@ interface TransactionListProps {
 
 export default function EndorsementList({endorsements}: TransactionListProps) {
     const {searchQuery} = useSearch();
+    const { activeTab } = useTabsStore();
 
     const filteredEndorsements = endorsements
         .filter((transaction) => {
+            const matchesStatus = activeTab === 'ALL'
+                ? true
+                : transaction.status === activeTab;
+
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (transaction.borrower && transaction.borrower.toLowerCase().includes(searchQuery.toLowerCase()))
                 : true;
 
-            return matchesSearch;
+            return matchesStatus && matchesSearch;
         })
         .sort((a, b) => {
             const dateComparison = new Date(b.created_at).getTime() - new Date(a.created_at).getTime();

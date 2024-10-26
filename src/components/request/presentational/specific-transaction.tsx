@@ -2,12 +2,13 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import {useRouter} from 'nextjs-toploader/app';
+import {useEffect} from 'react';
 import { useSpecificTransaction  } from '@/core/data-access/requests';
 import BorrowedItem from '@/components/request/presentational/borrowed-item';
 import BorrowingDetail from '@/components/request/presentational/borrowing-detail';
 import SpecificTransactionSkeleton from '@/components/request/presentational/specific-transaction-skeleton';
 import { cancelBorrowRequestAction } from '@/core/actions/cancel-borrow-request';
-import { IItem } from '@/lib/interfaces/get-specific-transaction-interface';
+import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowPurpose, formatBorrowStatus, checkTransactionStatus } from '@/helper/formatting-utilities';
 import { handleApiClientSideError } from '@/core/handle-api-client-side-error';
@@ -16,17 +17,24 @@ import {Button} from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
 import { useEditRequest } from '@/hooks/request/useEditRequest';
 import {toast} from "sonner";
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 
 export default function SpecificTransaction() {
   const { transacId } = useParams(); 
   const transactionId = Array.isArray(transacId) ? transacId[0] : transacId;
-
+  const { setApcId} = useTransactionData();
   const { data, isLoading } = useSpecificTransaction(transactionId);
   const transactionData = data?.data;
   const router = useRouter();
   const { isEditing, setIsEditing, setTransactionData, setEditedDetails, editedDetails, resetEditedDetails } = useEditRequest();
 
-  
+
+  useEffect(() => {
+    if (Array.isArray(transactionData?.items) && transactionData.items[0]?.apc_item_id) {
+      setApcId(transactionData.items[0].apc_item_id);
+    }
+  }, [transactionData?.items, setApcId]);
+
   if (data) {
     handleApiClientSideError(data);
   } 
@@ -98,7 +106,7 @@ export default function SpecificTransaction() {
    const { canCancel, canEdit } = checkTransactionStatus(transactionData.transac_data.transac_status);
 
   // Make sure borrowedItems is an array
-  const borrowedItems: IItem[] = Array.isArray(transactionData.items) ? transactionData.items : []; 
+  const borrowedItems: IOfficeSpecificTransaction[] = Array.isArray(transactionData.items) ? transactionData.items : [];
 
   return (
     <div className="flex flex-col space-y-4 w-full h-auto">

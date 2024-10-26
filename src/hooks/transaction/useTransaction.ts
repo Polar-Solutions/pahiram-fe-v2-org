@@ -1,43 +1,55 @@
-import { useEffect, useRef, useState } from "react";
-import {getTransctionRequestPaginationUseCase }from "@/core/use-cases/requests"
+import { useEffect, useState } from "react";
+import { getTransactionRequestPaginationUseCase } from "@/core/use-cases/requests";
 import { ITransactionRequest } from "@/lib/interfaces/get-office-transaction-interface";
+import { useTransactionStore } from "@/hooks/stores/useTransactionStore";
+import { create } from 'zustand';
 
-export const useTransaction = (page: number) => {
+interface ITransactionData {
+    apcId: string;
+    setApcId: (passApcId: string) => void;
+  }
+
+export const useTransaction = (page: number, forceRefetch = false) => {
     const [officeTransaction, setOfficeTransaction] = useState<ITransactionRequest[]>([]);
     const [totalPages, setTotalPages] = useState(1);
     const [isFetchingOfficeTransaction, setIsFetchingOfficeTransaction] = useState(false);
-    
-    // Use a ref to store cached requests per page
-    const cachedRequests = useRef<{ [page: number]: ITransactionRequest[] }>({});
-    
+
+    const { addRequestsByPage, getRequestsByPage } = useTransactionStore();
+
     useEffect(() => {
         async function loadRequests(page: number) {
-        if (cachedRequests.current[page]) {
-            setOfficeTransaction(cachedRequests.current[page]);
-        } else {
-            try {
-                setIsFetchingOfficeTransaction(true);
-                const response = await getTransctionRequestPaginationUseCase(page);
-                const officeTransactionPaginationData = response?.data;
-    
-                setOfficeTransaction(officeTransactionPaginationData?.endorsements);
-                cachedRequests.current[page] = officeTransactionPaginationData?.endorsements; // Cache requests per page
-                setTotalPages(officeTransactionPaginationData?.last_page);
-            } catch (error) {
-                console.error("Error fetching requests:", error);
-                // Handle error (e.g., show error message to user)
-            } finally {
-            setIsFetchingOfficeTransaction(false);
+            const existingPage = getRequestsByPage("transaction", page);
+            if (existingPage && !forceRefetch) {
+                setOfficeTransaction(existingPage);
+            } else {
+                try {
+                    setIsFetchingOfficeTransaction(true);
+                    // Use the forceRefetch parameter when fetching
+                    const response = await getTransactionRequestPaginationUseCase(page, forceRefetch);
+                    const officeTransactionData = response?.data;
+
+                    setOfficeTransaction(officeTransactionData?.transactions);
+                    addRequestsByPage("transaction", page, officeTransactionData?.transactions);
+                    setTotalPages(officeTransactionData?.last_page);
+                } catch (error) {
+                    console.error("Error fetching requests:", error);
+                } finally {
+                    setIsFetchingOfficeTransaction(false);
+                }
             }
         }
-        }
-    
+
         loadRequests(page);
-    }, [page]);
-    
+    }, [page, forceRefetch]);
+
     return {
         officeTransaction,
         isFetchingOfficeTransaction,
         totalPages,
     };
-    }
+};
+
+export const useTransactionData = create<ITransactionData>((set) => ({
+    apcId: "", // Initial state
+    setApcId: (passApcId) => set({ apcId: passApcId}), // Function to update the apcId
+  }));  

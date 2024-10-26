@@ -20,8 +20,6 @@ export const approveEndorsementAction = actionClient
                 const requestBody = {
                     approval: isApproved
                 }
-                console.log("REQUEST BODY", requestBody);
-                console.log("IDDDD", transactionId)
                 return PahiramAxiosConfig.patch<IApproveEndorsementApiResponse>(
                     approveEndorsementEndpoint(transactionId),
                     requestBody

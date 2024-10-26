@@ -1,140 +1,152 @@
 'use client';
-import React from 'react';
-import {useRouter} from 'nextjs-toploader/app';
-
-import {ArrowLeft, Mail} from "lucide-react"
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {Input} from "@/components/ui/input"
-import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
-import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,} from "@/components/ui/dropdown-menu"
+import React, {useState, useEffect} from 'react';
+import ApproverReqTransCardHeader from '@/components/transaction/presentational/approver-transaction-header';
+import OfficerApprovalButtonGroup from './transaction-approval-button-group';
 import {Badge} from "@/components/ui/badge";
-import {Button} from '@/components/ui/button';
-import {Progress} from "@/components/ui/progress";
+import TransactionProgress from "@/components/endorsement/presentational/transaction-progress";
+import TransactionDetails from '@/components/transaction/presentational/transaction-detail';
+import ExpandTable from '@/components/common/expanding-table/expanding-table';
+import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
+import { useSearchParams, useRouter } from 'next/navigation';
+import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
+import { formatBorrowStatus, formatBorrowPurpose } from '@/helper/formatting-utilities';
+import { useEditRequest } from '@/hooks/request/useEditRequest';
+import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
+import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import OfficerReleasedButtonGroup from '@/components/transaction/presentational/transaction-release-button-group';
+import { useTransactionData } from '@/hooks/transaction/useTransaction';
 
-export default function ApproverSpecificReqTrans() {
-    const router = useRouter();
-    return (
-        <div className="container mx-auto p-4 space-y-4">
-            <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                    <Button onClick={() => {
-                        router.back();
-                    }} variant="ghost" size="icon">
-                        <ArrowLeft className="h-4 w-4"/>
-                    </Button>
-                    <Avatar className="h-10 w-10">
-                        <AvatarImage src="/placeholder.svg?height=40&width=40" alt="Kathryn Ann Icuspit"/>
-                        <AvatarFallback>KI</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <h1 className="text-xl font-bold">KATHRYN ANN ICUSPIT 2021-140617</h1>
-                        <p className="text-sm text-muted-foreground">Submitted September 14, 2024</p>
-                    </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Button variant="outline" size="icon">
-                        <Mail className="h-4 w-4"/>
-                    </Button>
-                    <Button>Approve</Button>
-                    <Button variant="outline">Decline</Button>
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                                ...
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem>View details</DropdownMenuItem>
-                            <DropdownMenuItem>Copy ID</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                </div>
-            </div>
-            <div className="flex items-center space-x-2">
-                <Badge variant="secondary">DEPARTMENT</Badge>
-                <Badge variant="secondary">3 items</Badge>
-            </div>
-            <p className="text-sm text-muted-foreground">ITRO-140966-090324-083015</p>
-            <p className="text-sm">
-                Total Borrowing Period: September 11, 2024 to September 19, 2024
-            </p>
-            <Card>
-                <CardHeader>
-                    <CardTitle>Transaction Status History</CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <Progress value={33} className="w-full"/>
-                    <div className="flex justify-between mt-2 text-sm">
-                        <span>Submitted</span>
-                        <span>Approved</span>
-                        <span>Borrowed</span>
-                        <span>Returned</span>
-                    </div>
-                </CardContent>
-            </Card>
-            <div className="grid gap-4 md:grid-cols-2">
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Borrowing details</CardTitle>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <label className="text-sm font-medium">Endorser</label>
-                            <Input value="Mrs. Endorser Senpai" readOnly/>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium">Purpose</label>
-                            <Input value="Academic-related" readOnly/>
-                        </div>
-                        <div>
-                            <label className="text-sm font-medium">Specify purpose</label>
-                            <Input
-                                value="We are required to shoot a video in our subject PROFETH."
-                                readOnly
-                            />
-                        </div>
-                    </CardContent>
-                </Card>
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Borrowed items</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Name</TableHead>
-                                    <TableHead>Quantity</TableHead>
-                                    <TableHead>Borrowing Period</TableHead>
-                                    <TableHead>Status</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {[
-                                    "Arduino R4 Board",
-                                    "Laptop",
-                                    "Charger",
-                                    "RJ45 Wire",
-                                    "Chair",
-                                    "Table",
-                                ].map((item, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{item}</TableCell>
-                                        <TableCell>{index === 3 ? 2 : index === 4 ? 4 : index === 5 ? 2 : 1}</TableCell>
-                                        <TableCell>Aug 12 2024 5:00 am - Aug 13 2024 12:00 pm</TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline">Pending</Badge>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-            </div>
+export default function ApproverSpecificReqTrans({ transactionId}: {transactionId: string}) {
+  const {getRequestById} = useTransactionStore();
+  const searchParams = useSearchParams();
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const { setApcId} = useTransactionData();
 
-        </div>
+  const transaction = getRequestById("transaction", transactionId);
 
-    );
+  const { data } = useSpecificOfficeTransaction(transaction?.id || '');
+
+  useEffect(() => {
+    if (transaction?.apc_id) {
+      setApcId(transaction.apc_id);
+    }
+  }, [transaction?.apc_id, setApcId]);
+  
+  const itemsTransaction = data?.data?.items  || []; 
+  // Accessing the start dates
+  const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
+
+  const { isEditing, setEditedDetails } = useEditRequest();
+
+  // Handle changes for dropdowns
+  const handleDropdownChange = (value: string, field: string, index: number) => {
+    setEditedDetails((prevDetails: any) => ({
+      ...prevDetails,
+      [index]: {
+        ...prevDetails[index],
+        [field]: value,
+      },
+    }));
+  };
+
+  // Convert start_date and due_date strings to Date objects and extract the dates
+  const startDates = items.map(item => new Date(item.start_date));
+  const dueDates = items.map(item => new Date(item.due_date));
+  
+  // Find the earliest start date and the latest due date
+  const earliestStartDate = new Date(Math.min(...startDates.map(date => date.getTime())));
+  const latestDueDate = new Date(Math.max(...dueDates.map(date => date.getTime())));
+  
+  const hasApprovedItems = items.some((item) => item.borrowed_item_status === 'APPROVED');
+  const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedItems;
+  return (
+    <div className="container mx-auto p-4 space-y-4">
+      {/* Header Component */}
+      <ApproverReqTransCardHeader
+          withBackArrow={true}
+          borrowerName={transaction?.borrower}
+          borrowerId={transaction?.apc_id}
+          submissionDate={transaction?.created_at 
+            ? formatDateTimeToHumanFormat(transaction.created_at)
+            : 'N/A'} 
+          transactionId={transaction?.custom_transac_id}
+          id={transaction?.id}
+      >
+      {transaction?.status === 'PENDING_BORROWING_APPROVAL' ? (
+          <OfficerApprovalButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+        ) : transaction?.status === 'APPROVED' || shouldShowReleaseButton ? (
+          <OfficerReleasedButtonGroup transactionId={transaction?.id} transactionStatus={transaction?.status} selectedIds={selectedIds} setSelectedIds={setSelectedIds} />
+        ) : null}
+
+
+      </ApproverReqTransCardHeader>
+
+      {/* Badges Section */}
+      <div className="flex items-center space-x-2">
+      <Badge variant="secondary">
+          {transaction?.status
+            .toLowerCase()         // Convert to lowercase
+            .split('_')            // Split by underscore
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+            .join(' ')
+          }   
+      </Badge>
+
+        <Badge variant="secondary">
+          {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
+        </Badge>
+      </div>
+
+
+      <div>
+        <p className='text-sm'>
+          Total Borrowing Period:
+          {" "}
+          {earliestStartDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+          })} 
+          {" "}
+          to 
+          {" "}
+          {latestDueDate.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric',
+              hour12: true
+          })}
+        </p>
+
+      </div>
+
+
+      {/* Transaction Progress Component */}
+      <TransactionProgress  
+          transactionStatus={transaction?.status}
+      />
+
+      {/* Borrowing Details Component */}
+      <div className="grid gap-4 md:grid-cols-2">
+          <TransactionDetails transaction={transaction}/>
+
+          {/* Borrowed Items Table Component */}
+            <ExpandTable
+              items={items}
+              formatDateTime={formatDateTimeToHumanFormat}
+              formatBorrowStatus={formatBorrowStatus}
+              handleDropdownChange={handleDropdownChange}
+              isEditing={isEditing}
+              modelNames={[]} // Add model names if necessary
+              selectedIds={selectedIds} // Pass selectedIds if needed
+              setSelectedIds={setSelectedIds} // Pass setSelectedIds if needed
+            />
+      </div>
+  </div>
+  );
 }
