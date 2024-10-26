@@ -4,7 +4,7 @@ import DynamicBreadcrumbsComponent from '@/components/common/dynamic-breadcrumbs
 import FilterTabs from "@/components/request/presentational/filter-tabs-component";
 import { useTabsStore } from '@/hooks/request/useTabs';
 
-export default function RequetsHeader({id}: { id: string }) {
+export default function RequetsHeader({id}: { id?: string }) {
   const { activeTab, setActiveTab } = useTabsStore();
 
   // Handler function to change the active tab
@@ -21,9 +21,9 @@ export default function RequetsHeader({id}: { id: string }) {
   return (
     <div className="flex items-center justify-between">
       <DynamicBreadcrumbsComponent
-          activePage={id}
+          activePage={id || "Manage Requests"}
           items={[{
-              name: "Manage Endorsements",
+              name: "Manage Requests",
               url: "/borrow/manage-requests",
           }
           ]}
