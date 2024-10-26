@@ -18,7 +18,8 @@ import {
 
 // import {useUser} from "@/hooks/use-user";
 import {UserState, useUserStore} from "@/hooks/stores/useUser";
-import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {useEffect} from "react";
 
 export function UserNav() {

@@ -17,7 +17,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { useTransactionData } from '@/hooks/transaction/useTransaction';
 interface ExpandTableProps {
   items: IOfficeSpecificTransaction[];
-  formatDateTime: (dateString: string) => string;
+  formatDateTime: (dateString: string | undefined | null) => string | null;
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
   handleDropdownChange: (value: string, field: string, index: number) => void;
   isEditing: boolean;

@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import {Ellipsis, LogOut} from "lucide-react";
-import {usePathname, useRouter} from "next/navigation";
+import {usePathname} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 
 import {cn} from "@/lib/utils";
 import {useMenuList} from "@/lib/menu-list";

@@ -2,7 +2,7 @@
 import {useAction} from "next-safe-action/hooks";
 import {logoutUserAction} from "@/core/actions/authentication";
 import {UserState, useUserStore} from "@/hooks/stores/useUser";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {LayoutDashboard} from "lucide-react";
@@ -11,6 +11,7 @@ import {LoadingComponent} from "@/components/common/loading-component";
 import {useEffect, useState} from "react";
 import {useCartStore} from "@/hooks/stores/useCartStore";
 import {ICartItemsStoreState} from "@/lib/interfaces/zustand-store-states";
+import {useTransactionStore} from "@/hooks/stores/useTransactionStore";
 // TODO: Add loading page before going to logout page
 
 export default function LogoutPage() {
@@ -19,6 +20,7 @@ export default function LogoutPage() {
     const [lastPath, setLastPath] = useState("/");
     const {executeAsync} = useAction(logoutUserAction);
     const { handleSignout } = useUserStore();
+    const {clearAllRequests } = useTransactionStore();
     const router = useRouter();
 
     useEffect(() => {
@@ -36,6 +38,8 @@ export default function LogoutPage() {
                 if (result) {
                     handleSignout();
                     clearCart();
+                    clearAllRequests("endorsement")
+                    clearAllRequests("transaction")
                 }
             })
             .finally(() => {

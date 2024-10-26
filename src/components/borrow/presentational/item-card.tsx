@@ -1,6 +1,6 @@
 "use client";
 
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import {Card, CardContent, CardHeader} from "@/components/ui/card";
 import Image from "next/image";
 import { IItemGroup } from "@/lib/interfaces";
 import { updateURLParams } from "@/helper/borrow/updateURLParams";

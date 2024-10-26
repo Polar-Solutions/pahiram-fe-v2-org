@@ -17,7 +17,7 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import {filterViewsList, findViewsListElement, VIEWS_LIST,} from "@/CONSTANTS/VIEWS_LIST";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import useBaseUrlPath from "@/hooks/useBaseUrlPath";
 import {getUserFromAuthCookie} from "@/core/data-access/cookies";
 

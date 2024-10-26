@@ -10,7 +10,7 @@ import {Button} from "@/components/ui/button";
 import {submitBorrowRequestAction} from "@/core/actions/submit-borrow-request-action";
 import {useCartStore} from "@/hooks/stores/useCartStore";
 import {useAction} from "next-safe-action/hooks";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import React from "react";
 import {Form} from "@/components/ui/form";
 import {BorrowRequestSchema, TBorrowRequestFormValues,} from "@/lib/form-schemas/submit-borrow-request-form-schema";
@@ -22,11 +22,13 @@ import {handleSubmitForm} from "./on-submit-borrow-request";
 import {extractFormValidationErrorsAndTriggerToast} from "@/helper/extract-form-validation-errors-and-trigger-toast";
 
 export default function Page() {
+    const router = useRouter();
+    const {cartItems} = useCartStore();
     const {executeAsync, isExecuting} = useAction(submitBorrowRequestAction);
 
     const {getAllCartItems, clearCart, isCartEmpty} = useCartStore();
     const allCartItems = getAllCartItems();
-    const cartItems = prepareCartItemsForBorrowSubmission(allCartItems);
+    const carItemsInSubmission = prepareCartItemsForBorrowSubmission(allCartItems);
 
     const form = useForm<TBorrowRequestFormValues>({
         resolver: zodResolver(BorrowRequestSchema),
@@ -34,16 +36,16 @@ export default function Page() {
             endorsed_by: "",
             purpose: "",
             user_defined_purpose: "",
-            items: cartItems,
+            items: carItemsInSubmission,
         },
         mode: "onChange",
     });
 
     const onSubmit = async () => {
         await handleSubmitForm(form, executeAsync, clearCart);
+        router.push("/borrow/manage-requests");
     };
 
-    const router = useRouter();
     const addMoreItemsAction = () => {
         router.push("/borrow/borrow-items");
     };
@@ -52,10 +54,7 @@ export default function Page() {
         <ContentLayout title="Borrow Items">
             <DynamicBreadcrumbsComponent
                 activePage="Submit Borrowing Request"
-                items={[{
-                    name: "Borrow Items",
-                    url: "/borrow/borrow-items",
-                }]}
+                items={[{name: "Explore Items", url: "/borrow/borrow-items"}]}
             />
             <Content>
                 <Form {...form}>

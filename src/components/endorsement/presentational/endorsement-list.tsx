@@ -16,7 +16,7 @@ export default function EndorsementList({endorsements}: TransactionListProps) {
             const matchesStatus = activeTab === 'ALL'
                 ? true
                 : transaction.status === activeTab;
-            
+
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
                 (transaction.borrower && transaction.borrower.toLowerCase().includes(searchQuery.toLowerCase()))
