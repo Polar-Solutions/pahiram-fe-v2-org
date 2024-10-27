@@ -52,4 +52,4 @@ export const useTransaction = (page: number, forceRefetch = false) => {
 export const useTransactionData = create<ITransactionData>((set) => ({
     apcId: "", // Initial state
     setApcId: (passApcId) => set({ apcId: passApcId}), // Function to update the apcId
-  }));  
+}));  

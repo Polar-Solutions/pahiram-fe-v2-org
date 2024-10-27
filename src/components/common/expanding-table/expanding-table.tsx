@@ -57,8 +57,7 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
       }
     });
   };
-
-
+ 
   return (
     <FormProvider {...form}>
       <div className='w-full ml-4'>
@@ -94,7 +93,7 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                 <React.Fragment key={index}>
                   <TableRow className="cursor-pointer" onClick={() => handleRowToggle(index)}>
                     <TableCell>
-                    {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' ? (
+                    {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' || item.borrowed_item_status === 'IN_POSSESSION' ? (
                       <Checkbox 
                         checked={selectedIds.includes(item.id)} 
                         onCheckedChange={() => handleCheckboxChange(item.id)}

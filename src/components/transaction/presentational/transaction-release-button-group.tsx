@@ -33,7 +33,7 @@ export default function OfficerReleasedButtonGroup({
     setSelectedIds([]); // Clear selected IDs after approval or decline
   }
 
-  const isDisabled = selectedIds.length === 0; // Check if no items are selected
+  const isDisabled = selectedIds.length === 0; 
  
   return (
     <div className={`flex items-center space-x-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}>
@@ -51,6 +51,8 @@ export default function OfficerReleasedButtonGroup({
             modalDescApprove="Are you sure you want to release this transaction?"
             modalDescDecline="Are you sure you want to withhold this transaction?"
           />
+
+
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
