@@ -26,13 +26,15 @@ export default function ApproverSpecificReqTrans({ transactionId}: {transactionI
 
   const { data } = useSpecificTransactionItems(transaction?.id || '');
 
+  console.log("data: ", data);
+
   useEffect(() => {
     if (transaction?.apc_id) {
       setApcId(transaction.apc_id);
     }
   }, [transaction?.apc_id, setApcId]);
   
-  const itemsTransaction = data  || [];
+  const itemsTransaction = data?.data  || [];
   // Accessing the start dates
   const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
 
