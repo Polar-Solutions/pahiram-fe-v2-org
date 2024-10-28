@@ -26,6 +26,20 @@ export const ReleaseTransactionSchema = z.object({
         .optional(),
 });
 
+export const ReturnTransactionSchema = z.object({
+    transactionId: z.string().optional(),
+    items: z
+        .array(
+            z.object({
+                borrowedItemId: z.string(),
+                status: z.string(),
+                remarkByReceiver: z.string(),
+            })
+        )
+});
 
+
+
+export type TReturnTransactionSchema = z.infer<typeof ReturnTransactionSchema>;
 export type TReleaseTransactionSchema = z.infer<typeof ReleaseTransactionSchema>;
 export type TApproveTransactionSchema = z.infer<typeof ApproveTransactionSchema>;

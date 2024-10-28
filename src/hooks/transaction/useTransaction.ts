@@ -7,6 +7,8 @@ import { create } from 'zustand';
 interface ITransactionData {
     apcId: string;
     setApcId: (passApcId: string) => void;
+    transactionId: string;
+    setTransactionId: (passTransactionId: string) => void;
   }
 
 export const useTransaction = (page: number, forceRefetch = false) => {
@@ -51,5 +53,7 @@ export const useTransaction = (page: number, forceRefetch = false) => {
 
 export const useTransactionData = create<ITransactionData>((set) => ({
     apcId: "", // Initial state
-    setApcId: (passApcId) => set({ apcId: passApcId}), // Function to update the apcId
+    setApcId: (passApcId) => set({ apcId: passApcId}), 
+    transactionId: "", // Initial state
+    setTransactionId: (passTransactionId) => set({ transactionId: passTransactionId}),
 }));  

@@ -38,7 +38,6 @@ export default function OfficerReleasedButtonGroup({
   return (
     <div className={`flex items-center space-x-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}>
       {/* Show buttons only if transactionStatus is APPROVED */}
-      {transactionStatus === "APPROVED" || (
         <>
           <ActionButton
             approveText="Release"
@@ -65,7 +64,7 @@ export default function OfficerReleasedButtonGroup({
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-      )}
+
     </div>
   );
 }

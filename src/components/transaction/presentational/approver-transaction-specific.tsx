@@ -21,7 +21,7 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
   const { getRequestById } = useTransactionStore();
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const { setApcId } = useTransactionData();
+  const { setApcId, setTransactionId } = useTransactionData();
 
   const transaction = getRequestById("transaction", transactionId);
   const { data } = useSpecificOfficeTransaction(transaction?.id || '');
@@ -30,6 +30,7 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
     if (transaction?.apc_id) {
       setApcId(transaction.apc_id);
     }
+    setTransactionId(transaction?.id || '');
   }, [transaction?.apc_id, setApcId]);
 
   const itemsTransaction = data?.data?.items || [];
