@@ -91,3 +91,10 @@ export interface IGetSpecificEndorsementApiResponse {
     status: string;
     apc_item_id: string;
   }
+
+export interface IGetSpecificTransactionItemsApiResponse {
+  status: boolean;
+  data?: any;
+  error?: any;
+  method: string;
+}

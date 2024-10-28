@@ -3,14 +3,20 @@
 import page from "@/app/(protected)/borrow/checkout/page";
 import {getBorrowListEndpoint, getEndorsementResourceEndpoint} from "@/config/api/backend-routes/borrow-request-routes";
 import { PahiramAxiosConfig } from "@/config/api/BackendAxiosConfig";
-import { IGetSpecificTransactionApiResponse } from "@/lib/interfaces/get-specific-transaction-interface";
+import {
+    IGetSpecificTransactionApiResponse,
+    IGetSpecificTransactionItemsApiResponse
+} from "@/lib/interfaces/get-specific-transaction-interface";
 import { AxiosResponse } from "axios";
 import { getBorrowResourceEndpoint, cancelBorrowRequestEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
 import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
 import { useQuery } from "@tanstack/react-query";
 import { IGetBorrowRequestApiResponse } from "@/lib/interfaces";
 import { IGetTransactionRequestApiResponse } from "@/lib/interfaces/get-office-transaction-interface";
-import { getOfficeTransactionListEndpoint } from "@/config/api/backend-routes/office-transaction-request";
+import {
+    getOfficeTransactionListEndpoint,
+    specificTransactionItemsEndpoint
+} from "@/config/api/backend-routes/office-transaction-request";
 import {getEndorsementTransactionListEndpoint} from "@/config/api/backend-routes/endorsement-transaction-request";
 import { specificTransactionEndpoint } from "@/config/api/backend-routes/office-transaction-request";
 import { use } from "chai";
@@ -181,11 +187,37 @@ export  const getSpecificOfficeTransaction = async (transacId: string) => {
 };
 
 
+export  const getSpecificTransactionItems = async (transacId: string) => {
+    const request = async (): Promise<AxiosResponse<IGetSpecificTransactionItemsApiResponse>> => {
+        return PahiramAxiosConfig.get<IGetSpecificTransactionItemsApiResponse>(
+            specificTransactionItemsEndpoint(transacId)
+        );
+    };
+
+    return await handleApiServerSideErrorResponse({
+        request
+    });
+};
+
+
 export const useSpecificOfficeTransaction = (transacId: string) => {
     return useQuery({
         queryKey: ["officeTransaction", transacId],
         queryFn: async () => {
             const { data } = await getSpecificOfficeTransaction(transacId);
+            return data;
+        },
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        enabled: !!transacId,
+    });
+};
+
+export const useSpecificTransactionItems = (transacId: string) => {
+    return useQuery({
+        queryKey: ["officeTransaction", transacId],
+        queryFn: async () => {
+            const { data } = await getSpecificTransactionItems(transacId);
             return data;
         },
         staleTime: 60000,

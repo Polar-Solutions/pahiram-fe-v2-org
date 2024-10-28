@@ -37,7 +37,7 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
     const visibleRowsCount = 3;
 
     const handleClickEndorsementCard = () => {
-        router.push(`/office/lending-offices/${transaction.custom_transac_id}`);
+        router.push(`/office/lending-offices/manage-transactions/${transaction.custom_transac_id}`);
     }
 
     return (
