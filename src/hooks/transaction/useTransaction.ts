@@ -5,8 +5,10 @@ import { useTransactionStore } from "@/hooks/stores/useTransactionStore";
 import { create } from 'zustand';
 
 interface ITransactionData {
-    apcId: string;
-    setApcId: (passApcId: string) => void;
+    apcIds: string[];
+    setApcIds: (passApcIds: string[]) => void;
+    transactionId: string;
+    setTransactionId: (passTransactionId: string) => void;
   }
 
 export const useTransaction = (page: number, forceRefetch = false) => {
@@ -50,6 +52,8 @@ export const useTransaction = (page: number, forceRefetch = false) => {
 };
 
 export const useTransactionData = create<ITransactionData>((set) => ({
-    apcId: "", // Initial state
-    setApcId: (passApcId) => set({ apcId: passApcId}), // Function to update the apcId
-  }));  
+    apcIds: [], // Initialize as an empty array
+    setApcIds: (passApcIds) => set({ apcIds: passApcIds }), // Set multiple APC IDs
+    transactionId: "", // Initial state
+    setTransactionId: (passTransactionId) => set({ transactionId: passTransactionId}),
+}));  

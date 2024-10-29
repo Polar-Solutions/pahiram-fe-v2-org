@@ -1,7 +1,7 @@
 import {approveEndorsementAction} from "@/core/actions/approve-endorsement";
 import {handleApiClientSideError, IClientSideApiHandlerResponse} from "@/core/handle-api-client-side-error";
 import {TBorrowRequestFormValues} from "@/lib/form-schemas/submit-borrow-request-form-schema";
-import { TApproveTransactionSchema, TReleaseTransactionSchema } from "@/lib/form-schemas/approve-transaction-schema";
+import { TApproveTransactionSchema, TReleaseTransactionSchema, TReturnTransactionSchema } from "@/lib/form-schemas/approve-transaction-schema";
 
 export const handleTransactionApproval = async (
     transactionId: string | undefined,
@@ -84,3 +84,22 @@ export const handleTransactionItemReleased = async (
 
     handleApiClientSideError(responseData);
 }
+
+export const handleTransactionReturn = async (
+    transactionId: string | undefined,
+    executeAsync: (values: TReturnTransactionSchema) => Promise<any>,
+    returnItems: Array<{ borrowedItemId: string; status: string; penalty: string; remarkByReceiver: string }>
+) => {
+    console.log("THIS IS THE ID ", transactionId);
+    console.log("THESE ARE THE ITEMS ", returnItems); // Log items to verify
+
+    const res = await executeAsync({ transactionId, items: returnItems });
+
+    const responseData: IClientSideApiHandlerResponse = {
+        success: res?.data?.success,
+        error: res?.data?.error,
+        isSuccessToast: true,
+    };
+
+    handleApiClientSideError(responseData);
+};

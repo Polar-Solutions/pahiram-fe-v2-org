@@ -1,16 +1,7 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  PURPOSE_CONSTANTS,
   PURPOSE_OPTIONS_CONSTANTS,
 } from "@/CONSTANTS/PURPOSE_CONSTANTS";
 import {
@@ -22,7 +13,7 @@ import {
 } from "@/components/ui/form";
 import { useFormContext } from "react-hook-form";
 import { requestFormIsSubmitting } from "@/signals/shared-signals";
-import React, { useState } from "react";
+import React from "react";
 import { ComboboxWithNoApiIntegration } from "@/components/common/combobox/combobox-no-api-integration";
 import { SearchWithPopover } from "@/components/common/search/search-with-popover";
 import { useSearchApcisUser } from "@/core/data-access/users";

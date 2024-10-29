@@ -55,7 +55,7 @@ export const BorrowRequestSchema = z
         user_defined_purpose: z
             .string()
             .min(5, "Purpose must be atleast 5 characters.")
-            .max(50, "Purpose must be atmost 50 characters."), // Validates as a non-empty string
+            .max(500, "Purpose must be atmost 500 characters."), // Validates as a non-empty string
         items: z
             .array(SuperRefineItemSchema)
             .min(1, "At least one item is required"), // Validates as an array with at least one item
