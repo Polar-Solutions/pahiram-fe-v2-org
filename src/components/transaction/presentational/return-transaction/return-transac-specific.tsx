@@ -4,18 +4,12 @@ import ApproverReqTransCardHeader from "@/components/transaction/presentational/
 import { Badge } from "@/components/ui/badge";
 import TransactionProgress from "@/components/endorsement/presentational/transaction-progress";
 import TransactionDetails from "@/components/transaction/presentational/transaction-detail";
-import ExpandTable from "@/components/common/expanding-table/expanding-table";
 import { useTransactionStore } from "@/hooks/stores/useTransactionStore";
 import { useSearchParams } from "next/navigation";
 import { formatDateTimeToHumanFormat } from "@/helper/date-utilities";
-import { formatBorrowStatus } from "@/helper/formatting-utilities";
-import { useEditRequest } from "@/hooks/request/useEditRequest";
 import { useSpecificTransactionItems } from "@/core/data-access/requests";
 import { IOfficeSpecificTransaction } from "@/lib/interfaces/get-specific-transaction-interface";
-import OfficerReleasedButtonGroup from "@/components/transaction/presentational/transaction-release-button-group";
 import { useTransactionData } from "@/hooks/transaction/useTransaction";
-import OfficerReturnButtonGroup from "../transcation-return-button-group";
-import OfficerApprovalButtonGroup from "../transaction-approval-button-group";
 import { SimpleTable } from "./simple-table";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
@@ -25,6 +19,7 @@ import {
   ReturnItemSchema,
   TReturnItemFormValues,
 } from "@/lib/form-schemas/return-request-form-schema";
+import ReturnModal from "./return-modal";
 
 export default function ReturnTransacSpecific({
   transactionId,
@@ -73,6 +68,7 @@ export default function ReturnTransacSpecific({
     mode: "onChange",
   });
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const onSelect = (item: any, checked: boolean) => {
     // Get the current values from the form state, specifying the key
     const currentValues = form.getValues("items") || []; // Get the current items or default to empty array
@@ -108,7 +104,7 @@ export default function ReturnTransacSpecific({
           transactionId={transaction?.custom_transac_id}
           id={transaction?.id}
         >
-          <Button>Facilitate Return</Button>
+          <ReturnModal />
         </ApproverReqTransCardHeader>
 
         {/* Badges Section */}
