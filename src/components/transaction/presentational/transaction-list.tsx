@@ -5,24 +5,32 @@ import TransactionListSkeleton from '@/components/transaction/presentational/tra
 import { useTabsStore } from '@/hooks/request/useTabs';
 
 interface TransactionListProps {
-    transactions: ITransactionRequest[];
+    transactions: ITransactionRequest[] | undefined;
 }
 
 export default function TransactionList({ transactions }: TransactionListProps) {
     const { searchQuery } = useSearch();
     const { activeTab } = useTabsStore();
 
+    if (!transactions) {
+        return (
+            <div className='text-center text-muted-foreground col-span-full'>
+                No results found
+            </div>
+        );
+    }
+
     const filteredTransactions = transactions
         .filter((transaction) => {
             // Filter based on activeTab (status)
             const matchesStatus = activeTab === 'ALL' 
                 ? true 
-                : transaction.status === activeTab;
+                : transaction.borrow_transaction_status === activeTab;
 
             // Filter based on search query
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                  (transaction.status && transaction.status.toLowerCase().includes(searchQuery.toLowerCase()))
+                  (transaction.borrow_transaction_status && transaction.borrow_transaction_status.toLowerCase().includes(searchQuery.toLowerCase()))
                 : true;
 
             return matchesStatus && matchesSearch;

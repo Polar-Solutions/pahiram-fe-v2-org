@@ -20,3 +20,11 @@ export const releaseTransactionEndpoint = (resourceId: string | undefined) => {
 export const specificTransactionItemsEndpoint = (resourceId: string | undefined) => {
    return `/borrow-transaction/${resourceId}/borrowed-items`;
 }
+
+export const specificPenalizedTransactionItemsEndpoint = (resourceId: string | undefined) => {
+    return `/borrow-transaction/${resourceId}/borrowed-items?include-penalty-data=true`;
+}
+
+export const getPenalizedTransactionListEndpoint = (page: number) => {
+    return `/office/penalized-borrow-transaction?page=${page}`;
+}

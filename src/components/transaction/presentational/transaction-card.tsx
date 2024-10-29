@@ -63,10 +63,10 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                     >
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
-                        {transaction.status === 'PENDING_BORROWING_APPROVAL' ? (
-                                <OfficeApprovalAllButton transactionId={transaction.id} transactionStatus={transaction.status} />
-                            ) : transaction.status === 'APPROVED' ? (
-                                <OfficerReleaseAllButton transactionId={transaction.id} transactionStatus={transaction.status} />
+                        {transaction.borrow_transaction_status === 'PENDING_BORROWING_APPROVAL' ? (
+                                <OfficeApprovalAllButton transactionId={transaction.id} transactionStatus={transaction.borrow_transaction_status} />
+                            ) : transaction.borrow_transaction_status === 'APPROVED' ? (
+                                <OfficerReleaseAllButton transactionId={transaction.id} transactionStatus={transaction.borrow_transaction_status} />
                             ) : null
                         }
                         </div>
@@ -76,7 +76,7 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                 <CardContent>
                     <div className="flex items-center space-x-2">
                     <Badge variant="secondary">
-                        {transaction.status
+                        {transaction.borrow_transaction_status
                             .toLowerCase()         // Convert to lowercase
                             .split('_')            // Split by underscore
                             .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
@@ -85,7 +85,7 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                     </Badge>
 
                         <Badge variant="secondary">
-                        {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
+                        {transaction?.items.reduce((total, item) => total + item.quantity, 0)} item/s
                         </Badge>
                     </div>
                     <div className="flex flex-col lg:flex-row gap-8">

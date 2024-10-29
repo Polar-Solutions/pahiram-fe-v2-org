@@ -2,18 +2,17 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {updateURLParams} from "@/helper/borrow/updateURLParams";
-import TransactionPagination from '@/components/transaction/presentational/transaction.pagination';
 import {motion} from "framer-motion";
 import TabsSearchComponent from "@/components/transaction/presentational/tabs-search-component";
-import TransactionList from "../presentational/transaction-list";
-import {useFilteredRequests} from "@/hooks/request/useFilteredRequests";
-import {useTransaction} from '@/hooks/transaction/useTransaction';
-import TransactionCardSkeleton from "@/components/transaction/presentational/transaction-card-skeleton";
+import {usePenalizedTransaction} from "@/hooks/penalty/usePenalizedTransaction";
 import {useFilteredTransactions} from "@/hooks/transaction/useFilteredTransaction";
+import TransactionCardSkeleton from "@/components/transaction/presentational/transaction-card-skeleton";
+import TransactionPagination from "@/components/transaction/presentational/transaction.pagination";
+import PenalizedTransactionList from "@/components/penalties/presentational/penalized-transaction-list";
 
 export default function TransactionContainer() {
-    const {page, filterSearch, showItemGroupModal} = getURLParams();
-    const {officeTransaction, isFetchingOfficeTransaction, totalPages} = useTransaction(page, true);
+    const {page, filterSearch} = getURLParams();
+    const {officeTransaction, isFetchingOfficeTransaction, totalPages} = usePenalizedTransaction(page);
 
     const filteredTransactions = useFilteredTransactions({transac_data: officeTransaction});
     const [showFilters, setShowFilters] = useState(true);
@@ -77,7 +76,7 @@ export default function TransactionContainer() {
                 {isFetchingOfficeTransaction ? (
                     <TransactionCardSkeleton/>
                 ) : filteredTransactions && filteredTransactions.length > 0 ? (
-                    <TransactionList transactions={filteredTransactions}/>
+                    <PenalizedTransactionList transactions={officeTransaction}/>
                 ) : (
                     <p className="text-center text-muted-foreground col-span-full">
                         No results found {filterSearch ? `for ${filterSearch}` : null}

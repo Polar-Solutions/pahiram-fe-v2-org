@@ -1,10 +1,10 @@
 import {ContentLayout} from "@/components/panel/containers/content-layout";
-import Content from "@/components/common/content";
+import Dashboard from "../../../../../components/common/dashboard/dashboard";
 
 export default function Page() {
     return (
-        <ContentLayout title="BMO Dashboard">
-            <Content />
+        <ContentLayout title="Dashboard">
+            <Dashboard/>
         </ContentLayout>
     )
 }

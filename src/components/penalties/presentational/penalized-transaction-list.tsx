@@ -1,25 +1,35 @@
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
 import {useSearch} from '@/hooks/borrow/useSearch';
-import EndorsementCard from "@/components/endorsement/presentational/endorsement-card";
-import { useTabsStore } from '@/hooks/request/useTabs';
+import {useTabsStore} from '@/hooks/request/useTabs';
+import PenalizedTransactionCard from "@/components/penalties/presentational/penalized-transaction-card";
 
 interface TransactionListProps {
-    endorsements: ITransactionRequest[];
+    transactions: ITransactionRequest[] | undefined;
 }
 
-export default function EndorsementList({endorsements}: TransactionListProps) {
+export default function PenalizedTransactionList({transactions}: TransactionListProps) {
     const {searchQuery} = useSearch();
-    const { activeTab } = useTabsStore();
+    const {activeTab} = useTabsStore();
 
-    const filteredEndorsements = endorsements
+    if (!transactions) {
+        return (
+            <div className='text-center text-muted-foreground col-span-full'>
+                No results found
+            </div>
+        );
+    }
+
+    const filteredTransactions = transactions
         .filter((transaction) => {
+            // Filter based on activeTab (status)
             const matchesStatus = activeTab === 'ALL'
                 ? true
                 : transaction.borrow_transaction_status === activeTab;
 
+            // Filter based on search query
             const matchesSearch = searchQuery
                 ? transaction.custom_transac_id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (transaction.borrower && transaction.borrower.toLowerCase().includes(searchQuery.toLowerCase()))
+                (transaction.borrow_transaction_status && transaction.borrow_transaction_status.toLowerCase().includes(searchQuery.toLowerCase()))
                 : true;
 
             return matchesStatus && matchesSearch;
@@ -31,7 +41,7 @@ export default function EndorsementList({endorsements}: TransactionListProps) {
                 : dateComparison;
         });
 
-    if (!filteredEndorsements.length) {
+    if (!filteredTransactions.length) {
         return (
             <div className='text-center text-muted-foreground col-span-full'>
                 No results found
@@ -41,8 +51,8 @@ export default function EndorsementList({endorsements}: TransactionListProps) {
 
     return (
         <>
-            {filteredEndorsements.map((endorsement) => (
-                <EndorsementCard key={endorsement.id} endorsement={endorsement}/>
+            {filteredTransactions.map((transaction) => (
+                <PenalizedTransactionCard key={transaction.id} transaction={transaction}/>
             ))}
         </>
     );

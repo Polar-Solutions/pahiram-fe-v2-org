@@ -1,25 +1,28 @@
 "use client";
 
-import page from "@/app/(protected)/borrow/checkout/page";
-import {getBorrowListEndpoint, getEndorsementResourceEndpoint} from "@/config/api/backend-routes/borrow-request-routes";
-import { PahiramAxiosConfig } from "@/config/api/BackendAxiosConfig";
 import {
-    IGetSpecificTransactionApiResponse,
-    IGetSpecificTransactionItemsApiResponse
+    cancelBorrowRequestEndpoint,
+    getBorrowListEndpoint,
+    getBorrowResourceEndpoint,
+    getEndorsementResourceEndpoint
+} from "@/config/api/backend-routes/borrow-request-routes";
+import {PahiramAxiosConfig} from "@/config/api/BackendAxiosConfig";
+import {
+    IBaseApiResponse,
+    IGetSpecificTransactionApiResponse, IGetSpecificTransactionItemsApiResponse, IItemGroup
 } from "@/lib/interfaces/get-specific-transaction-interface";
-import { AxiosResponse } from "axios";
-import { getBorrowResourceEndpoint, cancelBorrowRequestEndpoint } from "@/config/api/backend-routes/borrow-request-routes";
-import { handleApiServerSideErrorResponse } from "../handle-api-server-side-error-response";
-import { useQuery } from "@tanstack/react-query";
-import { IGetBorrowRequestApiResponse } from "@/lib/interfaces";
-import { IGetTransactionRequestApiResponse } from "@/lib/interfaces/get-office-transaction-interface";
+import {AxiosResponse} from "axios";
+import {handleApiServerSideErrorResponse} from "../handle-api-server-side-error-response";
+import {useQuery} from "@tanstack/react-query";
+import {IGetBorrowRequestApiResponse} from "@/lib/interfaces";
+import {IGetTransactionRequestApiResponse} from "@/lib/interfaces/get-office-transaction-interface";
 import {
     getOfficeTransactionListEndpoint,
+    getPenalizedTransactionListEndpoint, specificPenalizedTransactionItemsEndpoint,
+    specificTransactionEndpoint,
     specificTransactionItemsEndpoint
 } from "@/config/api/backend-routes/office-transaction-request";
 import {getEndorsementTransactionListEndpoint} from "@/config/api/backend-routes/endorsement-transaction-request";
-import { specificTransactionEndpoint } from "@/config/api/backend-routes/office-transaction-request";
-import { use } from "chai";
 
 export const getBorrowRequestsPagination = async (
     page: number
@@ -33,7 +36,7 @@ export const getBorrowRequestsPagination = async (
                 `HTTP error! status: ${response.status}, body: ${errorBody}`
             );
         }
-        
+
         return response.data;  // This should match IGetBorrowRequestApiResponse structure
     } catch (error) {
         console.error("Error fetching items:", error);
@@ -46,7 +49,7 @@ export const getBorrowRequestsPagination = async (
 }
 
 
-export  const getSpecificTransaction = async (transacId: string) => {
+export const getSpecificTransaction = async (transacId: string) => {
     const request = async (): Promise<AxiosResponse<IGetSpecificTransactionApiResponse>> => {
         return PahiramAxiosConfig.get<IGetSpecificTransactionApiResponse>(
             getBorrowResourceEndpoint(transacId)
@@ -58,7 +61,7 @@ export  const getSpecificTransaction = async (transacId: string) => {
     });
 };
 
-export  const getSpecificEndorsementTransaction = async (transacId: string) => {
+export const getSpecificEndorsementTransaction = async (transacId: string) => {
     const request = async (): Promise<AxiosResponse<IGetSpecificTransactionApiResponse>> => {
         return PahiramAxiosConfig.get<IGetSpecificTransactionApiResponse>(
             getEndorsementResourceEndpoint(transacId)
@@ -75,7 +78,7 @@ export const useSpecificTransaction = (transacId: string) => {
     return useQuery({
         queryKey: ["borrowRequest", transacId],
         queryFn: async () => {
-            const { data } = await getSpecificTransaction(transacId);
+            const {data} = await getSpecificTransaction(transacId);
             return data;  // Ensure you're returning the actual data from the response
         },
         staleTime: 60000,
@@ -88,7 +91,7 @@ export const useSpecificEndorsementTransaction = (transacId: string) => {
     return useQuery({
         queryKey: ["endorsementRequest", transacId],
         queryFn: async () => {
-            const { data } = await getSpecificEndorsementTransaction(transacId);
+            const {data} = await getSpecificEndorsementTransaction(transacId);
             return data;  // Ensure you're returning the actual data from the response
         },
         staleTime: 60000,
@@ -113,7 +116,7 @@ export const useCancelSpecificTransaction = (transacId: string) => {
     return useQuery({
         queryKey: ["cancelBorrowRequest", transacId],
         queryFn: async () => {
-            const { data } = await patchCancelSpecificTransaction(transacId);
+            const {data} = await patchCancelSpecificTransaction(transacId);
             return data;  // Ensure you're returning the actual data from the response
         },
         staleTime: 60000,
@@ -174,7 +177,7 @@ export const getEndorsementTransactionPagination = async (
     }
 }
 
-export  const getSpecificOfficeTransaction = async (transacId: string) => {
+export const getSpecificOfficeTransaction = async (transacId: string) => {
     const request = async (): Promise<AxiosResponse<IGetSpecificTransactionApiResponse>> => {
         return PahiramAxiosConfig.get<IGetSpecificTransactionApiResponse>(
             specificTransactionEndpoint(transacId)
@@ -187,7 +190,7 @@ export  const getSpecificOfficeTransaction = async (transacId: string) => {
 };
 
 
-export  const getSpecificTransactionItems = async (transacId: string) => {
+export const getSpecificTransactionItems = async (transacId: string) => {
     const request = async (): Promise<AxiosResponse<IGetSpecificTransactionItemsApiResponse>> => {
         return PahiramAxiosConfig.get<IGetSpecificTransactionItemsApiResponse>(
             specificTransactionItemsEndpoint(transacId)
@@ -204,7 +207,7 @@ export const useSpecificOfficeTransaction = (transacId: string) => {
     return useQuery({
         queryKey: ["officeTransaction", transacId],
         queryFn: async () => {
-            const { data } = await getSpecificOfficeTransaction(transacId);
+            const {data} = await getSpecificOfficeTransaction(transacId);
             return data;
         },
         staleTime: 60000,
@@ -217,7 +220,54 @@ export const useSpecificTransactionItems = (transacId: string) => {
     return useQuery({
         queryKey: ["officeTransaction", transacId],
         queryFn: async () => {
-            const { data } = await getSpecificTransactionItems(transacId);
+            const {data} = await getSpecificTransactionItems(transacId);
+            return data;
+        },
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        enabled: !!transacId,
+    });
+};
+
+export const getPenalizedTransactionRequestPagination = async (page: number) => {
+    const request = async (): Promise<AxiosResponse<IBaseApiResponse<IItemGroup[]>>> => {
+        return PahiramAxiosConfig.get<IBaseApiResponse<IItemGroup[]>>(getPenalizedTransactionListEndpoint(page));
+    };
+
+    return await handleApiServerSideErrorResponse({
+        request
+    });
+}
+
+export const usePenalizedTransactionPagination = (page: number) => {
+    return useQuery({
+        queryKey: ["penalizedTransaction", page],
+        queryFn: async () => {
+           return await getPenalizedTransactionRequestPagination(page);
+        },
+        staleTime: 60000,
+        refetchOnWindowFocus: false,
+        enabled: !!page,
+    });
+}
+
+export const getSpecificPenalizedTransactionItems = async (transacId: string) => {
+    const request = async (): Promise<AxiosResponse<IGetSpecificTransactionItemsApiResponse>> => {
+        return PahiramAxiosConfig.get<IGetSpecificTransactionItemsApiResponse>(
+            specificPenalizedTransactionItemsEndpoint(transacId)
+        );
+    };
+
+    return await handleApiServerSideErrorResponse({
+        request
+    });
+};
+
+export const useSpecificPenalizedTransactionItems = (transacId: string) => {
+    return useQuery({
+        queryKey: ["officeTransaction", transacId],
+        queryFn: async () => {
+            const {data} = await getSpecificPenalizedTransactionItems(transacId);
             return data;
         },
         staleTime: 60000,

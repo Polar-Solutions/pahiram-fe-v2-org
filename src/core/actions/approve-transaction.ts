@@ -4,7 +4,7 @@ import { handleApiServerSideErrorResponse } from "@/core/handle-api-server-side-
 import { PahiramAxiosConfig } from "@/config/api/BackendAxiosConfig";
 import { approveTransactionEndpoint } from "@/config/api/backend-routes/office-transaction-request";
 import { ApproveTransactionSchema } from "@/lib/form-schemas/approve-transaction-schema";
-import { IApproveTransactionApiResponse } from "@/lib/interfaces";
+import {IApproveTransactionApiResponse} from "../../lib/interfaces/approve-transaction-interface";
 
 interface ParsedInput {
     transactionId?: string;

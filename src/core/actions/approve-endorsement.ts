@@ -4,7 +4,7 @@ import {handleApiServerSideErrorResponse} from "@/core/handle-api-server-side-er
 import {PahiramAxiosConfig} from "@/config/api/BackendAxiosConfig";
 import {approveEndorsementEndpoint} from "@/config/api/backend-routes/borrow-request-routes";
 import {ApproveEndorsementSchema} from "@/lib/form-schemas/approve-endorsement-schema";
-import {IApproveEndorsementApiResponse} from "@/lib/interfaces";
+import {IApproveEndorsementApiResponse} from "../../lib/interfaces/approve-transaction-interface";
 
 
 interface ParsedInput {

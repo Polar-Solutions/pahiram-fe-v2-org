@@ -24,9 +24,9 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
     const truncatedText = fullText.slice(0, 100);
     const router = useRouter();
 
-    const {items, borrower, created_at, custom_transac_id, status} = endorsement;
+    const {items, borrower, created_at, custom_transac_id, borrow_transaction_status} = endorsement;
 
-    const {formattedStatus, badgeClass} = formatBorrowStatus(status)
+    const {formattedStatus, badgeClass} = formatBorrowStatus(borrow_transaction_status)
 
     // Number of rows to show when collapsed
     const visibleRowsCount = 3;
@@ -59,7 +59,7 @@ export default function EndorsementCard({endorsement}: TransactionCardProps) {
                         {/* Prevent the approval button group from triggering the card's click event */}
                         <div onClick={(e) => e.stopPropagation()}>
                             <EndorserApprovalButtonGroup endorsementId={endorsement.id}
-                                                         endorsementStatus={endorsement.status}/>
+                                                         endorsementStatus={endorsement.borrow_transaction_status}/>
                         </div>
                     </EndorserReqTransCardHeader>
                 </CardHeader>

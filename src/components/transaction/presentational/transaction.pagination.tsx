@@ -10,13 +10,13 @@ import {
 
 interface ItemsPaginationProps {
   currentPage: number;
-  totalPages: number;
+  totalPages: number | undefined;
   onPageChange: (page: number) => void;
 }
 
 export const TransactionPagination: React.FC<ItemsPaginationProps> = ({
   currentPage,
-  totalPages,
+  totalPages = 1,
   onPageChange,
 }) => {
   const pageNumbers = [];

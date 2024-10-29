@@ -5,7 +5,7 @@ export interface IGetItemsCategoriesApiResponse {
         current_page: number;
         last_page: number;
         next_page_url: string;
-        path: string;
+
         per_page: number;
         prev_page_url: null;
         to: number;
@@ -21,7 +21,7 @@ export interface IGetBorrowRequestApiResponse {
         current_page: number;
         last_page: number;
         next_page_url: string;
-        path: string;
+
         per_page: number;
         prev_page_url: string;
         to: number;
@@ -56,7 +56,7 @@ export interface IGetItemsPaginationApiResponse {
         current_page: number;
         last_page: number;
         next_page_url: string;
-        path: string;
+
         per_page: number;
         prev_page_url: string;
         to: string;
@@ -158,16 +158,3 @@ export interface IHandleApiServerSideErrorResponse<T> {
     data?: T;                 // Optional data of generic type T
 }
 
-export interface IApproveEndorsementApiResponse {
-    status: boolean;
-    message?: string;
-    errors?: any;
-    method: string;
-}
-
-export interface IApproveTransactionApiResponse {
-    status: boolean;
-    message?: string;
-    errors?: any;
-    method: string;
-}

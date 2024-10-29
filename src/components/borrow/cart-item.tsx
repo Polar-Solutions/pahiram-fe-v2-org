@@ -19,7 +19,7 @@ export default function CartItem({ item }: CartItemProps) {
   } = useCartStore();
 
   return (
-    <Card className="w-full rounded-lg mt-2">
+    <Card className="w-full rounded-lg mt-2 px-4 py-2">
       <div className="flex items-center justify-between h-fit overflow-y-auto">
         <div className="flex flex-col items-start">
           <div className="flex items-center">
