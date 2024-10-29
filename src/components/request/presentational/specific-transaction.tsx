@@ -30,7 +30,7 @@ import {useTransactionData} from '@/hooks/transaction/useTransaction';
 export default function SpecificTransaction() {
     const {id} = useParams();
     const transactionId = Array.isArray(id) ? id[0] : id;
-    const {setApcId} = useTransactionData();
+    const {setApcIds} = useTransactionData();
     const {data, isLoading} = useSpecificTransaction(transactionId);
     const transactionData = data?.data;
     const router = useRouter();
@@ -46,9 +46,9 @@ export default function SpecificTransaction() {
 
     useEffect(() => {
         if (Array.isArray(transactionData?.items) && transactionData.items[0]?.apc_item_id) {
-            setApcId(transactionData.items[0].apc_item_id);
+            setApcIds(transactionData.items[0].apc_item_id);
         }
-    }, [transactionData?.items, setApcId]);
+    }, [transactionData?.items, setApcIds]);
 
     if (data) {
         handleApiClientSideError(data);

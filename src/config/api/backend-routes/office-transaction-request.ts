@@ -17,6 +17,11 @@ export const releaseTransactionEndpoint = (resourceId: string | undefined) => {
     return endpoint;
 };
 
+export const facilitateReturnEndpoint = (resourceId: string | undefined) => {
+    const endpoint = `/office/borrow-transaction/${resourceId}/facilitate-item-return`;
+    return endpoint;
+}
+
 export const specificTransactionItemsEndpoint = (resourceId: string | undefined) => {
    return `/borrow-transaction/${resourceId}/borrowed-items`;
 }
