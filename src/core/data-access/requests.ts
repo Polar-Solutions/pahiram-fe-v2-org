@@ -8,8 +8,8 @@ import {
 } from "@/config/api/backend-routes/borrow-request-routes";
 import {PahiramAxiosConfig} from "@/config/api/BackendAxiosConfig";
 import {
-    IBaseApiResponse,
-    IGetSpecificTransactionApiResponse, IGetSpecificTransactionItemsApiResponse, IItemGroup
+    IGetSpecificTransactionApiResponse,
+    IGetSpecificTransactionItemsApiResponse
 } from "@/lib/interfaces/get-specific-transaction-interface";
 import {AxiosResponse} from "axios";
 import {handleApiServerSideErrorResponse} from "../handle-api-server-side-error-response";
@@ -18,7 +18,8 @@ import {IGetBorrowRequestApiResponse} from "@/lib/interfaces";
 import {IGetTransactionRequestApiResponse} from "@/lib/interfaces/get-office-transaction-interface";
 import {
     getOfficeTransactionListEndpoint,
-    getPenalizedTransactionListEndpoint, specificPenalizedTransactionItemsEndpoint,
+    getPenalizedTransactionListEndpoint,
+    specificPenalizedTransactionItemsEndpoint,
     specificTransactionEndpoint,
     specificTransactionItemsEndpoint
 } from "@/config/api/backend-routes/office-transaction-request";
@@ -230,8 +231,8 @@ export const useSpecificTransactionItems = (transacId: string) => {
 };
 
 export const getPenalizedTransactionRequestPagination = async (page: number) => {
-    const request = async (): Promise<AxiosResponse<IBaseApiResponse<IItemGroup[]>>> => {
-        return PahiramAxiosConfig.get<IBaseApiResponse<IItemGroup[]>>(getPenalizedTransactionListEndpoint(page));
+    const request = async (): Promise<AxiosResponse<IGetSpecificTransactionItemsApiResponse>> => {
+        return PahiramAxiosConfig.get<IGetSpecificTransactionItemsApiResponse>(getPenalizedTransactionListEndpoint(page));
     };
 
     return await handleApiServerSideErrorResponse({
@@ -243,7 +244,7 @@ export const usePenalizedTransactionPagination = (page: number) => {
     return useQuery({
         queryKey: ["penalizedTransaction", page],
         queryFn: async () => {
-           return await getPenalizedTransactionRequestPagination(page);
+            return await getPenalizedTransactionRequestPagination(page);
         },
         staleTime: 60000,
         refetchOnWindowFocus: false,

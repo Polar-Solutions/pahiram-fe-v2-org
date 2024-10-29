@@ -12,12 +12,11 @@ import {usePenalizedTransactionPagination, useSpecificPenalizedTransactionItems}
 import FinalizePenaltyButtonGroup from "@/components/penalties/presentational/penalty-approval-button-group";
 import {getURLParams} from "@/helper/borrow/getURLParams";
 import {IOfficeSpecificTransaction} from "@/lib/interfaces/get-specific-transaction-interface";
-import {PenalizedSimpleTable} from "@/components/penalties/penalized-expanding-table/penalized-simple-table";
+import {PenalizedSimpleTable} from "@/components/penalties/presentational/penalized-simple-table";
 import {useForm} from "react-hook-form";
-import {BorrowRequestSchema, TBorrowRequestFormValues} from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import {zodResolver} from "@hookform/resolvers/zod";
 import {FinalizePenaltySchema, TFinalizePenaltySchemaFormValues} from "@/lib/form-schemas/finalize-penalty-schema";
-import {z} from "zod";
+import {Form} from "@/components/ui/form";
 
 export default function PenalizedTransactionSpecific({transactionId}: { transactionId: string }) {
     const {page} = getURLParams();
@@ -56,96 +55,113 @@ export default function PenalizedTransactionSpecific({transactionId}: { transact
 
     const form = useForm<TFinalizePenaltySchemaFormValues>({
         resolver: zodResolver(FinalizePenaltySchema),
-        defaultValues: {
-            borrowed_item_id: "",
-            penalty: 0,
-            remarks_by_penalty_finalizer: "",
-        },
+        defaultValues: {items: []},
         mode: "onChange",
     });
 
+    const onSelect = (item: any, checked: boolean) => {
+        // Get the current values from the form state, specifying the key
+        const currentValues = form.getValues("items") || []; // Get the current items or default to empty array
+
+        if (checked) {
+            // Add the selected item to the array
+            const updatedValues = [...currentValues, item];
+            // Update the form state with the new array, using the key 'items'
+            form.setValue("items", updatedValues);
+        } else {
+            // If unchecked, remove the item from the array
+            const updatedValues = currentValues.filter(
+                (i) => i.borrowed_item_id !== item.borrowed_item_id // Assuming borrowed_item_id is a unique identifier
+            );
+            // Update the form state with the new array, using the key 'items'
+            form.setValue("items", updatedValues);
+        }
+    };
+
     return (
-        <div className="container mx-auto p-4 space-y-4">
-            {/* Header Component */}
-            <ApproverReqTransCardHeader
-                withBackArrow={true}
-                borrowerName={transaction?.borrower}
-                borrowerId={transaction?.apc_id}
-                submissionDate={transaction?.created_at
-                    ? formatDateTimeToHumanFormat(transaction.created_at)
-                    : 'N/A'}
-                transactionId={transaction?.custom_transac_id}
-                id={transaction?.id}
-            >
-                {transaction?.penalized_transaction_status === 'PENDING_LENDING_SUPERVISOR_FINALIZATION' ? (
-                    <FinalizePenaltyButtonGroup transactionId={transaction?.id}
-                                                transactionStatus={transaction?.penalized_transaction_status}
-                                                selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
-                ) : null}
+        <Form {...form}>
+            <div className="container mx-auto p-4 space-y-4">
+                {/* Header Component */}
+                <ApproverReqTransCardHeader
+                    withBackArrow={true}
+                    borrowerName={transaction?.borrower}
+                    borrowerId={transaction?.apc_id}
+                    submissionDate={transaction?.created_at
+                        ? formatDateTimeToHumanFormat(transaction.created_at)
+                        : 'N/A'}
+                    transactionId={transaction?.custom_transac_id}
+                    id={transaction?.id}
+                >
+                    {transaction?.penalized_transaction_status === 'PENDING_LENDING_SUPERVISOR_FINALIZATION' ? (
+                        <FinalizePenaltyButtonGroup transactionId={transaction?.id}
+                                                    transactionStatus={transaction?.penalized_transaction_status}
+                                                    selectedIds={selectedIds} setSelectedIds={setSelectedIds}/>
+                    ) : null}
 
 
-            </ApproverReqTransCardHeader>
+                </ApproverReqTransCardHeader>
 
-            {/* Badges Section */}
-            <div className="flex items-center space-x-2">
-                <Badge variant="secondary">
-                    {transaction?.borrow_transaction_status
-                        .toLowerCase()         // Convert to lowercase
-                        .split('_')            // Split by underscore
-                        .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
-                        .join(' ')
-                    }
-                </Badge>
+                {/* Badges Section */}
+                <div className="flex items-center space-x-2">
+                    <Badge variant="secondary">
+                        {transaction?.borrow_transaction_status
+                            .toLowerCase()         // Convert to lowercase
+                            .split('_')            // Split by underscore
+                            .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
+                            .join(' ')
+                        }
+                    </Badge>
 
-                <Badge variant="secondary">
-                    {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
-                </Badge>
-            </div>
-
-
-            <div>
-                <p className='text-sm'>
-                    Total Borrowing Period:
-                    {" "}
-                    {earliestStartDate.toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true
-                    })}
-                    {" "}
-                    to
-                    {" "}
-                    {latestDueDate.toLocaleString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        hour12: true
-                    })}
-                </p>
-
-            </div>
+                    <Badge variant="secondary">
+                        {transaction?.items.reduce((total, item) => total + item.quantity, 0)} items
+                    </Badge>
+                </div>
 
 
-            {/* Transaction Progress Component */}
-            <TransactionProgress
-                transactionStatus={transaction?.borrow_transaction_status}
-            />
+                <div>
+                    <p className='text-sm'>
+                        Total Borrowing Period:
+                        {" "}
+                        {earliestStartDate.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true
+                        })}
+                        {" "}
+                        to
+                        {" "}
+                        {latestDueDate.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric',
+                            hour: 'numeric',
+                            minute: 'numeric',
+                            hour12: true
+                        })}
+                    </p>
 
-            {/* Borrowing Details Component */}
-            <div className="grid gap-4 md:grid-cols-2">
-                <TransactionDetails transaction={transaction}/>
+                </div>
 
-                {/* Borrowed Items Table Component */}
-                <PenalizedSimpleTable
-                    items={itemGroups}
-                    onSelect={onSelect}
+
+                {/* Transaction Progress Component */}
+                <TransactionProgress
+                    transactionStatus={transaction?.borrow_transaction_status}
                 />
+
+                {/* Borrowing Details Component */}
+                <div className="grid gap-4 md:grid-cols-2">
+                    <TransactionDetails transaction={transaction}/>
+
+                    {/* Borrowed Items Table Component */}
+                    <PenalizedSimpleTable
+                        items={itemGroups}
+                        onSelect={onSelect}
+                    />
+                </div>
             </div>
-        </div>
+        </Form>
     );
 }

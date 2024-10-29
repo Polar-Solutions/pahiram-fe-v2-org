@@ -52,9 +52,7 @@ export default function TransactionContainer() {
         window.history.pushState({}, '', newUrl);
         // Trigger a re-render
         setRenderKey(prev => prev + 1);
-    }, []);
-
-    return (
+    }, []);  return (
         <motion.div
             key={renderKey}
             ref={containerRef}

@@ -86,7 +86,7 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
     // Check if any selected item is 'APPROVED' and not 'IN_POSSESSION'
     const hasApprovedNotInPossession = selectedIds.some(itemId => isApproved(itemId) && !isInPossession(itemId));
     // Check if all selected items are 'IN_POSSESSION'
-    const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedNotInPossession
+    const shouldShowReleaseButton = transaction?.borrow_transaction_status === 'ON_GOING' && hasApprovedNotInPossession
     const shouldShowOfficerReturnButtonGroup = selectedIds.every(isInPossession) && !hasApprovedNotInPossession;
     
   return (
@@ -102,26 +102,26 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
         transactionId={transaction?.custom_transac_id}
         id={transaction?.id}
       >
-        {transaction?.status === 'PENDING_BORROWING_APPROVAL' ? (
+        {transaction?.borrow_transaction_status === 'PENDING_BORROWING_APPROVAL' ? (
           <OfficerApprovalButtonGroup
             transactionId={transaction?.id}
-            transactionStatus={transaction?.status}
+            transactionStatus={transaction?.borrow_transaction_status}
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
           />
-        ) : transaction?.status === 'APPROVED' || shouldShowReleaseButton  ? (
+        ) : transaction?.borrow_transaction_status === 'APPROVED' || shouldShowReleaseButton  ? (
           // Show the Return Button Group only if conditions are met
           <OfficerReleasedButtonGroup
           transactionId={transaction?.id}
-          transactionStatus={transaction?.status}
+          transactionStatus={transaction?.borrow_transaction_status}
           selectedIds={selectedIds}
           setSelectedIds={setSelectedIds}
         />
         ) : shouldShowOfficerReturnButtonGroup ? (
-            // Show the Release Button Group when the status is 'APPROVED' or 'ON_GOING'
+            // Show the Release Button Group when the borrow_transaction_status is 'APPROVED' or 'ON_GOING'
             <OfficerReturnButtonGroup
             transactionId={transaction?.id}
-            transactionStatus={transaction?.status}
+            transactionStatus={transaction?.borrow_transaction_status}
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
             items={items}
@@ -132,7 +132,7 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
       {/* Badges Section */}
       <div className="flex items-center space-x-2">
         <Badge variant="secondary">
-          {transaction?.status
+          {transaction?.borrow_transaction_status
             .toLowerCase()         // Convert to lowercase
             .split('_')            // Split by underscore
             .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
@@ -173,7 +173,7 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
 
       {/* Transaction Progress Component */}
       <TransactionProgress
-        transactionStatus={transaction?.status}
+        transactionStatus={transaction?.borrow_transaction_status}
       />
 
       {/* Borrowing Details Component */}

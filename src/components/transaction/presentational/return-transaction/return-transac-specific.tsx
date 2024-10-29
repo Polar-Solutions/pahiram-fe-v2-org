@@ -114,7 +114,7 @@ export default function ReturnTransacSpecific({
         {/* Badges Section */}
         <div className="flex items-center space-x-2">
           <Badge variant="secondary">
-            {transaction?.status
+            {transaction?.borrow_transaction_status
               .toLowerCase() // Convert to lowercase
               .split("_") // Split by underscore
               .map((word) => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
@@ -157,7 +157,7 @@ export default function ReturnTransacSpecific({
         </div>
 
         {/* Transaction Progress Component */}
-        <TransactionProgress transactionStatus={transaction?.status} />
+        <TransactionProgress transactionStatus={transaction?.borrow_transaction_status} />
 
         {/* Borrowing Details Component */}
         <div className="grid gap-4 md:grid-cols-2">
