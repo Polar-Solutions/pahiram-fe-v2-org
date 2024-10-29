@@ -5,32 +5,31 @@ import ExpandingCollapsible from '@/components/common/expanding-table/expanding-
 import { ChevronDownIcon, ChevronUpIcon } from '@radix-ui/react-icons';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel } from "@/components/ui/dropdown-menu";
 import { Button } from '@/components/ui/button';
-import { CalendarModal } from '@/components/borrow/calendar-component/calendar-modal';
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SuperRefineItemSchema } from "@/lib/form-schemas/submit-borrow-request-form-schema";
 import { z } from "zod";
 import { Badge } from "@/components/ui/badge";
-import { useDropdownStore } from '@/hooks/request/useDropdownStore'; // Adjust the path as needed
+import { useDropdownStore } from '@/hooks/request/useDropdownStore';
 import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTransactionData } from '@/hooks/transaction/useTransaction';
+
 interface ExpandTableProps {
   items: IOfficeSpecificTransaction[];
-  formatDateTime: (dateString: string) => string;
+  formatDateTime: (dateString: string | undefined | null) => string | null;
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
   handleDropdownChange: (value: string, field: string, index: number) => void;
   isEditing: boolean;
   modelNames: string[];
-  selectedIds: string[]; // New prop
-  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>; // New prop
+  selectedIds: string[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
 export default function ExpandTable({ items, formatDateTime, formatBorrowStatus, handleDropdownChange, isEditing, modelNames, selectedIds, setSelectedIds }: ExpandTableProps) {
   const [openRowIndex, setOpenRowIndex] = useState<number | null>(null);
-  const { dropdownStates, toggleDropdownState, setQuantity, setModel, selectedQuantities, selectedModels } = useDropdownStore();
-  const { apcId} = useTransactionData();
-
+  const { dropdownStates, toggleDropdownState, setQuantity, setModel } = useDropdownStore();
+  const { apcIds, setApcIds } = useTransactionData();
   const form = useForm<z.infer<typeof SuperRefineItemSchema>>({
     resolver: zodResolver(SuperRefineItemSchema),
     mode: "onChange",
@@ -41,13 +40,13 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
     },
   });
 
-  const { control, formState: { errors } } = form;
+
+    
 
   const handleRowToggle = (index: number) => {
-    setOpenRowIndex(openRowIndex === index ? null : index);
+    setOpenRowIndex(openRowIndex === index ? null : index); // Toggle the row open/close state
   };
 
-  // Handle checkbox change
   const handleCheckboxChange = (itemId: string) => {
     setSelectedIds(prevIds => {
       if (prevIds.includes(itemId)) {
@@ -57,7 +56,7 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
       }
     });
   };
- 
+
   return (
     <FormProvider {...form}>
       <div className='w-full ml-4'>
@@ -68,9 +67,6 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
           </TableCaption>
           <TableHeader>
             <TableRow>
-
-                <TableHead className="w-[50px]"></TableHead>
-              
               <TableHead className="w-[100px]">Name</TableHead>
               <TableHead>Quantity</TableHead>
               {isEditing ? (
@@ -85,31 +81,20 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
             </TableRow>
           </TableHeader>
           <TableBody>
-            {items.map((item, index) => {
+            {items && Object.entries(items).map(([key, item], index) => {
               const isRowOpen = openRowIndex === index;
-              const isDropdownOpen = dropdownStates[index] || false;
 
               return (
-                <React.Fragment key={index}>
+                <React.Fragment key={key}>
                   <TableRow className="cursor-pointer" onClick={() => handleRowToggle(index)}>
-                    <TableCell>
-                    {item.borrowed_item_status === 'APPROVED' || item.borrowed_item_status === 'PENDING_APPROVAL' || item.borrowed_item_status === 'IN_POSSESSION' ? (
-                      <Checkbox 
-                        checked={selectedIds.includes(item.id)} 
-                        onCheckedChange={() => handleCheckboxChange(item.id)}
-                      />
-                    ) : ''}
-                      
-
-                    </TableCell>
 
                     <TableCell className="font-medium">
                       {isEditing ? (
                         <DropdownMenu onOpenChange={() => toggleDropdownState(index)}>
                           <DropdownMenuTrigger asChild>
                             <Button variant="outline">
-                              {selectedModels[index] || item.model_name}{" "}
-                              {isDropdownOpen ? (
+                              {item.model_name}{" "}
+                              {dropdownStates[index] ? (
                                 <ChevronUpIcon className="ml-2 inline-block h-4 w-4" />
                               ) : (
                                 <ChevronDownIcon className="ml-2 inline-block h-4 w-4" />
@@ -129,7 +114,7 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        selectedModels[index] || item.model_name
+                        item.model_name
                       )}
                     </TableCell>
 
@@ -138,8 +123,8 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                         <DropdownMenu onOpenChange={() => toggleDropdownState(index)}>
                           <DropdownMenuTrigger asChild>
                             <Button variant="outline">
-                              {selectedQuantities[index] || item.quantity}{" "}
-                              {isDropdownOpen ? (
+                              {item.quantity}{" "}
+                              {dropdownStates[index] ? (
                                 <ChevronUpIcon className="ml-2 inline-block h-4 w-4" />
                               ) : (
                                 <ChevronDownIcon className="ml-2 inline-block h-4 w-4" />
@@ -159,45 +144,41 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        selectedQuantities[index] || item.quantity
+                        item.quantity
                       )}
                     </TableCell>
 
-                    {isEditing ? (
-                      <TableCell colSpan={2}>
-                        <CalendarModal itemGroupId={item.item_group_id} />
-                      </TableCell>
-                    ) : (
-                      <>
-                        <TableCell>{formatDateTime(item.start_date)}</TableCell>
-                        <TableCell>{formatDateTime(item.due_date)}</TableCell>
-                      </>
-                    )}
+                    <TableCell>{formatDateTime(item.start_date)}</TableCell>
+                    <TableCell>{formatDateTime(item.due_date)}</TableCell>
 
                     <TableCell className="text-center">
-                      {isRowOpen ? (
-                        <ChevronUpIcon className="h-5 w-5 inline-block text-gray-500" />
-                      ) : (
-                        <ChevronDownIcon className="h-5 w-5 inline-block text-gray-500" />
-                      )}
+                      <ChevronDownIcon className="h-5 w-5 inline-block text-gray-500" />
                     </TableCell>
                   </TableRow>
 
                   {isRowOpen && (
                     <TableRow>
                       <TableCell colSpan={6}>
-
                         <ExpandingCollapsible
-                          items={[item]} // Pass the item itself as an array since we don't have details
-                          renderRow={(detail, detailIndex) => {
+                          items={item.items} // Pass the items array for detail expansion
+                          renderRow={(detail) => {
                             const { formattedStatus, badgeClass } = formatBorrowStatus(detail.borrowed_item_status);
+                            const isStatusWithCheckbox = ['APPROVED', 'IN_POSSESSION', 'PENDING_APPROVAL'].includes(detail.borrowed_item_status);
+
                             return (
                               <>
-                                <TableCell className="font-medium">{apcId || 'No APC ID'}</TableCell>
+                                {isStatusWithCheckbox && (
+                                  <TableCell>
+                                    <Checkbox
+                                      checked={selectedIds.includes(detail.borrowed_item_id)}
+                                      onCheckedChange={() => handleCheckboxChange(detail.borrowed_item_id)}
+                                    />
+                                  </TableCell>
+                                )}
+                                <TableCell className="font-medium">{detail.item_apc_id || 'No APC ID'}</TableCell>
                                 <TableCell className="text-start">
                                   <Badge className={badgeClass}>{formattedStatus}</Badge>
                                 </TableCell>
-                                {/* Add additional fields here if necessary */}
                               </>
                             );
                           }}
@@ -206,6 +187,7 @@ export default function ExpandTable({ items, formatDateTime, formatBorrowStatus,
                       </TableCell>
                     </TableRow>
                   )}
+
                 </React.Fragment>
               );
             })}

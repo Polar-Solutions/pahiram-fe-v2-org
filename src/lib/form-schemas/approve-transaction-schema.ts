@@ -34,6 +34,7 @@ export const ReturnTransactionSchema = z.object({
                 borrowedItemId: z.string(),
                 status: z.string(),
                 remarkByReceiver: z.string(),
+                penalty: z.string().optional(),
             })
         )
 });

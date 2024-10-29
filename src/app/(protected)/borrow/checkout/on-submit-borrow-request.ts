@@ -5,7 +5,7 @@ import {UseFormReturn} from "react-hook-form";
 export const handleSubmitForm = async (
     form: UseFormReturn<TBorrowRequestFormValues>,
     executeAsync: (values: TBorrowRequestFormValues) => Promise<any>,
-    clearCart: () => void
+    clearCart: () => void,
 ) => {
     //   requestFormIsSubmitting.value = true;
 

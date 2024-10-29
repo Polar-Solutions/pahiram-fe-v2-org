@@ -7,11 +7,12 @@ import { MoreHorizontal } from "lucide-react";
 import React, {useState, useEffect} from "react";
 import { handleTransactionItemReleased } from "@/components/transaction/handle-transaction-approval";
 import { useAction } from "next-safe-action/hooks";
-import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
-import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
+import { IOfficeSpecificTransaction, ITransactionItemDetail } from '@/lib/interfaces/get-specific-transaction-interface';
+import { useSpecificOfficeTransaction, useSpecificTransactionItems } from '@/core/data-access/requests';
 import { releaseTransactionAction } from "@/core/actions/release-transaction";
 import ReturnModal from '@/components/transaction/presentational/return-modal'
 import { useSelectedItemsStore } from "@/hooks/transaction/useSelectedItem";
+import { hasIn } from "node_modules/cypress/types/lodash";
 
 
 
@@ -32,18 +33,27 @@ export default function OfficerReturnButtonGroup({
   transactionStatus,
   selectedIds,
   setSelectedIds,
+  items,
 }: {
   transactionId: string | undefined;
   transactionStatus: string | undefined;
   selectedIds: string[]; // New prop type
   setSelectedIds: React.Dispatch<React.SetStateAction<string[]>>;
+  items: IOfficeSpecificTransaction | undefined;
 }) {
   const { executeAsync, isExecuting } = useAction(releaseTransactionAction);
-  const { data } = useSpecificOfficeTransaction(transactionId || '');
-
-  const itemsTransaction = data?.data?.items || [];
-  const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
   const { selectedItems, setSelectedItems } = useSelectedItemsStore();
+
+  const borrowedStatuses = items
+  ? Object.values(items).flatMap(product =>
+      product.items.map((item: ITransactionItemDetail) => item.borrowed_item_status)
+    )
+  : [];
+
+  const hasInPossession = borrowedStatuses.some(status => status === "IN_POSSESSION");
+  const hasApprovedItems = borrowedStatuses.some(status => status === "APPROVED");
+
+  const hasInPossessionSelectedItems = selectedItems.some(item => item.borrowed_item_status === "IN_POSSESSION");
 
   const handleRelease = async (isReleased: boolean) => {
     // Create an array of item approval statuses
@@ -56,34 +66,35 @@ export default function OfficerReturnButtonGroup({
     setSelectedIds([]); // Clear selected IDs after approval or decline
   }
 
-  const isDisabled = selectedIds.length === 0; 
-  const hasInPossession = items.some(item => item.borrowed_item_status === "IN_POSSESSION");
-  const hasApprovedItems = items.some(item => item.borrowed_item_status === "APPROVED");
 
- // Function to get selected items based on selected IDs
- const getSelectedItemsById = (selectedIds: string[], items: BorrowedItem[]) => {
-  return items.filter(item => selectedIds.includes(item.id));
+
+  const isDisabled = selectedIds.length === 0; 
+  // const hasInPossessionSelectedItems = selectedItems.some(item => item.borrowed_item_status === "IN_POSSESSION");
+
+// Function to get the whole product object based on selected item IDs
+const getSelectedItemsByIds = (selectedIds: string[], data: Record<string, any>) => {
+  // Loop over each selectedId and find the product(s) where at least one of the items matches the borrowed_item_id
+  return selectedIds.map((selectedId) =>
+    Object.entries(data).find(([productName, product]) =>
+      product.items.some((item: any) => item.borrowed_item_id === selectedId)
+    )?.[1] // Return the product object (or undefined if not found)
+  ).filter(Boolean); // Remove undefined values (in case a selectedId doesn't match anything)
 };
 
-// Use useEffect to update the Zustand store only when selectedIds or items change
 useEffect(() => {
-  const selectedItemsById = getSelectedItemsById(selectedIds, items);
-
-  // Check if the new selected items are different from the current state in the store
-  const isSelectedItemsDifferent = JSON.stringify(selectedItems) !== JSON.stringify(selectedItemsById);
-  if (isSelectedItemsDifferent) {
-    setSelectedItems(selectedItemsById); 
-    console.log(selectedItemsById);
+  if (items) { // Ensure data is available
+    const selectedItemsById = getSelectedItemsByIds(selectedIds, items);
+    setSelectedItems(selectedItemsById); // Set the selected items in the store
+    // Log all the product objects that contain the selected items
   }
-}, [selectedIds, items, selectedItems, setSelectedItems]);
+}, [selectedIds, items]);
 
-const hasInPossessionSelectedItems = selectedItems.some(item => item.borrowed_item_status === "IN_POSSESSION");
 
   return (
     <div className={`flex items-center space-x-2 ${isDisabled ? "opacity-50 pointer-events-none" : ""}`}>
     {transactionStatus === "ON_GOING" && hasInPossession ? (
       <>
-        {hasApprovedItems && (
+       {hasApprovedItems && (
           <>
             {/* Show Release and Facilitate Return buttons if there are approved items */}
             <ReturnActionButton
@@ -94,7 +105,7 @@ const hasInPossessionSelectedItems = selectedItems.some(item => item.borrowed_it
               modalDescApprove="Are you sure you want to release this transaction?"
             />
           </>
-        )}
+       )}
         {/* Show Facilitate Return button if there are items in possession */}
         <ReturnModal/> 
 
@@ -110,7 +121,7 @@ const hasInPossessionSelectedItems = selectedItems.some(item => item.borrowed_it
             {/* Remove Withhold option if no approved items */}
             {transactionStatus === "ON_GOING" && hasApprovedItems && (
               <DropdownMenuItem onClick={() => handleRelease(false)}>Withhold</DropdownMenuItem>
-              )}
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
       </>

@@ -11,32 +11,29 @@ import { useSearchParams } from 'next/navigation';
 import { formatDateTimeToHumanFormat } from '@/helper/date-utilities';
 import { formatBorrowStatus } from '@/helper/formatting-utilities';
 import { useEditRequest } from '@/hooks/request/useEditRequest';
-import { useSpecificOfficeTransaction } from '@/core/data-access/requests';
-import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import {useSpecificTransactionItems} from '@/core/data-access/requests';
+import { IOfficeSpecificTransaction, ITransactionItemDetail } from '@/lib/interfaces/get-specific-transaction-interface';
 import OfficerReleasedButtonGroup from '@/components/transaction/presentational/transaction-release-button-group';
 import { useTransactionData } from '@/hooks/transaction/useTransaction';
 import OfficerReturnButtonGroup from './transcation-return-button-group';
+import { has } from 'node_modules/cypress/types/lodash';
 
 export default function ApproverSpecificReqTrans({ transactionId }: { transactionId: string }) {
   const { getRequestById } = useTransactionStore();
   const searchParams = useSearchParams();
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const { setApcId, setTransactionId } = useTransactionData();
+  const { setTransactionId } = useTransactionData();
 
   const transaction = getRequestById("transaction", transactionId);
-  const { data } = useSpecificOfficeTransaction(transaction?.id || '');
+
+  const { data }= useSpecificTransactionItems(transaction?.id || '');
+  const items = data?.data;
+  console.log(items);
+  const { isEditing, setEditedDetails } = useEditRequest();
 
   useEffect(() => {
-    if (transaction?.apc_id) {
-      setApcId(transaction.apc_id);
-    }
     setTransactionId(transaction?.id || '');
-  }, [transaction?.apc_id, setApcId]);
-
-  const itemsTransaction = data?.data?.items || [];
-  const items = Array.isArray(itemsTransaction) ? itemsTransaction.map((item: IOfficeSpecificTransaction) => item) : [];
-
-  const { isEditing, setEditedDetails } = useEditRequest();
+  }, [transaction?.id]);
 
   // Handle changes for dropdowns
   const handleDropdownChange = (value: string, field: string, index: number) => {
@@ -48,37 +45,50 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
       },
     }));
   };
+  const startDates = items ? Object.entries(items).map(([key, item]) => new Date((item as IOfficeSpecificTransaction).start_date)) : [];
+  const dueDates = items ? Object.entries(items).map(([key, item]) => new Date((item as IOfficeSpecificTransaction).due_date)) : [];
 
-  // Convert start_date and due_date strings to Date objects and extract the dates
-  const startDates = items.map(item => new Date(item.start_date));
-  const dueDates = items.map(item => new Date(item.due_date));
+  // Calculate earliest and latest dates with proper null checks
+  const earliestStartDate = startDates.length ? new Date(Math.min(...startDates.map(date => date.getTime()))) : null;
+  const latestDueDate = dueDates.length ? new Date(Math.max(...dueDates.map(date => date.getTime()))) : null;
 
-  // Find the earliest start date and the latest due date
-  const earliestStartDate = new Date(Math.min(...startDates.map(date => date.getTime())));
-  const latestDueDate = new Date(Math.max(...dueDates.map(date => date.getTime())));
+  const hasApprovedItems = items
+  ? Object.values(items).some((item) =>
+      (item as IOfficeSpecificTransaction).items.some((detail: ITransactionItemDetail) => detail.borrowed_item_status === 'APPROVED')
+    )
+  : false;
 
-  // Utility functions to check item status
+  const hasInPossession = items
+  ? Object.values(items).some((item) =>
+      (item as IOfficeSpecificTransaction).items.some((detail: ITransactionItemDetail) => detail.borrowed_item_status === 'IN_POSSESSION')
+    )
+  : false;
+
   const isApproved = (itemId: string) => {
-    const item = items.find(item => item.id === itemId);
-    return item?.borrowed_item_status === 'APPROVED';
-  };
+      // Iterate through the models in the items object
+      return (Object.values(items) as IOfficeSpecificTransaction[]).some((model: IOfficeSpecificTransaction) => 
+        model.items.some((item: ITransactionItemDetail) => 
+          item.borrowed_item_id === itemId && item.borrowed_item_status === 'APPROVED'
+        )
+      );
+    };
+    
+    const isInPossession = (itemId: string) => {
+      // Iterate through the models in the items object
+      return (Object.values(items) as IOfficeSpecificTransaction[]).some((model: IOfficeSpecificTransaction) => 
+        model.items.some((item: ITransactionItemDetail) => 
+          item.borrowed_item_id === itemId && item.borrowed_item_status === 'IN_POSSESSION'
+        )
+      );
+    };
 
-  const isInPossession = (itemId: string) => {
-    const item = items.find(item => item.id === itemId);
-    return item?.borrowed_item_status === 'IN_POSSESSION';
-  };
 
-  const hasApprovedItems = items.some((item) => item.borrowed_item_status === 'APPROVED');
-  const hasInPossession = items.some(item => item.borrowed_item_status === 'IN_POSSESSION');
-  const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedItems;
-
-  // Check if any selected item is 'APPROVED' and not 'IN_POSSESSION'
-  const hasApprovedNotInPossession = selectedIds.some(itemId => isApproved(itemId) && !isInPossession(itemId));
-
-  // Check if all selected items are 'IN_POSSESSION'
-  const shouldShowOfficerReturnButtonGroup = selectedIds.every(isInPossession) && !hasApprovedNotInPossession;
-  const shouldShowOfficerReleasedButtonGroup = selectedIds.some(isApproved);
-
+    // Check if any selected item is 'APPROVED' and not 'IN_POSSESSION'
+    const hasApprovedNotInPossession = selectedIds.some(itemId => isApproved(itemId) && !isInPossession(itemId));
+    // Check if all selected items are 'IN_POSSESSION'
+    const shouldShowReleaseButton = transaction?.status === 'ON_GOING' && hasApprovedNotInPossession
+    const shouldShowOfficerReturnButtonGroup = selectedIds.every(isInPossession) && !hasApprovedNotInPossession;
+    
   return (
     <div className="container mx-auto p-4 space-y-4">
       {/* Header Component */}
@@ -99,21 +109,22 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
           />
-        ) : shouldShowOfficerReturnButtonGroup ? (
+        ) : transaction?.status === 'APPROVED' || shouldShowReleaseButton  ? (
           // Show the Return Button Group only if conditions are met
-          <OfficerReturnButtonGroup
-            transactionId={transaction?.id}
-            transactionStatus={transaction?.status}
-            selectedIds={selectedIds}
-            setSelectedIds={setSelectedIds}
-          />
-        ) : shouldShowOfficerReleasedButtonGroup || shouldShowReleaseButton ? (
-          // Show the Release Button Group if any selected item is 'APPROVED' or the transaction is 'ON_GOING'
           <OfficerReleasedButtonGroup
+          transactionId={transaction?.id}
+          transactionStatus={transaction?.status}
+          selectedIds={selectedIds}
+          setSelectedIds={setSelectedIds}
+        />
+        ) : shouldShowOfficerReturnButtonGroup ? (
+            // Show the Release Button Group when the status is 'APPROVED' or 'ON_GOING'
+            <OfficerReturnButtonGroup
             transactionId={transaction?.id}
             transactionStatus={transaction?.status}
             selectedIds={selectedIds}
             setSelectedIds={setSelectedIds}
+            items={items}
           />
         ) : null}
       </ApproverReqTransCardHeader>
@@ -138,25 +149,25 @@ export default function ApproverSpecificReqTrans({ transactionId }: { transactio
         <p className='text-sm'>
           Total Borrowing Period:
           {" "}
-          {earliestStartDate.toLocaleString('en-US', {
+          {earliestStartDate ? earliestStartDate.toLocaleString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
             hour12: true
-          })}
+          }) : 'N/A'}
           {" "}
           to
           {" "}
-          {latestDueDate.toLocaleString('en-US', {
+          {latestDueDate ? latestDueDate.toLocaleString('en-US', {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
             hour: 'numeric',
             minute: 'numeric',
             hour12: true
-          })}
+          }) : 'N/A'}
         </p>
       </div>
 

@@ -87,12 +87,11 @@ export const handleTransactionItemReleased = async (
 
 export const handleTransactionReturn = async (
     transactionId: string | undefined,
-    executeAsync : (values: TReturnTransactionSchema) => Promise<any>,
-    returnItems: Array<{ borrowedItemId: string; status: string; remarkByReceiver: string }> // Expecting an array of returned items
+    executeAsync: (values: TReturnTransactionSchema) => Promise<any>,
+    returnItems: Array<{ borrowedItemId: string; status: string; penalty: string; remarkByReceiver: string }>
 ) => {
-
     console.log("THIS IS THE ID ", transactionId);
-    console.log("THIS ARE THE ITEMS ", returnItems); // Log the items to see what's being passed
+    console.log("THESE ARE THE ITEMS ", returnItems); // Log items to verify
 
     const res = await executeAsync({ transactionId, items: returnItems });
 
@@ -103,5 +102,4 @@ export const handleTransactionReturn = async (
     };
 
     handleApiClientSideError(responseData);
-    
-}
+};

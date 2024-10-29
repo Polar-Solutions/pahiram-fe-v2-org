@@ -3,14 +3,14 @@ import Content from "@/components/common/content";
 import RequetsHeader from "@/components/request/presentational/request-header";
 import SpecificTransaction from "@/components/request/presentational/specific-transaction";
 
-export default function Page() {
+export default function Page({params}: { params: { id: string } }) {
 
-  return (
-    <ContentLayout title="Specific Transaction">
-      <RequetsHeader />
-        <Content>
-          <SpecificTransaction />
-        </Content>
-    </ContentLayout>
-  );
+    return (
+        <ContentLayout title="Specific Transaction">
+            <RequetsHeader id={params.id} />
+            <Content>
+                <SpecificTransaction />
+            </Content>
+        </ContentLayout>
+    );
 }

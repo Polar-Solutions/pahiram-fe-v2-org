@@ -1,5 +1,5 @@
 import create from 'zustand';
-import { IOfficeSpecificTransaction } from '@/lib/interfaces/get-specific-transaction-interface';
+import { IOfficeSpecificTransaction, ITransactionItemDetail } from '@/lib/interfaces/get-specific-transaction-interface';
 
 
 interface BorrowedItem {
@@ -14,14 +14,14 @@ interface BorrowedItem {
 
 // Define the Zustand store
 interface SelectedItemsStore {
-  selectedItems: BorrowedItem[]; // Store selected items as an array
-  setSelectedItems: (items: BorrowedItem[]) => void; // Function to set selected items
+  selectedItems: ITransactionItemDetail[]; // Store selected items as an array
+  setSelectedItems: (items: ITransactionItemDetail[]) => void; // Function to set selected items
   clearSelectedItems: () => void; // Function to clear selected items
 }
 
 // Create the Zustand store
 export const useSelectedItemsStore = create<SelectedItemsStore>((set) => ({
   selectedItems: [],
-  setSelectedItems: (items: BorrowedItem[]) => set({ selectedItems: items }),
+  setSelectedItems: (items: ITransactionItemDetail[]) => set({ selectedItems: items }),
   clearSelectedItems: () => set({ selectedItems: [] }),
 }));

@@ -1,19 +1,11 @@
 "use client";
 
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger,} from "@/components/ui/tooltip";
-import {
-    Sheet,
-    SheetClose,
-    SheetContent,
-    SheetFooter,
-    SheetHeader,
-    SheetTitle,
-    SheetTrigger,
-} from "@/components/ui/sheet";
+import {Sheet, SheetContent, SheetFooter, SheetHeader, SheetTitle, SheetTrigger,} from "@/components/ui/sheet";
 import {ChevronRight, ClipboardCheck, Trash} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {useCartStore} from "@/hooks/stores/useCartStore";
-import {useRouter} from "next/navigation";
+import {useRouter} from 'nextjs-toploader/app';
 import {DisplayGroupedItemsByOffice} from "./presentational/display-grouped-items-by-office";
 import {ConfirmationDialog} from "../common/confirmation-dialog";
 import {getURLParams} from "@/helper/borrow/getURLParams";
@@ -100,14 +92,14 @@ export const BorrowingCartNav = () => {
                         </Button>
                     </ConfirmationDialog>
 
-                        <Button
-                            disabled={isCartEmpty()}
-                            onClick={handleClick}
-                            className="flex items-center"
-                        >
-                            <ChevronRight className="mr-2 h-4 w-4"/>
-                            Proceed to checkout
-                        </Button>
+                    <Button
+                        disabled={isCartEmpty()}
+                        onClick={handleClick}
+                        className="flex items-center"
+                    >
+                        <ChevronRight className="mr-2 h-4 w-4"/>
+                        Proceed to checkout
+                    </Button>
                 </SheetFooter>
             </SheetContent>
         </Sheet>

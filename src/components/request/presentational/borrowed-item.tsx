@@ -6,7 +6,7 @@ import { getItemsPaginationUseCase } from '@/core/use-cases/items'; // Adjust pa
 
 interface BorrowedItemProps {
   items: IOfficeSpecificTransaction[];
-  formatDateTime: (dateString: string) => string;
+  formatDateTime: (dateString: string | undefined | null) => string | null;
   formatBorrowStatus: (status: string) => { formattedStatus: string, badgeClass: string };
 }
 

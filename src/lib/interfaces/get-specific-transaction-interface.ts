@@ -90,4 +90,21 @@ export interface IGetSpecificEndorsementApiResponse {
     description: string;
     status: string;
     apc_item_id: string;
+    items: ITransactionItemDetail[];
   }
+
+  export interface ITransactionItemDetail {
+    model_name: string;
+    due_date: string;
+    borrowed_item_id: string;
+    borrowed_item_status: string;
+    item_apc_id: string;
+  }
+  
+
+export interface IGetSpecificTransactionItemsApiResponse {
+  status: boolean;
+  data?: any;
+  error?: any;
+  method: string;
+}
