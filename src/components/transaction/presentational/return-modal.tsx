@@ -70,7 +70,7 @@ const handleSubmit = async () => {
     const borrowedId = selectedItems.map(item => item.items[0].borrowed_item_id);
 
     selectedItems.forEach((item) => {
-        const selectedStatus = selectedStatuses[item.borrowed_item_id];
+        const selectedStatus = selectedStatuses[borrowedId[0]];
         const penalty = penalties[item.borrowed_item_id] || ''; // Ensure penalty is always a string, even if empty
 
         console.log(penalty)
