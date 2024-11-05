@@ -24,7 +24,7 @@ const EndorsementTransactionSpecific = ({
 
     const endorsement = getRequestById("endorsement", transactionId);
 
-    const {formattedStatus, badgeClass} = formatBorrowStatus(endorsement?.status);
+    const {formattedStatus, badgeClass} = formatBorrowStatus(endorsement?.borrow_transaction_status);
 
     return (
         <div className="container mx-auto p-4 space-y-4">
@@ -37,7 +37,7 @@ const EndorsementTransactionSpecific = ({
                 transactionId={endorsement?.custom_transac_id}
                 id={endorsement?.id}
             >
-                <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.status}/>
+                <EndorserApprovalButtonGroup endorsementId={endorsement?.id} endorsementStatus={endorsement?.borrow_transaction_status}/>
             </EndorserReqTransCardHeader>
 
             {/* Badges Section */}
@@ -55,7 +55,7 @@ const EndorsementTransactionSpecific = ({
 
             {/* Transaction Progress Component */}
             <TransactionProgress
-                transactionStatus={endorsement?.status}
+                transactionStatus={endorsement?.borrow_transaction_status}
             />
 
             {/* Borrowing Details Component */}

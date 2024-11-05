@@ -8,7 +8,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from '../ui/button';
-import CartItem from '@/components/borrow/cart-item';
 
 export default function BorrowCart() {
   return (

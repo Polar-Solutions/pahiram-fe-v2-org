@@ -31,7 +31,6 @@ export const handleSubmitForm = async (
         error: res?.data?.error,
         isSuccessToast: true,
     };
-    console.log("responsedata", responseData);
 
     handleApiClientSideError(responseData);
 

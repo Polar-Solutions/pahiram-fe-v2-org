@@ -1,30 +1,41 @@
 "use client";
 
 import * as React from "react";
-import {Check, ChevronsUpDown} from "lucide-react";
+import { Check, ChevronsUpDown } from "lucide-react";
 
-import {cn} from "@/lib/utils";
-import {Button} from "@/components/ui/button";
-import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command";
-import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
-import {requestFormIsSubmitting} from "@/signals/shared-signals";
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { requestFormIsSubmitting } from "@/signals/shared-signals";
 
 interface ComboboxProps {
-    options: { value: string; label: string }[];
-    placeholder?: string;
-    onSelect: (value: string) => void;
-    selectedItem?: string;
-    isDisabled?: boolean;
+  options: { value: string; label: string }[];
+  placeholder?: string;
+  onSelect: (value: string) => void;
+  selectedItem?: string;
+  isDisabled?: boolean;
 }
 
 export function ComboboxWithNoApiIntegration({
-                                                 options,
-                                                 placeholder = "Select an option...",
-                                                 onSelect,
-                                                 selectedItem = "",
-                                                 isDisabled = false,
-                                             }: ComboboxProps) {
-    const [open, setOpen] = React.useState(false);
+  options,
+  placeholder = "Select an option...",
+  onSelect,
+  selectedItem = "",
+  isDisabled = false,
+}: ComboboxProps) {
+  const [open, setOpen] = React.useState(false);
 
   return (
     <Popover open={open} onOpenChange={setOpen} modal={true}>
