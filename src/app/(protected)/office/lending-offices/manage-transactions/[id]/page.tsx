@@ -1,7 +1,7 @@
 import { ContentLayout } from "@/components/panel/containers/content-layout";
 import Content from "@/components/common/content";
 import DynamicBreadcrumbsComponent from "@/components/common/dynamic-breadcrumbs-component";
-import ApproverSpecificReqTrans from "@/components/transaction/presentational/approver-transaction-specific";
+import BorrowOfficeApproveTransactionSpecific from "@/components/transaction/presentational/borrow-office-approve-transaction/borrow-office-approve-transaction-specific";
 
 export default function Page({params}: { params: { id: string } }) {
 
@@ -16,7 +16,7 @@ export default function Page({params}: { params: { id: string } }) {
                 ]}
             />
         <Content>
-            <ApproverSpecificReqTrans transactionId={params.id} />
+            <BorrowOfficeApproveTransactionSpecific transactionId={params.id} />
         </Content>
     </ContentLayout>
   );

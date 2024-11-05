@@ -16,39 +16,38 @@ export interface IItem {
   details: IBorrowedItemDetail[]; // Array of borrowed item details
 }
 
-  
-  // Interface for transaction data
-  export interface ITransacData {
-    id: string;
-    borrower: string,
-    custom_transac_id: string;
-    endorsed_by: {
-      full_name: string;
-    } | null;
-    department_acronym: string;
-    transac_status: string;
-    purpose: string;
-    user_defined_purpose: string | null;
-    penalty: string | null;
-    remarks_by_endorser: string | null;
-    remarks_by_approver: string | null;
-    created_at: string;
-    updated_at: string;
-  }
-  
-  // Interface for the main data object containing transaction and item details
-  interface   IGetSpecificTransactionApiResponseDataValue {
-    transac_data: ITransacData;
-    items: IItem;
-  }
-  
-  // Example response type
-  export interface IGetSpecificTransactionApiResponse {
-    status: boolean;
-    data?: IGetSpecificTransactionApiResponseDataValue;
-    error?: any;
-    method: string;
-  }
+// Interface for transaction data
+export interface ITransacData {
+  id: string;
+  borrower: string;
+  custom_transac_id: string;
+  endorsed_by: {
+    full_name: string;
+  } | null;
+  department_acronym: string;
+  transac_status: string;
+  purpose: string;
+  user_defined_purpose: string | null;
+  penalty: string | null;
+  remarks_by_endorser: string | null;
+  remarks_by_approver: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+// Interface for the main data object containing transaction and item details
+interface IGetSpecificTransactionApiResponseDataValue {
+  transac_data: ITransacData;
+  items: IItem;
+}
+
+// Example response type
+export interface IGetSpecificTransactionApiResponse {
+  status: boolean;
+  data?: IGetSpecificTransactionApiResponseDataValue;
+  error?: any;
+  method: string;
+}
 
 export interface IGetSpecificEndorsementApiResponse {
   status: boolean;
@@ -57,44 +56,59 @@ export interface IGetSpecificEndorsementApiResponse {
   method: string;
 }
 
-  export interface ISpecificTransaction {
-    transacId: string;
-  }
-  
-  export interface IOfficeTransacData {
-      id: string;
-      borrower: string,
-      custom_transac_id: string;
-      endorsed_by: {
-        full_name: string;
-      } | null;
-      status: string;
-      purpose: string;
-      user_defined_purpose: string | null;
-      created_at: string;
-  }
-  export interface IOfficeSpecificTransaction {
-    item_group_id: string;
-    id: string;
-    model_name: string;
-    quantity: number;
-    start_date: string;
-    due_date: string;
-    borrowed_item_status: string;
-    image: string;
-    group_category_id: string;
-    group_category: string;
-    department: string;
-    in_circulation: number;
-    availability: string;
-    description: string;
-    status: string;
-    apc_item_id: string;
-  }
+export interface ISpecificTransaction {
+  transacId: string;
+}
+
+export interface IOfficeTransacData {
+  id: string;
+  borrower: string;
+  custom_transac_id: string;
+  endorsed_by: {
+    full_name: string;
+  } | null;
+  status: string;
+  purpose: string;
+  user_defined_purpose: string | null;
+  created_at: string;
+}
+export interface IOfficeSpecificTransaction {
+  item_group_id: string;
+  id: string;
+  model_name: string;
+  quantity: number;
+  start_date: string;
+  due_date: string;
+  borrowed_item_status: string;
+  image: string;
+  group_category_id: string;
+  group_category: string;
+  department: string;
+  in_circulation: number;
+  availability: string;
+  description: string;
+  status: string;
+  apc_item_id: string;
+}
+
+interface IItem2 {
+  borrowed_item_id: string;
+  borrowed_item_status: string;
+  item_apc_id: string;
+}
+
+interface IModel {
+  model_name: string;
+  is_required_supervisor_approval: boolean;
+  quantity: number;
+  start_date: string;
+  due_date: string;
+  items: IItem2[];
+}
 
 export interface IGetSpecificTransactionItemsApiResponse {
   status: boolean;
-  data?: any;
+  data?: Record<string, IModel>;
   error?: any;
   method: string;
 }

@@ -24,6 +24,7 @@ export interface IGetTransactionRequestApiResponse {
     apc_id: string;
     custom_transac_id: string;
     status: string;
+    borrow_transaction_status: string;
     purpose: string;
     user_defined_purpose: string;
     created_at: string;

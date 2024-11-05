@@ -7,7 +7,7 @@ import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow,} from "@/
 import {Card, CardContent, CardFooter, CardHeader} from "@/components/ui/card";
 import {Button} from "@/components/ui/button";
 import {ITransactionRequest} from '@/lib/interfaces/get-office-transaction-interface';
-import {useRouter} from 'nextjs-toploader/app';import ApproverReqTransCardHeader from "@/components/transaction/presentational/approver-transaction-header";
+import {useRouter} from 'nextjs-toploader/app';import ApproverReqTransCardHeader from "@/components/transaction/presentational/borrow-office-approve-transaction/approver-transaction-header";
 import OfficerReleaseAllButton from "@/components/transaction/presentational/transaction-release-all-button";
 import OfficeApprovalAllButton from "@/components/transaction/presentational/transaction-approval-all-button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
@@ -76,7 +76,7 @@ export default function EndorsementCard({transaction}: TransactionCardProps) {
                 <CardContent>
                     <div className="flex items-center space-x-2">
                     <Badge variant="secondary">
-                        {transaction.status
+                        {transaction?.borrow_transaction_status
                             .toLowerCase()         // Convert to lowercase
                             .split('_')            // Split by underscore
                             .map(word => word.charAt(0).toUpperCase() + word.slice(1)) // Capitalize each word
